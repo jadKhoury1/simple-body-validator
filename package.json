@@ -22,5 +22,8 @@
   "bugs": {
     "url": "https://github.com/jadKhoury1/body-validator/issues"
   },
-  "homepage": "https://github.com/jadKhoury1/body-validator#readme"
+  "homepage": "https://github.com/jadKhoury1/body-validator#readme",
+  "devDependencies": {
+    "typescript": "^4.4.3"
+  }
 }
