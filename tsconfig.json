@@ -3,7 +3,8 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "lib",
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "declaration": true
   },
   "include": ["src"]
 }
