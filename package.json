@@ -2,8 +2,14 @@
   "name": "body-validator",
   "version": "1.0.0",
   "description": "This package is inspired by Laravel validation, and aims to make body validation easier for Node JS developers",
-  "main": "index.js",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "files": [
+    "lib/"
+  ],
   "scripts": {
+    "tsc": "tsc -p tsconfig.json",
+    "prepublish": "npm run tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
