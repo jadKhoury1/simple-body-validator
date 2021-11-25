@@ -1,6 +1,7 @@
 'use strict';
 
 import { Rules, Messages } from './types';
+import { builValidationdMethodName } from './utils/build';
 import validateAttributes from './validateAttributes';
 import validationRuleParser from './validationRuleParser';
 
@@ -29,11 +30,11 @@ class Validator {
     };
 
 
-    validate(rules: Rules) {
-        for(const property in rules) {
-            if (rules.hasOwnProperty(property) && Array.isArray(rules[property])) {
-                for (let i = 0; i < rules[property].length; i++) {
-                    this.validateAttribute(property, rules[property][i]);
+    validate() {
+        for(const property in this.rules) {
+            if (this.rules.hasOwnProperty(property) && Array.isArray(this.rules[property])) {
+                for (let i = 0; i < this.rules[property].length; i++) {
+                    this.validateAttribute(property, this.rules[property][i]);
                 }
             }
         }
@@ -46,7 +47,7 @@ class Validator {
         [rule ,parameters] = validationRuleParser.parseStringRule(rule);
 
         const value = this.data[attribute];
-        const method = `validate${rule}`;
+        const method = `validate${builValidationdMethodName(rule)}`;
 
         if (validateAttributes[method](value) === false) {
             this.addFailure(attribute, rule);

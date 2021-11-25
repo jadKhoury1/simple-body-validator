@@ -16,12 +16,12 @@ const validationRuleParser: ValidationRuleParserInterface =  {
     },
     
 
-    explodeExplicitRules: function(rule: string|string[]): string[] {
-        if (typeof rule === 'string') {
-            return rule.split('|');
+    explodeExplicitRules: function(rules: string|string[]): string[] {
+        if (typeof rules === 'string') {
+            rules =  rules.split('|');
         }
 
-        return rule;
+        return rules;
     },
 
     parseStringRule: function(rule: string): [string, string[]] {
