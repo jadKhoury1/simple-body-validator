@@ -22,6 +22,30 @@ const validationRuleParser: ValidationRuleParserInterface =  {
         }
 
         return rule;
+    },
+
+    parseStringRule: function(rule: string): [string, string[]] {
+
+        let parameters: string[] = [];
+        let parameter: string;
+
+        if (rule.includes(':') === true) {
+            [rule, parameter] = rule.split(':');
+
+            parameters = this.parseParameters(rule, parameter);
+        }
+
+        return [rule, parameters];
+    },
+
+    parseParameters: function(rule: string, parameter: string): string[] {
+        rule = rule.toLocaleLowerCase();
+
+        if (['regex', 'not_regex', 'notregex'].includes(rule)) {
+            return [parameter];
+        }
+
+        return parameter.split(',');
     }
 }
 
