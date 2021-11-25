@@ -1,6 +1,6 @@
 'use strict';
 
-import { ValidateAttributeInterface } from "./types";
+import { ValidateAttributeInterface } from "../types";
 
 const validateAttributes: ValidateAttributeInterface = {
     validateRequired: function(value: any) {
@@ -13,7 +13,10 @@ const validateAttributes: ValidateAttributeInterface = {
         }
 
         return true;
-    }
+    },
+    validateArray: function(value: any) {
+        return Array.isArray(value);
+    },
 };
 
 export default validateAttributes;

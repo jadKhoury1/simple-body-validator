@@ -2,7 +2,7 @@
 
 import { Rules, Messages } from './types';
 import { builValidationdMethodName } from './utils/build';
-import validateAttributes from './validateAttributes';
+import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validationRuleParser';
 
 class Validator {
