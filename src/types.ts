@@ -20,4 +20,5 @@ export interface ValidationRuleParserInterface {
 
 export interface ValidateAttributeInterface {
     validateRequired: (attribute: string, value: any) => boolean;
+
 }

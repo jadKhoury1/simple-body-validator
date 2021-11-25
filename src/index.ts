@@ -21,6 +21,7 @@ class Validator {
      */
     messages: Messages;
 
+
     constructor(data: object, rules: Rules, messages: Messages = {}) {
         this.data = data;
         this.messages = messages;
@@ -56,6 +57,10 @@ class Validator {
     addFailure(attribute: string, rule: string) {
         this.messages[attribute] = `${attribute} is ${rule}`;
     };
+
+    private setRules(rules: Rules): Rules {
+        return validationRuleParser.explodeRules(rules);
+    }
 
 }
 
