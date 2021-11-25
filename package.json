@@ -1,5 +1,5 @@
 {
-  "name": "body-validator",
+  "name": "simple-body-validator",
   "version": "1.0.0",
   "description": "This package is inspired by Laravel validation, and aims to make body validation easier for Node JS developers",
   "main": "./lib/index.js",
