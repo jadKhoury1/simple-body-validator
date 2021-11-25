@@ -57,11 +57,6 @@ class Validator {
     addFailure(attribute: string, rule: string) {
         this.messages[attribute] = `${attribute} is ${rule}`;
     };
-
-    private setRules(rules: Rules): Rules {
-        return validationRuleParser.explodeRules(rules);
-    }
-
 }
 
 export default Validator;
