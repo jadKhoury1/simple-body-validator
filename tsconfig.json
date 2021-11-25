@@ -1,10 +1,13 @@
 {
-  "extends": "@4c/tsconfig/web.json",
   "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "rootDir": "src",
     "outDir": "lib",
     "noImplicitAny": false,
     "declaration": true
   },
-  "include": ["src"]
+  "include": ["./src"]
 }

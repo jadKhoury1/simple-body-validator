@@ -30,7 +30,6 @@
   },
   "homepage": "https://github.com/jadKhoury1/body-validator#readme",
   "devDependencies": {
-    "@4c/tsconfig": "^0.4.0",
     "typescript": "^4.4.3"
   }
 }
