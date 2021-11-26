@@ -49,6 +49,17 @@ const validateAttributes: ValidateAttributeInterface = {
     },
 
     /**
+     * Validate that an attribute is a valid email address
+     */
+    validateEmail: function(value: any) {
+        if (typeof value !== 'string') {
+            return false;
+        }
+
+        return value.toLowerCase().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null;
+    },
+
+    /**
      * Require a certain number of parameters to be present
      */
     requireParameterCount: function(count: number, parameters: number[], rule: string) {
