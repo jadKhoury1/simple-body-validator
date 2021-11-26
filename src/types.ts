@@ -21,5 +21,6 @@ export interface ValidationRuleParserInterface {
 export interface ValidateAttributeInterface {
     validateRequired: (value: any) => boolean;
     validateArray: (value: any) => boolean;
-
+    validateBetween: (value: any, paraters: number[]) => boolean;
+    requireParameterCount: (count: number, parameters: number[], rule: string) => void;
 }
