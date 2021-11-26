@@ -23,4 +23,5 @@ export interface ValidateAttributeInterface {
     validateArray: (value: any) => boolean;
     validateBetween: (value: any, paraters: number[]) => boolean;
     requireParameterCount: (count: number, parameters: number[], rule: string) => void;
+    validateBoolean: (value: any) => boolean;
 }
