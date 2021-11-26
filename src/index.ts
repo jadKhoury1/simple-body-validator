@@ -49,7 +49,7 @@ class Validator {
         const value = this.data[attribute];
         const method = `validate${builValidationdMethodName(rule)}`;
 
-        if (validateAttributes[method](value, parameters) === false) {
+        if (validateAttributes[method](value, parameters, this.data) === false) {
             this.addFailure(attribute, rule);
         }
 

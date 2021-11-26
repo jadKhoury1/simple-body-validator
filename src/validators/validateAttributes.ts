@@ -9,12 +9,34 @@ const validateAttributes: ValidateAttributeInterface = {
      * Validate that a required attribute exists
      */
     validateRequired: function(value: any) {
+
         if (value === null || typeof value === 'undefined') {
             return false;
-        } else if (typeof value === 'string' || value.trim() === '') {
+        } else if (typeof value === 'string' && value.trim() === '') {
             return false;
         } else if (Array.isArray(value) && value.length < 1) {
             return false;
+        }
+
+        return true;
+    },
+
+    /**
+     * 
+     * Validate that an attribute exists when another atteribute has a given value
+     */
+    validateRequiredIf: function(value: any, parameters: string[], data: object) {
+        this.requireParameterCount(2, parameters, 'required_if');
+
+        if (!data.hasOwnProperty(parameters[0])) {
+            return true;
+        }
+
+        const other = data[parameters[0]];
+        const values = parameters.slice(1);
+
+        if (values.indexOf(other) !== -1) {
+            return this.validateRequired(value);
         }
 
         return true;
@@ -64,9 +86,10 @@ const validateAttributes: ValidateAttributeInterface = {
      */
     requireParameterCount: function(count: number, parameters: number[], rule: string) {
         if (parameters.length < count) {
-            throw `Validation rule ${rule} requires at lesat ${count} paramters.`;
+            throw `Validation rule ${rule} requires at least ${count} paramters.`;
         }
     },
+
 };
 
 export default validateAttributes;
