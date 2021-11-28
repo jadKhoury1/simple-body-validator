@@ -24,6 +24,8 @@ export interface ValidateAttributeInterface {
     validateString: (value: any) => boolean;
     validateEmail: (value: any) => boolean;
     validateRequiredIf: (value: any, parameters: string[], data: object) => boolean;
+    validateRegex: (value: any, parameters: string[]) => boolean;
+    validateNotRegex: (value: any, parameters: string[]) => boolean;
 };
 
 export interface ReplaceAttribueInterface {

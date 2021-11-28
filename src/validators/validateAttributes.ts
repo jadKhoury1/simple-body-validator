@@ -86,6 +86,32 @@ const validateAttributes: ValidateAttributeInterface = {
     },
 
     /**
+     * Validate that an attribute passes a regular expression check.
+     */
+    validateRegex: function(value: any, parameters: string[]): boolean {
+        if (typeof value !== 'string') {
+            return false;
+        }
+
+        this.requireParameterCount(1, parameters, 'regex');
+
+        return value.match(/^[a-z]* [a-z]*/) === null ? false : true;
+    },
+
+     /**
+      * Validate that an attribute does not pass a regular expression check.
+      */
+    validateNotRegex: function(value: any, parameters: string[]): boolean {
+        if (typeof value !== 'string') {
+            return false;
+        }
+
+        this.validateNotRegex(1, parameters, 'not_regex');
+
+        return value.match(/^[a-z]* [a-z]*/) === null ? true : false;
+    },
+
+    /**
      * Require a certain number of parameters to be present
      */
     requireParameterCount: function(count: number, parameters: number[], rule: string): void {
