@@ -2,6 +2,7 @@
 
 import { Rules, Messages } from './types';
 import { builValidationdMethodName } from './utils/build';
+import { getMessage, makeReplacements } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validationRuleParser';
 
@@ -20,13 +21,19 @@ class Validator {
     /**
      * Custom mesages returrned based on the error 
      */
+    customMessages: Messages;
+
+    /**
+     * Hold the error messages
+     */
     messages: Messages;
 
 
-    constructor(data: object, rules: Rules, messages: Messages = {}) {
+    constructor(data: object, rules: Rules, customMessages: Messages = {}) {
         this.data = data;
-        this.messages = messages;
+        this.customMessages = customMessages;
         this.rules = validationRuleParser.explodeRules(rules);
+        this.messages = {};
     };
 
 
@@ -50,13 +57,16 @@ class Validator {
         const method = `validate${builValidationdMethodName(rule)}`;
 
         if (validateAttributes[method](value, parameters, this.data) === false) {
-            this.addFailure(attribute, rule);
+            this.addFailure(attribute, rule, value, parameters);
         }
 
     };
 
-    addFailure(attribute: string, rule: string) {
-        this.messages[attribute] = `${attribute} is ${rule}`;
+    addFailure(attribute: string, rule: string, value: any, parameters: string[]) {
+        this.messages[attribute] = makeReplacements(
+            getMessage(attribute, rule, value, this.customMessages),
+            attribute, rule, parameters, this.data
+        );
     };
 }
 
