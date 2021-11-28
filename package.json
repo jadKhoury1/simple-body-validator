@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/jadKhoury1/body-validator.git"
+    "url": "git+ssh://git@github.com/jadKhoury1/simple-body-validator.git"
   },
   "keywords": [
     "javascript",
@@ -26,9 +26,9 @@
   "author": "Jad Khoury",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jadKhoury1/body-validator/issues"
+    "url": "https://github.com/jadKhoury1/simple-body-validator/issues"
   },
-  "homepage": "https://github.com/jadKhoury1/body-validator#readme",
+  "homepage": "https://github.com/jadKhoury1/simple-body-validator#readme",
   "devDependencies": {
     "typescript": "^4.4.3"
   }
