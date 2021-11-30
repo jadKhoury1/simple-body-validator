@@ -106,6 +106,35 @@ const validateAttributes: ValidateAttributeInterface = {
         return value.toLowerCase().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null;
     },
 
+    /**
+     * Validate an attribute is contained within a list of values.
+     */
+    validateIn: function(value: any, paramters: string[]): boolean {
+        if (Array.isArray(value)) {
+
+            for (let index = 0; index < value.length; index++) {
+                if (typeof value[index] !== 'number' && typeof value[index] !== 'string') {
+                    return false;
+                }
+            }
+
+            return value.filter(element => paramters.indexOf(element.toString()) === -1).length === 0;
+        };
+
+        if (typeof value !== 'number' && typeof value !== 'string') {
+            return false;
+        }
+
+        return paramters.indexOf(value.toString()) !== -1;
+  
+    },
+
+    /**
+     * Validate an attribute is not contained within a list of values.
+     */
+    validateNotIn: function (value: any, parameters: string[]): boolean {
+        return !this.validateIn(value, parameters);
+    },
 
     /**
      * Validate that an attribute passes a regular expression check.

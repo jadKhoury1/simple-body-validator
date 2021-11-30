@@ -25,6 +25,8 @@ export interface ValidateAttributeInterface {
     validateNumeric: (value: any) => boolean;
     validateInteger: (value: any) => boolean;
     validateEmail: (value: any) => boolean;
+    validateIn: (value: any, paramters: string[]) => boolean;
+    validateNotIn: (value: any, parameters: string[]) => boolean;
     validateRequiredIf: (value: any, parameters: string[], data: object) => boolean;
     validateRegex: (value: any, parameters: string[]) => boolean;
     validateNotRegex: (value: any, parameters: string[]) => boolean;
