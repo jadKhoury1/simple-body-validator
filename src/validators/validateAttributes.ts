@@ -58,8 +58,29 @@ const validateAttributes: ValidateAttributeInterface = {
         return acceptable.indexOf(value) !== -1;
     },
 
+    /**
+     * Validate that an attribute is a string.
+     */
     validateString: function(value: any): boolean {
         return typeof value === 'string';
+    },
+
+    /**
+     * Validate that an attribute is numeric.
+     */
+    validateNumeric: function(value: any): boolean {
+        return typeof value === 'number';
+    },
+
+    /**
+     * Validate that an attribute is an integer.
+     */
+    validateInteger: function (value: any): boolean {
+        if (this.validateNumeric(value) === false) {
+            return false;
+        }
+
+        return value % 1 === 0;
     },
 
     /**
@@ -84,6 +105,7 @@ const validateAttributes: ValidateAttributeInterface = {
 
         return value.toLowerCase().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null;
     },
+
 
     /**
      * Validate that an attribute passes a regular expression check.

@@ -22,6 +22,8 @@ export interface ValidateAttributeInterface {
     requireParameterCount: (count: number, parameters: number[], rule: string) => void;
     validateBoolean: (value: any) => boolean;
     validateString: (value: any) => boolean;
+    validateNumeric: (value: any) => boolean;
+    validateInteger: (value: any) => boolean;
     validateEmail: (value: any) => boolean;
     validateRequiredIf: (value: any, parameters: string[], data: object) => boolean;
     validateRegex: (value: any, parameters: string[]) => boolean;
