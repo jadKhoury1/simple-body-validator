@@ -27,27 +27,8 @@ export interface ValidationRuleParserInterface {
     explodeExplicitRules(rule: string|string[]): string[];
     parseStringRule(rule: string): [string, string[]];
     parseParameters(rule: string, parameter: string): string[];
-};
-
-export interface ValidateAttributeInterface {
-    validateRequired: (value: any) => boolean;
-    validateArray: (value: any) => boolean;
-    validateBetween: (value: any, parameters: number[]) => boolean;
-    requireParameterCount: (count: number, parameters: number[], rule: string) => void;
-    validateBoolean: (value: any) => boolean;
-    validateString: (value: any) => boolean;
-    validateNumeric: (value: any) => boolean;
-    validateInteger: (value: any) => boolean;
-    validateEmail: (value: any) => boolean;
-    validateIn: (value: any, paramters: string[]) => boolean;
-    validateNotIn: (value: any, parameters: string[]) => boolean;
-    validateGt: (value: any, parameters: string[], data: object) => boolean;
-    validateGte: (value: any, parameters: string[], data: object) => boolean;
-    validateLt: (value: any, parameters: string[], data: object) => boolean;
-    validateLte: (value: any, parameters: string[], data: object) => boolean;
-    validateRequiredIf: (value: any, parameters: string[], data: object) => boolean;
-    validateRegex: (value: any, parameters: string[]) => boolean;
-    validateNotRegex: (value: any, parameters: string[]) => boolean;
+    getRule(attribute: string, searchRules: string|string[], availableRules: Rules): Partial<[string, string[]]>;
+    hasRule(attrtibute: string, searchRules: string|string[], availableRules: Rules): boolean; 
 };
 
 export interface ReplaceAttribueInterface {

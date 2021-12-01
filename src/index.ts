@@ -33,6 +33,11 @@ class Validator {
      */
     firstMessage: string;
 
+    /**
+     * Stores an instance of the validateAtteibutes class
+     */
+    validateAttributes: validateAttributes;
+
 
     constructor(data: object, rules: Rules, customMessages: CustomMesages = {}) {
         this.data = data;
@@ -40,6 +45,8 @@ class Validator {
         this.rules = validationRuleParser.explodeRules(rules);
         this.messages = [];
         this.firstMessage = '';
+        this.validateAttributes = new validateAttributes(this.data, this.rules);
+        
     };
 
 
@@ -86,7 +93,7 @@ class Validator {
         const value = this.data[attribute];
         const method = `validate${builValidationdMethodName(rule)}`;
 
-        if (validateAttributes[method](value, parameters, this.data) === false) {
+        if (this.validateAttributes[method](value, parameters, this.data) === false) {
             this.addFailure(attribute, rule, value, parameters);
         }
 
