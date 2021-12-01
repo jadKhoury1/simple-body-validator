@@ -1,6 +1,6 @@
 'use strict';
 
-import { Rules, ValidationRuleParserInterface } from "./types";
+import { Rules, ValidationRuleParserInterface } from "../types";
 
 
 const validationRuleParser: ValidationRuleParserInterface =  {
@@ -96,5 +96,6 @@ const validationRuleParser: ValidationRuleParserInterface =  {
         return this.getRule(attribute, searchRules, availableRules).length > 0;
     },
 }
+
 
 export default validationRuleParser;
