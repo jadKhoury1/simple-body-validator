@@ -4,8 +4,22 @@ export interface Rules {
     [key: string]: string|string[]
 };
 
-export interface Messages {
+export interface CustomMesages {
     [key: string]: string
+};
+
+export interface ErrorMessage {
+    error_type: string,
+    message: string,
+};
+
+export interface Messages {
+    [key: string]: ErrorMessage[]
+};
+
+export interface ErrorConfig {
+    allMessages: boolean,
+    withErrorTypes: boolean,
 };
 
 export interface ValidationRuleParserInterface {

@@ -1,6 +1,6 @@
 'use strict';
 
-import { Messages } from "../types";
+import { CustomMesages } from "../types";
 import { isSizeRule } from "./general";
 import validationMessages from '../locales/en';
 import replaceAttributes from '../validators/replaceAttributes';
@@ -8,8 +8,7 @@ import { builValidationdMethodName } from "./build";
 
 
 
-function getMesageType(value: any) {
-    
+function getMesageType(value: any): string {
     if (Array.isArray(value)) {
         return 'array';
     }
@@ -17,7 +16,7 @@ function getMesageType(value: any) {
     return typeof value;
 };
 
-export function getMessage(attribute: string, rule: string, value: any, customMessages: Messages) {
+export function getMessage(attribute: string, rule: string, value: any, customMessages: CustomMesages): string {
 
     // check if error exists inside the custom message object provided by the user
     const inlineMessage: string = customMessages[`${attribute}.${rule}`];
@@ -38,7 +37,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
 };
 
 
-export function makeReplacements(message: string, attribute: string, rule: string, parameters: string[], data: object) {
+export function makeReplacements(message: string, attribute: string, rule: string, parameters: string[], data: object): string {
 
     message = message.replace(':attribute', attribute.replace('_', ' '));
 
