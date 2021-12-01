@@ -1,7 +1,7 @@
 'use strict';
 
 import { ValidateAttributeInterface } from "../types";
-import { getSize } from '../utils/general';
+import { getSize, sameType } from '../utils/general';
 
 const validateAttributes: ValidateAttributeInterface = {
 
@@ -69,17 +69,13 @@ const validateAttributes: ValidateAttributeInterface = {
      * Validate that an attribute is numeric.
      */
     validateNumeric: function(value: any): boolean {
-        return typeof value === 'number';
+        return isNaN(value) === false;
     },
 
     /**
      * Validate that an attribute is an integer.
      */
     validateInteger: function (value: any): boolean {
-        if (this.validateNumeric(value) === false) {
-            return false;
-        }
-
         return value % 1 === 0;
     },
 
@@ -96,7 +92,117 @@ const validateAttributes: ValidateAttributeInterface = {
     },
 
     /**
-     * Validate that an attribute is a valid email address
+     * Validate that an attribute is greater than another attribute.
+     */
+    validateGt: function(value: any, parameters: any[], data: object): boolean {
+        this.requireParameterCount(1, parameters, 'gt');
+
+        const compartedToValue = data[parameters[0]];
+
+        if (typeof compartedToValue === 'undefined' && (isNaN(value) === false && isNaN(parameters[0]) === false)) {
+            return value > parameters[0];
+        }
+
+        if (isNaN(parameters[0]) === false) {
+            return false;
+        }
+
+        if (isNaN(value) !== false &&  isNaN(compartedToValue) !== false) {
+            return value > compartedToValue;
+        }
+
+        if (sameType(value, compartedToValue) === false) {
+            return false;
+        }
+
+        return getSize(value) > getSize(compartedToValue);
+
+    },
+
+    /**
+     * Validate that an attribute is greater than or equal  another attribute.
+     */
+    validateGte: function(value: any, parameters: any[], data: object): boolean {
+        this.requireParameterCount(1, parameters, 'gte');
+
+        const compartedToValue = data[parameters[0]];
+
+        if (typeof compartedToValue === 'undefined' && (isNaN(value) === false && isNaN(parameters[0]) === false)) {
+            return value >= parameters[0];
+        }
+
+        if (isNaN(parameters[0]) === false) {
+            return false;
+        }
+
+        if (isNaN(value) !== false &&  isNaN(compartedToValue) !== false) {
+            return value >= compartedToValue;
+        }
+
+        if (sameType(value, compartedToValue) === false) {
+            return false;
+        }
+
+        return getSize(value) >= getSize(compartedToValue);
+    },
+
+    /**
+     * Validate that an attribute is less than another attribute.
+     */
+    validateLt: function(value: any, parameters: any[], data: object): boolean {
+        this.requireParameterCount(1, parameters, 'lt');
+
+        const compartedToValue = data[parameters[0]];
+
+        if (typeof compartedToValue === 'undefined' && (isNaN(value) === false && isNaN(parameters[0]) === false)) {
+            return value < parameters[0];
+        }
+
+        if (isNaN(parameters[0]) === false) {
+            return false;
+        }
+
+        if (isNaN(value) !== false &&  isNaN(compartedToValue) !== false) {
+            return value < compartedToValue;
+        }
+
+        if (sameType(value, compartedToValue) === false) {
+            return false;
+        }
+
+        return getSize(value) < getSize(compartedToValue);
+    },
+
+    /**
+     * Validate that an attribute is less than or equal another attribute.
+     */
+    validateLte: function(value: any, parameters: any[], data: object): boolean {
+        this.requireParameterCount(1, parameters, 'lte');
+
+        const compartedToValue = data[parameters[0]];
+
+        if (typeof compartedToValue === 'undefined' && (isNaN(value) === false && isNaN(parameters[0]) === false)) {
+            return value <= parameters[0];
+        }
+
+        if (isNaN(parameters[0]) === false) {
+            return false;
+        }
+
+        if (isNaN(value) !== false &&  isNaN(compartedToValue) !== false) {
+            return value <= compartedToValue;
+        }
+
+        if (sameType(value, compartedToValue) === false) {
+            return false;
+        }
+
+        return getSize(value) <= getSize(compartedToValue);
+    },
+
+
+    /**
+     * Validate that an attribute is a valid email address.
      */
     validateEmail: function(value: any): boolean {
         if (typeof value !== 'string') {

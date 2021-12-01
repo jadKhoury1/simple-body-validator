@@ -1,13 +1,22 @@
 'use strict';
 
 export function getSize(value: any): number {
-    if (typeof value === 'number') {
-        return value;
+    if (isNaN(value) === false) {
+        return Number(value);
     } else if (typeof value === 'string' ||  Array.isArray(value)) {
         return value.length;
     }
 
     return -1;
+};
+
+export function sameType(value: any, otherValue: any): boolean {
+
+    const valueType = Array.isArray(value) ? 'array' : typeof value;
+    const otherValueType = Array.isArray(otherValue) ? 'array' : typeof otherValue;
+
+    return valueType == otherValueType;
+
 };
 
 

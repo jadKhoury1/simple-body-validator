@@ -27,6 +27,10 @@ export interface ValidateAttributeInterface {
     validateEmail: (value: any) => boolean;
     validateIn: (value: any, paramters: string[]) => boolean;
     validateNotIn: (value: any, parameters: string[]) => boolean;
+    validateGt: (value: any, parameters: string[], data: object) => boolean;
+    validateGte: (value: any, parameters: string[], data: object) => boolean;
+    validateLt: (value: any, parameters: string[], data: object) => boolean;
+    validateLte: (value: any, parameters: string[], data: object) => boolean;
     validateRequiredIf: (value: any, parameters: string[], data: object) => boolean;
     validateRegex: (value: any, parameters: string[]) => boolean;
     validateNotRegex: (value: any, parameters: string[]) => boolean;
