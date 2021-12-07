@@ -3,7 +3,7 @@ const SimpleValidator = require('../lib/index').default;
 
 const validator = SimpleValidator.make();
 
-describe('array', function() {
+describe('Array', function() {
     describe('The field under validation must be an array', function() {
       it('Validation should fail in case value is not an array', function() {
           
@@ -26,4 +26,26 @@ describe('array', function() {
             assert.ok(validator.validate());
       });
     });
+});
+
+describe('Alpha', function() {
+  describe('The field under validation must be entirely alphabetic characters', function() {
+    it('Validation should fail in case value does not only contain alphabetic characters', function () {
+
+      validator.setData({ value: 'test1234'}).setRules({ value: 'alpha' });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: '$^(' });
+      assert.equal(validator.validate(), false);
+
+    });
+    it('An Error Message should be returned in case of failure', function() {
+        let messages = validator.errors();
+        assert.equal(messages.value, 'The value must only contain letters.');
+    });
+    it('Validation should succeed in case value contain only alphabetic characters', function() {
+        validator.setData({ value: 'test' });
+        assert.ok(validator.validate());
+    });
   });
+});

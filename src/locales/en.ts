@@ -1,4 +1,5 @@
 export default {
+    alpha: 'The :attribute must only contain letters.',
     array: 'The :attribute must be an array.',
     between: {
         number: 'The :attribute must be between :min and :max.',

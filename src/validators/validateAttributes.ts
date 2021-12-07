@@ -21,6 +21,17 @@ class ValidateAttributes {
     };
 
     /**
+     * Validate that an attribute contains only alphabetic characters.
+     */
+    validateAlpha(value: any): boolean {
+
+        const regex = /^[a-zA-Z]+$/;
+
+        return typeof value === 'string' && regex.test(value);
+    };
+
+
+    /**
      * Validate that an attribute is an array 
      */
     validateArray(value: any): boolean {
