@@ -49,3 +49,25 @@ describe('Alpha', function() {
     });
   });
 });
+
+describe('AlphaDash', function() {
+  describe('The field under validation may have alpha-numeric characters, as well as dashes and underscores', function() {
+    it('Validation should fail in case value does not only contain alpha-numeric characters, dashes and underscores', function () {
+
+      validator.setData({ value: 'jad_$2'}).setRules({ value: 'alpha_dash' });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: '$^(' });
+      assert.equal(validator.validate(), false);
+
+    });
+    it('An Error Message should be returned in case of failure', function() {
+        let messages = validator.errors();
+        assert.equal(messages.value, 'The value must only contain letters, numbers, dashes and underscores.');
+    });
+    it('Validation should succeed in case value contain only alphabetic characters', function() {
+        validator.setData({ value: 'test_test-test' });
+        assert.ok(validator.validate());
+    });
+  });
+});

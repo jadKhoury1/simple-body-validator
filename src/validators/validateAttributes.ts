@@ -26,10 +26,21 @@ class ValidateAttributes {
     validateAlpha(value: any): boolean {
 
         const regex = /^[a-zA-Z]+$/;
-
         return typeof value === 'string' && regex.test(value);
     };
 
+    /**
+     * Validate that an attribute contains only alpha-numeric characters, dashes, and underscores.
+     */
+    validateAlphaDash(value: any): boolean {
+
+        if (typeof value != 'string' && typeof value != 'number') {
+            return false;
+        }
+
+        const regex = /^[a-zA-Z0-9-_]+$/;
+        return regex.test(value.toString());
+    };
 
     /**
      * Validate that an attribute is an array 
