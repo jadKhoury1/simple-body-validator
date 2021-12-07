@@ -20,6 +20,13 @@ class ValidateAttributes {
         this.rules = rules;
     };
 
+    /**
+     * Validate that an attribute is an array 
+     */
+    validateArray(value: any): boolean {
+        return Array.isArray(value);
+    };
+
 
     /**
      * Validate that a required attribute exists
@@ -58,12 +65,6 @@ class ValidateAttributes {
         return true;
     };
 
-    /**
-     * Validate that an attribute is an array 
-     */
-    validateArray(value: any): boolean {
-        return Array.isArray(value);
-    };
 
     /**
      * Validate that an attribute is boolean

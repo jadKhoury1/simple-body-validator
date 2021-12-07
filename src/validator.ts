@@ -43,10 +43,6 @@ class Validator {
         this.data = data;
         this.customMessages = customMessages;
         this.rules = validationRuleParser.explodeRules(rules);
-        this.messages = [];
-        this.firstMessage = '';
-        this.validateAttributes = new validateAttributes(this.data, this.rules);
-        
     };
 
     setData(data: object): Validator {
@@ -55,12 +51,19 @@ class Validator {
     };
 
     setRules(rules: Rules): Validator {
-        this.rules = rules;
+        this.rules = validationRuleParser.explodeRules(rules);
+        return this;
+    };
+
+    setCustomMessages(customMessages: CustomMesages = {}) {
+        this.customMessages = customMessages;
         return this;
     };
 
     validate(): boolean {
         this.firstMessage = '';
+        this.messages = [];
+        this.validateAttributes = new validateAttributes(this.data, this.rules);
 
         for(const property in this.rules) {
             if (this.rules.hasOwnProperty(property) && Array.isArray(this.rules[property])) {
