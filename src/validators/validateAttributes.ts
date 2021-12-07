@@ -43,6 +43,18 @@ class ValidateAttributes {
     };
 
     /**
+     * Validate that an attribute contains only alpha-numeric characters.
+     */
+    validateAlphaNum(value: any): boolean {
+        if (typeof value != 'string' && typeof value != 'number') {
+            return false;
+        }
+
+        const regex = /^[a-zA-Z0-9]+$/;
+        return regex.test(value.toString());
+    }
+
+    /**
      * Validate that an attribute is an array 
      */
     validateArray(value: any): boolean {
