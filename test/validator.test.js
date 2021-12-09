@@ -60,8 +60,7 @@ describe('AlphaDash', function() {
 
     });
     it('An Error Message should be returned in case of failure', function() {
-        let messages = validator.errors();
-        assert.equal(messages.value, 'The value must only contain letters, numbers, dashes and underscores.');
+        assert.equal(validator.firstError(), 'The value must only contain letters, numbers, dashes and underscores.');
     });
     it('Validation should succeed in case value contain only alphabetic characters', function() {
         validator.setData({ value: 'test_test-test12' });
@@ -79,12 +78,47 @@ describe('AlphaNum', function() {
 
     });
     it('An Error Message should be returned in case of failure', function() {
-        let messages = validator.errors();
-        assert.equal(messages.value, 'The value must only contain letters and numbers.');
+        assert.equal(validator.firstError(), 'The value must only contain letters and numbers.');
     });
     it('Validation should succeed in case value contain only alphabetic characters', function() {
         validator.setData({ value: 'test123' });
         assert.ok(validator.validate());
     });
+  });
+});
+
+describe('Boolean', function() {
+  describe('The field under validation must be a boolean', function() {
+    it('Validation should fail in case value is not boolean', function() {
+      validator.setData({ value: 'test' }).setRules({ value: 'boolean' });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error Message should be returned in case of failure', function() {
+       assert.equal(validator.firstError(), 'The value field must be true or false.');
+    });
+    it('Validation should succeed in case value is a boolean', function() {
+      const validValues = [true, false, '0', '1', 0, 1];
+      validValues.forEach(value => {
+        validator.setData({ value });
+        assert.ok(validator.validate());
+      });
+    });
+  });
+  describe('In case strict rule is used value should be either true or false', function() {
+      it('Validation should fail in case 0 or 1 are used', function() {
+         const values = [0, 1, '0', '1'];
+         validator.setRules({ value: 'strict|boolean' });
+         values.forEach(value => {
+            validator.setData({ value });
+            assert.equal(validator.validate(), false);
+         });
+      });
+      it('Validation should succeed in case true or false are used', function() {
+          validator.setData({ value: true });
+          assert.ok(validator.validate());
+
+          validator.setData({ value: false });
+          assert.ok(validator.validate());
+      });
   });
 });

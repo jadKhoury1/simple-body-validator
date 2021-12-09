@@ -63,6 +63,20 @@ class ValidateAttributes {
     };
 
     /**
+     * Validate that an attribute is boolean
+     */
+    validateBoolean(value: any, parameters: number[], attribute: string): boolean {
+
+        if (validationRuleParser.hasRule(attribute, 'strict', this.rules)) {
+            return typeof value === 'boolean';
+        }
+
+        const acceptable = [true, false, 0, 1, '0', '1'];
+
+        return acceptable.indexOf(value) !== -1;
+    };
+
+    /**
      * Validate the size of an attribute is between a set of values
      */
     validateBetween(value: any, parameters: number[], attribute: string): boolean {
@@ -126,16 +140,6 @@ class ValidateAttributes {
         }
 
         return true;
-    };
-
-
-    /**
-     * Validate that an attribute is boolean
-     */
-    validateBoolean(value: any): boolean {
-        const acceptable = [true, false, 0, 1, '0', '1'];
-
-        return acceptable.indexOf(value) !== -1;
     };
 
     /**
@@ -335,6 +339,13 @@ class ValidateAttributes {
     };
 
     /**
+     * Always returns true - this method will be used in conbinatio with other rules
+     */
+    validateStrict() {
+        return true;
+    }
+
+    /**
      * Require a certain number of parameters to be present
      */
     requireParameterCount(count: number, parameters: string[]|number[], rule: string): void {
@@ -342,6 +353,7 @@ class ValidateAttributes {
             throw `Validation rule ${rule} requires at least ${count} parameters.`;
         }
     };
+
 
 };
 
