@@ -1,14 +1,20 @@
 'use strict';
 
-import { CustomMesages } from "../types";
-import { isSizeRule } from "./general";
+import { CustomMesages, Rules } from "../types";
+import { isSizeRule, getNumericRules } from "./general";
 import validationMessages from '../locales/en';
 import replaceAttributes from '../validators/replaceAttributes';
 import { builValidationdMethodName } from "./build";
+import validationRuleParser from "../validators/validationRuleParser";
 
 
 
-function getMesageType(value: any): string {
+function getMesageType(value: any, hasNumericRule: boolean = false): string {
+
+    if (typeof value === 'number' || (isNaN(value) === false && hasNumericRule === true)) {
+        return 'number';
+    }
+
     if (Array.isArray(value)) {
         return 'array';
     }
@@ -16,7 +22,7 @@ function getMesageType(value: any): string {
     return typeof value;
 };
 
-export function getMessage(attribute: string, rule: string, value: any, customMessages: CustomMesages): string {
+export function getMessage(attribute: string, rule: string, value: any, customMessages: CustomMesages, rules: Rules): string {
 
     // check if error exists inside the custom message object provided by the user
     const inlineMessage: string = customMessages[`${attribute}.${rule}`];
@@ -28,7 +34,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
     // check if rule has sizes such as min, max, between ... 
     // and get message from local object
     if (isSizeRule(rule) === true) {
-        return validationMessages[rule][getMesageType(value)];
+        return validationMessages[rule][getMesageType(value, validationRuleParser.hasRule(attribute, getNumericRules(), rules))];
     }
 
     // get message from local object

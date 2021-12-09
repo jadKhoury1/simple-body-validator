@@ -105,7 +105,7 @@ class Validator {
         const value = this.data[attribute];
         const method = `validate${builValidationdMethodName(rule)}`;
 
-        if (this.validateAttributes[method](value, parameters, this.data) === false) {
+        if (this.validateAttributes[method](value, parameters, attribute) === false) {
             this.addFailure(attribute, rule, value, parameters);
         }
 
@@ -114,7 +114,7 @@ class Validator {
     private addFailure(attribute: string, rule: string, value: any, parameters: string[]): void {
 
         let message: string = makeReplacements(
-            getMessage(attribute, rule, value, this.customMessages),
+            getMessage(attribute, rule, value, this.customMessages, this.rules),
             attribute, rule, parameters, this.data
         );
 

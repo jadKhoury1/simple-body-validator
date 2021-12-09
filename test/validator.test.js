@@ -18,8 +18,7 @@ describe('Array', function() {
 
       });
       it('An Error Message should be returned in case of failure', function() {
-            let messages = validator.errors();
-            assert.equal(messages.value, 'The value must be an array.');
+            assert.equal(validator.firstError(), 'The value must be an array.');
       });
       it('Validation should succeed in case value is an array', function() {
             validator.setData({ value: [] });
@@ -40,8 +39,7 @@ describe('Alpha', function() {
 
     });
     it('An Error Message should be returned in case of failure', function() {
-        let messages = validator.errors();
-        assert.equal(messages.value, 'The value must only contain letters.');
+        assert.equal(validator.firstError(), 'The value must only contain letters.');
     });
     it('Validation should succeed in case value contain only alphabetic characters', function() {
         validator.setData({ value: 'test' });
@@ -54,7 +52,7 @@ describe('AlphaDash', function() {
   describe('The field under validation may have alpha-numeric characters, as well as dashes and underscores', function() {
     it('Validation should fail in case value does not only contain alpha-numeric characters, dashes and underscores', function () {
 
-      validator.setData({ value: 'jad_$2'}).setRules({ value: 'alpha_dash' });
+      validator.setData({ value: 'test_$2'}).setRules({ value: 'alpha_dash' });
       assert.equal(validator.validate(), false);
 
       validator.setData({ value: '$^(' });
@@ -76,7 +74,7 @@ describe('AlphaNum', function() {
   describe('The field under validation must be entirely alpha-numeric characters.', function() {
     it('Validation should fail in case value does not only contain alpha-numeric characters', function () {
 
-      validator.setData({ value: 'jad_$2'}).setRules({ value: 'alpha_num' });
+      validator.setData({ value: 'test_$2'}).setRules({ value: 'alpha_num' });
       assert.equal(validator.validate(), false);
 
     });

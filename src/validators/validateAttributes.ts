@@ -1,7 +1,8 @@
 'use strict';
 
 import { Rules } from "../types";
-import { getSize, sameType } from '../utils/general';
+import { getSize, sameType, getNumericRules } from '../utils/general';
+import validationRuleParser from './validationRuleParser';
 
 class ValidateAttributes {
 
@@ -61,6 +62,34 @@ class ValidateAttributes {
         return Array.isArray(value);
     };
 
+    /**
+     * Validate the size of an attribute is between a set of values
+     */
+    validateBetween(value: any, parameters: number[], attribute: string): boolean {
+
+        if (typeof value !== 'string' && typeof value !== 'number' && !Array.isArray(value)) {
+            throw 'Validation rule between requires the field under validation to be a number, string or array.';
+        }
+
+        this.requireParameterCount(2, parameters, 'between');
+        let [min, max] = parameters;
+
+
+        if (isNaN(min) || isNaN(max)) {
+            throw 'Validation rule between requires both parameters to be numbers.';
+        }
+
+        min = Number(min);
+        max = Number(max);
+
+        if (min >= max) {
+            throw 'Validation rule between requires that the first parameter be greater than the second one.';
+        }
+
+        const size = getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules));
+        return size >= min && size <= max;
+    };
+    
 
     /**
      * Validate that a required attribute exists
@@ -128,18 +157,6 @@ class ValidateAttributes {
      */
     validateInteger(value: any): boolean {
         return value % 1 === 0;
-    };
-
-    /**
-     * Validate the size of an attribute is between a set of values
-     */
-    validateBetween(value: any, parameters: number[]): boolean {
-        this.requireParameterCount(2, parameters, 'between');
-
-        const size = getSize(value);
-        const [min, max] = parameters;
-
-        return size >= min && size <= max;
     };
 
     /**
@@ -322,7 +339,7 @@ class ValidateAttributes {
      */
     requireParameterCount(count: number, parameters: string[]|number[], rule: string): void {
         if (parameters.length < count) {
-            throw `Validation rule ${rule} requires at least ${count} paramters.`;
+            throw `Validation rule ${rule} requires at least ${count} parameters.`;
         }
     };
 
