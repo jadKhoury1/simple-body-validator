@@ -10,6 +10,7 @@ export default {
     },
     boolean: 'The :attribute field must be true or false.',
     digits: 'The :attribute must be :digits digits.',
+    digits_between: 'The :attribute must be between :min and :max digits.',
     email: 'The :attribute must be a valid email address.',
     gt: {
         number: 'The :attribute must be greater than :value.',

@@ -39,6 +39,43 @@ describe('Between', function() {
         });
     });
     describe('The length of the array must match the specified range', function() {
+        it('The field under validation can only be a number, string or array', function() {
+            validator.setData({ value: { name: 'test' } }).setRules({ value: 'between:1,2' });
+            
+            try {
+                validator.validate();
+            } catch (e) {
+                assert.equal(e, 'Validation rule between requires the field under validation to be a number, string or array.');
+            }
+        });
+        it('Validation rule between requires at least 2 parameters', function() {
+            validator.setData({ value: '1' }).setRules({ value: 'between:1' });
+    
+            try {
+                validator.validate();
+            } catch (e) {
+                assert.equal(e, 'Validation rule between requires at least 2 parameters.');
+            }
+        });
+        it('Validation rule between requires both parameters to be numbers', function () {
+            validator.setRules({ value: 'between:test,[]'});
+    
+            try {
+                validator.validate();
+            } catch (e) {
+                assert.equal(e, 'Validation rule between requires both parameters to be numbers.');
+            }
+        });
+    
+        it('Validation rule between requires that the first parameter to be greater than the second one', function() {
+            validator.setRules({ value: 'between:6,5'});
+    
+            try {
+                validator.validate();
+            } catch (e) {
+                assert.equal(e, 'Validation rule between requires that the first parameter be greater than the second one.');
+            }
+        }); 
         it('Validation should fail if array length does not match the specified range', function() {
             validator.setData({ value: [1] }).setRules({ value: 'between:2,5'});
             assert.equal(validator.validate(), false);
@@ -51,41 +88,4 @@ describe('Between', function() {
             assert.ok(validator.validate());
         });
     });
-   it('The field under validation can only be a number, string or array', function() {
-        validator.setData({ value: { name: 'test' } }).setRules({ value: 'between:1,2' });
-        
-        try {
-            validator.validate();
-        } catch (e) {
-            assert.equal(e, 'Validation rule between requires the field under validation to be a number, string or array.');
-        }
-    });
-    it('Validation rule between requires at least 2 parameters', function() {
-        validator.setData({ value: '1' }).setRules({ value: 'between:1' });
-
-        try {
-            validator.validate();
-        } catch (e) {
-            assert.equal(e, 'Validation rule between requires at least 2 parameters.');
-        }
-    });
-    it('Validation rule between requires both parameters to be numbers', function () {
-        validator.setRules({ value: 'between:test,[]'});
-
-        try {
-            validator.validate();
-        } catch (e) {
-            assert.equal(e, 'Validation rule between requires both parameters to be numbers.');
-        }
-    });
-
-    it('Validation rule between requires that the first parameter to be greater than the second one', function() {
-        validator.setRules({ value: 'between:6,5'});
-
-        try {
-            validator.validate();
-        } catch (e) {
-            assert.equal(e, 'Validation rule between requires that the first parameter be greater than the second one.');
-        }
-    }); 
 });

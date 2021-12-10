@@ -28,6 +28,13 @@ export function sameType(value: any, otherValue: any): boolean {
 
 
 /**
+ * Check if Value is an Ineteger
+ */
+export function isInteger(value: any): boolean {
+    return isNaN(value) === false && value % 1 === 0;
+};
+
+/**
  * Check if the rule is related to size
  */
 export function isSizeRule(rule: string): boolean {

@@ -124,6 +124,32 @@ describe('Boolean', function() {
 });
 
 describe('Digits', function() {
+  it('Validation rule digits requires 1 parameter', function() {
+    validator.setRules({ value: 'digits' });
+
+    try {
+        validator.validate();
+    } catch (e) {
+        assert.equal(e, 'Validation rule digits requires at least 1 parameters.');
+    }
+  });
+  it('Validation rule digits requires the parameter to be an integer', function() {
+    validator.setRules({ value: 'digits:1.3'});
+
+    try {
+      validator.validate();
+    } catch (e) {
+        assert.equal(e, 'Validation rule digits requires the parameter to be an integer.');
+    }
+  });
+  it('Validation rule digits requires the parameter to be an integer greater than 0', function() {
+    validator.setRules({ value: 'digits:-1'});
+    try {
+      validator.validate();
+    } catch (e) {
+        assert.equal(e, 'Validation rule digits requires the parameter to be an integer greater than 0.');
+    }
+  });
   describe('The field under validation must be numeric and must have an exact length of value.', function () {
     it('Validation should fail if field under validation is not a number', function() {
       validator.setData({ value: 'test' }).setRules({ value: 'digits:4' });
@@ -133,7 +159,7 @@ describe('Digits', function() {
       assert.equal(validator.validate(), false);
     });
     it('Validation should fail if field under validation is decimal', function() {
-      validator.setData({ value: 12.3 }).setData({ value: 2 });
+      validator.setData({ value: 12.3 });
       assert.equal(validator.validate(), false);
     });
     it('Validation should fail if number does not match the number of digits', function() {
@@ -157,30 +183,75 @@ describe('Digits', function() {
       assert.ok(validator.validate());
     });
   });
-  it('Validation rule digits requires 1 parameter', function() {
-    validator.setRules({ value: 'digits' });
+});
+
+describe('Digits Between', function() {
+  it('Validation rule digits_between requires 2 parameters', function() {
+    validator.setRules({ value: 'digits_between' });
 
     try {
         validator.validate();
     } catch (e) {
-        assert.equal(e, 'Validation rule digits requires at least 1 parameters.');
+        assert.equal(e, 'Validation rule digits_between requires at least 2 parameters.');
     }
   });
-  it('Validation rule digits requires the parameter to be an integer', function() {
-    validator.setRules({ value: 'digits: 1.3'});
+  it('Validation rule digits_between requires the min and max parameters to be integers', function() {
+    validator.setRules({ value: 'digits_between:1.3,jads'});
 
     try {
       validator.validate();
     } catch (e) {
-        assert.equal(e, 'Validation rule digits requires the parameter to be an integer.');
+        assert.equal(e, 'Validation rule digits_between requires both parameters to be integers.');
     }
   });
-  it('Validation rule digits requires the parameter to be an integer greater than 0', function() {
-    validator.setRules({ value: 'digits: -1'});
+  it('Validation rule digits_between requires the parameters to be an integer greater than 0', function() {
+    validator.setRules({ value: 'digits_between:-1,3'});
     try {
       validator.validate();
     } catch (e) {
-        assert.equal(e, 'Validation rule digits requires the parameter to be an integer greater than 0.');
+        assert.equal(e, 'Validation rule digits_between requires the parameters to be an integer greater than 0.');
     }
+  });
+  it('Validation rule digits_between requires the max param to be greater than the min param', function() {
+     validator.setRules({ value: 'digits_between:3,2'});
+     try {
+      validator.validate();
+     } catch (e) {
+      assert.equal(e, 'Validation rule digits_between requires the max param to be greater than the min param.');
+     }
+  });
+
+  describe('The field under validation must have a length between the given min and max', function() {
+    it('Validation should fail if field under validation is not a number', function() {
+      validator.setData({ value: 'test' }).setRules({ value: 'digits_between:4,5' });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: { name: 'test' }});
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if field under validation is decimal', function() {
+      validator.setData({ value: 12.3 });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if number does not match the specifided digits range', function() {
+      validator.setData({ value: 123 });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 0123 });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: '012456' });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.firstError(), 'The value must be between 4 and 5 digits.');
+    });
+    it('Validation should succeed in case the number matches the specified digits range', function() {
+      validator.setData({ value: 1234 });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '01230' });
+      assert.ok(validator.validate());
+    });
   });
 });

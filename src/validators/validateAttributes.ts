@@ -1,7 +1,7 @@
 'use strict';
 
 import { Rules } from "../types";
-import { getSize, sameType, getNumericRules } from '../utils/general';
+import { getSize, sameType, getNumericRules, isInteger } from '../utils/general';
 import validationRuleParser from './validationRuleParser';
 
 class ValidateAttributes {
@@ -107,11 +107,11 @@ class ValidateAttributes {
     /**
      *  Validate that an attribute has a given number of digits.
      */
-    validateDigits(value: any, parameters: any[], attribute: string): boolean {
+    validateDigits(value: any, parameters: any[]): boolean {
 
         this.requireParameterCount(1, parameters, 'digits');
 
-        if (isNaN(parameters[0]) === true || parameters[0] % 1 !== 0) {
+        if (isInteger(parameters[0]) === false) {
             throw 'Validation rule digits requires the parameter to be an integer.';
         }
 
@@ -124,10 +124,43 @@ class ValidateAttributes {
         }
 
         value = value.toString();
-        return /[0-9]+/.test(value) && value.length === parseInt(parameters[0]);
+        return /^\d+$/.test(value) && value.length === parseInt(parameters[0]);
+    };
+    
+    /**
+     * Validate that an attribute is between a given number of digits.
+     */
+    validateDigitsBetween(value: any, parameters: any[]): boolean {
+        this.requireParameterCount(2, parameters, 'digits_between');
+
+        let [min, max] = parameters;
+
+        if (isInteger(min) === false || isInteger(max) === false) {
+            throw 'Validation rule digits_between requires both parameters to be integers.';
+        }
+
+        min = parseInt(min);
+        max = parseInt(max);
+
+        if (min <= 0 || max <= 0) {
+            throw 'Validation rule digits_between requires the parameters to be an integer greater than 0.';
+        }
+
+        if (min >= max) {
+            throw 'Validation rule digits_between requires the max param to be greater than the min param.';
+        }
+
+        if (typeof value !== 'string' && typeof value !== 'number') {
+            return false;
+        }
+
+        value = value.toString();
+        const valueLength = value.length;
+
+        return /^\d+$/.test(value) && valueLength >= min && valueLength <= max;
     };
 
-    /**
+    /** 
      * Validate that a required attribute exists
      */
     validateRequired(value: any): boolean {
@@ -182,7 +215,7 @@ class ValidateAttributes {
      * Validate that an attribute is an integer.
      */
     validateInteger(value: any): boolean {
-        return value % 1 === 0;
+        return isInteger(value);
     };
 
     /**
