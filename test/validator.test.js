@@ -122,3 +122,65 @@ describe('Boolean', function() {
       });
   });
 });
+
+describe('Digits', function() {
+  describe('The field under validation must be numeric and must have an exact length of value.', function () {
+    it('Validation should fail if field under validation is not a number', function() {
+      validator.setData({ value: 'test' }).setRules({ value: 'digits:4' });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: { name: 'test' }});
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if field under validation is decimal', function() {
+      validator.setData({ value: 12.3 }).setData({ value: 2 });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if number does not match the number of digits', function() {
+      validator.setData({ value: 123 });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 0123 });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: '012' });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.firstError(), 'The value must be 4 digits.');
+    });
+    it('Validation should succeed in case the number matches the specified the number of digits', function() {
+      validator.setData({ value: 1234 });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '0123' });
+      assert.ok(validator.validate());
+    });
+  });
+  it('Validation rule digits requires 1 parameter', function() {
+    validator.setRules({ value: 'digits' });
+
+    try {
+        validator.validate();
+    } catch (e) {
+        assert.equal(e, 'Validation rule digits requires at least 1 parameters.');
+    }
+  });
+  it('Validation rule digits requires the parameter to be an integer', function() {
+    validator.setRules({ value: 'digits: 1.3'});
+
+    try {
+      validator.validate();
+    } catch (e) {
+        assert.equal(e, 'Validation rule digits requires the parameter to be an integer.');
+    }
+  });
+  it('Validation rule digits requires the parameter to be an integer greater than 0', function() {
+    validator.setRules({ value: 'digits: -1'});
+    try {
+      validator.validate();
+    } catch (e) {
+        assert.equal(e, 'Validation rule digits requires the parameter to be an integer greater than 0.');
+    }
+  });
+});

@@ -9,6 +9,7 @@ export default {
         array: 'The :attribute must have between :min and :max items.',
     },
     boolean: 'The :attribute field must be true or false.',
+    digits: 'The :attribute must be :digits digits.',
     email: 'The :attribute must be a valid email address.',
     gt: {
         number: 'The :attribute must be greater than :value.',

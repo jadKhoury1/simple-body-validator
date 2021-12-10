@@ -33,6 +33,8 @@ export interface ValidationRuleParserInterface {
 
 export interface ReplaceAttribueInterface {
     replaceBetween: (message: string, parameters: string[]) => string;
+    replaceDigits: (message: string, paramaters: string[]) => string;
+    replaceDigitsBetween: (message: string, paramters: string[]) => string;
     replaceMin: (message: string, parameters: string[]) => string;
     replaceMax: (message: string, parameters: string[]) => string;
     replaceRequiredWith: (message: string, parameters: string[]) => string;

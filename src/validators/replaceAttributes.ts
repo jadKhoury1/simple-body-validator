@@ -12,6 +12,20 @@ const replaceAttributes: ReplaceAttribueInterface = {
     },
 
     /**
+     * Replace all place-holders for the digits rule. 
+     */
+    replaceDigits: function(message: string, parameters: string[]): string {
+        return message.replace(':digits', parameters[0]);
+    },
+
+    /**
+     * Replace all place-holders for the digits (between) rule.
+     */
+    replaceDigitsBetween: function(message: string, parameters: string[]): string {
+        return this.replaceBetween(message, parameters);
+    },
+
+    /**
      * Replace all place-holders for the min rule.
      */
     replaceMin: function (message: string, parameters: string[]): string {

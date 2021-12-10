@@ -63,23 +63,9 @@ class ValidateAttributes {
     };
 
     /**
-     * Validate that an attribute is boolean
-     */
-    validateBoolean(value: any, parameters: number[], attribute: string): boolean {
-
-        if (validationRuleParser.hasRule(attribute, 'strict', this.rules)) {
-            return typeof value === 'boolean';
-        }
-
-        const acceptable = [true, false, 0, 1, '0', '1'];
-
-        return acceptable.indexOf(value) !== -1;
-    };
-
-    /**
      * Validate the size of an attribute is between a set of values
      */
-    validateBetween(value: any, parameters: number[], attribute: string): boolean {
+     validateBetween(value: any, parameters: number[], attribute: string): boolean {
 
         if (typeof value !== 'string' && typeof value !== 'number' && !Array.isArray(value)) {
             throw 'Validation rule between requires the field under validation to be a number, string or array.';
@@ -103,7 +89,43 @@ class ValidateAttributes {
         const size = getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules));
         return size >= min && size <= max;
     };
-    
+
+    /**
+     * Validate that an attribute is boolean
+     */
+    validateBoolean(value: any, parameters: number[], attribute: string): boolean {
+
+        if (validationRuleParser.hasRule(attribute, 'strict', this.rules)) {
+            return typeof value === 'boolean';
+        }
+
+        const acceptable = [true, false, 0, 1, '0', '1'];
+
+        return acceptable.indexOf(value) !== -1;
+    };
+
+    /**
+     *  Validate that an attribute has a given number of digits.
+     */
+    validateDigits(value: any, parameters: any[], attribute: string): boolean {
+
+        this.requireParameterCount(1, parameters, 'digits');
+
+        if (isNaN(parameters[0]) === true || parameters[0] % 1 !== 0) {
+            throw 'Validation rule digits requires the parameter to be an integer.';
+        }
+
+        if (parameters[0] <= 0) {
+            throw 'Validation rule digits requires the parameter to be an integer greater than 0.';
+        }
+
+        if (typeof value !== 'string' && typeof value !== 'number') {
+            return false;
+        }
+
+        value = value.toString();
+        return /[0-9]+/.test(value) && value.length === parseInt(parameters[0]);
+    };
 
     /**
      * Validate that a required attribute exists
