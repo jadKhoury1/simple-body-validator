@@ -160,6 +160,17 @@ class ValidateAttributes {
         return /^\d+$/.test(value) && valueLength >= min && valueLength <= max;
     };
 
+    /**
+     * Validate that an attribute is a valid email address.
+     */
+    validateEmail(value: any): boolean {
+        if (typeof value !== 'string') {
+            return false;
+        }
+
+        return value.toLowerCase().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null;
+    }
+
     /** 
      * Validate that a required attribute exists
      */
@@ -327,17 +338,6 @@ class ValidateAttributes {
         return getSize(value) <= getSize(compartedToValue);
     };
 
-
-    /**
-     * Validate that an attribute is a valid email address.
-     */
-    validateEmail(value: any): boolean {
-        if (typeof value !== 'string') {
-            return false;
-        }
-
-        return value.toLowerCase().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null;
-    }
 
     /**
      * Validate an attribute is contained within a list of values.

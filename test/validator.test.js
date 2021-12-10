@@ -255,3 +255,28 @@ describe('Digits Between', function() {
     });
   });
 });
+
+describe('Email', function() {
+  describe('The field under validation must be formatted as an e-mail address.', function() {
+    it('Validation should fail if field under validation is not an email', function() {
+      validator.setData({ value: 'test' }).setRules({ value: 'email' });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 'test@test.o' });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 'test@te$%st.o' });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.firstError(), 'The value must be a valid email address.');
+    });
+    it('Validation should succeed if field under validation is an email', function() {
+      validator.setData({ value: 'test@gtest.com' });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: 'tEst@gtEst.cOm' });
+      assert.ok(validator.validate());
+    });
+  })
+});
