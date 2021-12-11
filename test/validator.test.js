@@ -126,29 +126,15 @@ describe('Boolean', function() {
 describe('Digits', function() {
   it('Validation rule digits requires 1 parameter', function() {
     validator.setRules({ value: 'digits' });
-
-    try {
-        validator.validate();
-    } catch (e) {
-        assert.equal(e, 'Validation rule digits requires at least 1 parameters.');
-    }
+    assert.throws(() => validator.validate());
   });
   it('Validation rule digits requires the parameter to be an integer', function() {
     validator.setRules({ value: 'digits:1.3'});
-
-    try {
-      validator.validate();
-    } catch (e) {
-        assert.equal(e, 'Validation rule digits requires the parameter to be an integer.');
-    }
+    assert.throws(() => validator.validate());
   });
   it('Validation rule digits requires the parameter to be an integer greater than 0', function() {
     validator.setRules({ value: 'digits:-1'});
-    try {
-      validator.validate();
-    } catch (e) {
-        assert.equal(e, 'Validation rule digits requires the parameter to be an integer greater than 0.');
-    }
+    assert.throws(() => validator.validate());
   });
   describe('The field under validation must be numeric and must have an exact length of value.', function () {
     it('Validation should fail if field under validation is not a number', function() {
@@ -188,21 +174,11 @@ describe('Digits', function() {
 describe('Digits Between', function() {
   it('Validation rule digits_between requires 2 parameters', function() {
     validator.setRules({ value: 'digits_between' });
-
-    try {
-        validator.validate();
-    } catch (e) {
-        assert.equal(e, 'Validation rule digits_between requires at least 2 parameters.');
-    }
+    assert.throws(() => validator.validate());
   });
   it('Validation rule digits_between requires the min and max parameters to be integers', function() {
     validator.setRules({ value: 'digits_between:1.3,jads'});
-
-    try {
-      validator.validate();
-    } catch (e) {
-        assert.equal(e, 'Validation rule digits_between requires both parameters to be integers.');
-    }
+    assert.throws(() => validator.validate());
   });
   it('Validation rule digits_between requires the parameters to be an integer greater than 0', function() {
     validator.setRules({ value: 'digits_between:-1,3'});
@@ -214,11 +190,7 @@ describe('Digits Between', function() {
   });
   it('Validation rule digits_between requires the max param to be greater than the min param', function() {
      validator.setRules({ value: 'digits_between:3,2'});
-     try {
-      validator.validate();
-     } catch (e) {
-      assert.equal(e, 'Validation rule digits_between requires the max param to be greater than the min param.');
-     }
+     assert.throws(() => validator.validate());
   });
 
   describe('The field under validation must have a length between the given min and max', function() {

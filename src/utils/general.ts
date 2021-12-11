@@ -63,3 +63,26 @@ export function isNumericRule(rule: string): boolean {
 
     return numericRules.indexOf(rule) !== -1;
 };
+
+/**
+ * Determine if a comparison passes between the given values.
+ */
+export function compare(first: any, second: any, operator: string, strict: boolean = false): boolean {
+    switch(operator) {
+        case '<': 
+            return first < second;
+        case '>':
+            return first > second;
+        case '<=':
+            return first <= second;
+        case '>=':
+            return first >= second;
+        case '=':
+            if (strict === true) {
+                return first === second;
+            }
+            return first == second;
+        default:
+            throw 'Invalid operator parameter';
+    }
+}

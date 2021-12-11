@@ -1,8 +1,12 @@
 export default {
+    after: 'The :attribute must be a date after :date.',
+    after_or_equal: 'The :attribute must be a date after or equal to :date.',
     alpha: 'The :attribute must only contain letters.',
     alpha_dash: 'The :attribute must only contain letters, numbers, dashes and underscores.',
     alpha_num: 'The :attribute must only contain letters and numbers.',
     array: 'The :attribute must be an array.',
+    before: 'The :attribute must be a date before :date.',
+    before_or_equal: 'The :attribute must be a date before or equal to :date.',
     between: {
         number: 'The :attribute must be between :min and :max.',
         string: 'The :attribute must be between :min and :max characters.',

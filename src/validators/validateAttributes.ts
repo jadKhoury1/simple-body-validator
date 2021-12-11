@@ -1,7 +1,8 @@
 'use strict';
 
 import { Rules } from "../types";
-import { getSize, sameType, getNumericRules, isInteger } from '../utils/general';
+import { toDate } from '../utils/date';
+import { getSize, sameType, getNumericRules, isInteger, compare } from '../utils/general';
 import validationRuleParser from './validationRuleParser';
 
 class ValidateAttributes {
@@ -63,6 +64,14 @@ class ValidateAttributes {
     };
 
     /**
+     *  Validate the date is before a given date. 
+     */
+     validateBefore(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(1, parameters, 'before');
+        return this.compareDates(value, parameters[0], '<', 'before');
+    }
+
+    /**
      * Validate the size of an attribute is between a set of values
      */
      validateBetween(value: any, parameters: number[], attribute: string): boolean {
@@ -89,6 +98,7 @@ class ValidateAttributes {
         const size = getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules));
         return size >= min && size <= max;
     };
+
 
     /**
      * Validate that an attribute is boolean
@@ -398,6 +408,26 @@ class ValidateAttributes {
      */
     validateStrict() {
         return true;
+    }
+
+
+    /**
+    *  Determine if a comparison passes between the given values.
+    */
+    compareDates(value: any, parameter: any, operator: string, rule: string): boolean {
+        value = toDate(value);
+
+        if (!value) {
+            throw `Validation rule ${rule} requires the field under valation to be a date.`;
+        }
+
+        const compartedToValue = toDate(this.data[parameter] || parameter);
+
+        if (!compartedToValue) {
+            throw `Validation rule ${rule} requires the parameter to be a date.`;
+        }
+
+        return compare(value, compartedToValue, operator);
     }
 
     /**

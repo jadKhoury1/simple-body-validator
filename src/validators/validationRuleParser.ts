@@ -39,7 +39,7 @@ const validationRuleParser: ValidationRuleParserInterface =  {
         let parameter: string;
 
         if (rule.indexOf(':') !== -1) {
-            [rule, parameter] = rule.split(':');
+            [rule, parameter] = rule.split(/:(.+)/);
 
             parameters = this.parseParameters(rule, parameter);
         }

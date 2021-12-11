@@ -1,7 +1,41 @@
 import { ReplaceAttribueInterface } from "../types";
+import { toDate } from "../utils/date";
 import { getSize } from "../utils/general";
 
 const replaceAttributes: ReplaceAttribueInterface = {
+
+    /**
+     *  Replace all place-holders for the before rule.
+     */
+    replaceBefore: function (message: string, paramaters: string[]): string {
+
+        if (!toDate(paramaters[0])) {
+            return message.replace(':date', paramaters[0].replace('_', ' '));
+        }
+
+        return message.replace(':date', paramaters[0]);
+    },
+
+    /**
+     * Replace all place-holders for the before_or_equal rule.
+     */
+    replaceBeforeOrEqual: function (message: string, parameters: string[]): string {
+        return this.replaceBefore(message, parameters);
+    },
+
+    /**
+     * Replace all place-holders for the after rule.
+     */
+    replaceAfter: function (message: string, parameters: string[]): string {
+        return this.replaceBefore(message, parameters);
+    },
+
+    /**
+     * Replace all place-holders for the after_or_equal rule.
+     */
+    replaceAfterOrEqual: function (message: string, parameters: string[]): string {
+        return this.replaceBefore(message, parameters);
+    },
 
     /**
      * Replace all the place-holders for the between rule.
