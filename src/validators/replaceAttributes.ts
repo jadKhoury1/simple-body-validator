@@ -5,6 +5,20 @@ import { getSize } from "../utils/general";
 const replaceAttributes: ReplaceAttribueInterface = {
 
     /**
+     * Replace all place-holders for the after rule.
+     */
+    replaceAfter: function (message: string, parameters: string[]): string {
+        return this.replaceBefore(message, parameters);
+    },
+
+    /**
+     * Replace all place-holders for the after_or_equal rule.
+     */
+    replaceAfterOrEqual: function (message: string, parameters: string[]): string {
+        return this.replaceBefore(message, parameters);
+    },
+
+    /**
      *  Replace all place-holders for the before rule.
      */
     replaceBefore: function (message: string, paramaters: string[]): string {
@@ -20,20 +34,6 @@ const replaceAttributes: ReplaceAttribueInterface = {
      * Replace all place-holders for the before_or_equal rule.
      */
     replaceBeforeOrEqual: function (message: string, parameters: string[]): string {
-        return this.replaceBefore(message, parameters);
-    },
-
-    /**
-     * Replace all place-holders for the after rule.
-     */
-    replaceAfter: function (message: string, parameters: string[]): string {
-        return this.replaceBefore(message, parameters);
-    },
-
-    /**
-     * Replace all place-holders for the after_or_equal rule.
-     */
-    replaceAfterOrEqual: function (message: string, parameters: string[]): string {
         return this.replaceBefore(message, parameters);
     },
 

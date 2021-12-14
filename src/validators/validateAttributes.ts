@@ -22,6 +22,24 @@ class ValidateAttributes {
         this.rules = rules;
     };
 
+
+    /**
+     *  Validate the date is after a given date. 
+     */
+    validateAfter(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(1, parameters, 'after');
+        return this.compareDates(value, parameters[0], '>', 'after');
+    };
+
+    /**
+     * Validate the date is after or equal a given date. 
+     */
+    validateAfterOrEqual(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(1, parameters, 'after_or_equal');
+        return this.compareDates(value, parameters[0], '>=', 'after_or_equal');
+    };
+
+
     /**
      * Validate that an attribute contains only alphabetic characters.
      */
@@ -70,6 +88,15 @@ class ValidateAttributes {
         this.requireParameterCount(1, parameters, 'before');
         return this.compareDates(value, parameters[0], '<', 'before');
     }
+
+    /**
+     * Validate the date is before or equal a given date.
+     */
+    validateBeforeOrEqual(value: any, parameters:string[]): boolean {
+        this.requireParameterCount(1, parameters, 'before_or_equal');
+        return this.compareDates(value, parameters[0], '<=', 'before_or_equal');
+    }
+    
 
     /**
      * Validate the size of an attribute is between a set of values
