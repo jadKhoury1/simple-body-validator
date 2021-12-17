@@ -43,7 +43,7 @@ describe('After', function() {
         });
     });
 
-    describe('The field under validation must a value greater than the other field\'s date', function() {
+    describe('The field under validation must be a value greater than the other field\'s date', function() {
         it('Validation should fail if date is not greater than the other field\'s date', function() {
             validator.setData({ value: '2019', other_value: '2020' }).setRules({ value: 'after:other_value' });
             assert.equal(validator.validate(), false);
@@ -103,7 +103,7 @@ describe('After or Equal', function() {
         });
     });
 
-    describe('The field under validation must a value greater than or equal to the other field\'s date', function() {
+    describe('The field under validation must be a value greater than or equal to the other field\'s date', function() {
         it('Validation should fail if date is not greater than or equal to the other field\'s date', function() {
             validator.setData({ value: '2019', other_value: '2020' }).setRules({ value: 'after_or_equal:other_value' });
             assert.equal(validator.validate(), false);
@@ -162,7 +162,7 @@ describe('Before', function() {
         });
     });
 
-    describe('The field under validation must a value preceding another field\'s date', function() {
+    describe('The field under validation must be a value preceding another field\'s date', function() {
         it('Validation should fail if date does not precede the other field\'s date', function() {
             validator.setData({ value: '2021', other_value: '2020' }).setRules({ value: 'before:other_value' });
             assert.equal(validator.validate(), false);
@@ -222,7 +222,7 @@ describe('Before or Equal', function() {
         });
     });
 
-    describe('The field under validation must a value preceding or equal another field\'s date', function() {
+    describe('The field under validation must be a value preceding or equal another field\'s date', function() {
         it('Validation should fail if date does not precede or is euqal to the other field\'s date', function() {
             validator.setData({ value: '2021', other_value: '2020' }).setRules({ value: 'before_or_equal:other_value' });
             assert.equal(validator.validate(), false);
