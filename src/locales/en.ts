@@ -13,6 +13,8 @@ export default {
         array: 'The :attribute must have between :min and :max items.',
     },
     boolean: 'The :attribute field must be true or false.',
+    date: 'The :attribute is not a valid date.',
+    date_equals: 'The :attribute must be a date equal to :date.',
     digits: 'The :attribute must be :digits digits.',
     digits_between: 'The :attribute must be between :min and :max digits.',
     email: 'The :attribute must be a valid email address.',

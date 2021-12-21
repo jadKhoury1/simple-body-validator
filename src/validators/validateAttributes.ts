@@ -141,6 +141,23 @@ class ValidateAttributes {
         return acceptable.indexOf(value) !== -1;
     };
 
+
+    /**
+     * Validate that an attribute is a valid date.
+     */
+    validateDate(value: any): boolean {
+        return toDate(value) ? true : false;
+    };
+
+    /**
+     * Validate that an attribute is equal to another date.
+     */
+    validateDateEquals(value: any, paramters: string[]) {
+        this.requireParameterCount(1, paramters, 'date_equals');
+
+        return this.compareDates(value, paramters[0], '=', 'date_equals');
+    };
+
     /**
      *  Validate that an attribute has a given number of digits.
      */
@@ -454,7 +471,7 @@ class ValidateAttributes {
             throw `Validation rule ${rule} requires the parameter to be a date.`;
         }
 
-        return compare(value, compartedToValue, operator);
+        return compare(value.getTime(), compartedToValue.getTime(), operator);
     }
 
     /**

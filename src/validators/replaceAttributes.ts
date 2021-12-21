@@ -46,6 +46,13 @@ const replaceAttributes: ReplaceAttribueInterface = {
     },
 
     /**
+     * Replace all place-holders for the before_or_equal rule.
+     */
+    replaceDateEquals: function (message: string, parameters: string[]): string {
+        return this.replaceBefore(message, parameters);
+    },
+
+    /**
      * Replace all place-holders for the digits rule. 
      */
     replaceDigits: function(message: string, parameters: string[]): string {
