@@ -252,3 +252,55 @@ describe('Email', function() {
     });
   })
 });
+
+describe('Ends With', function() {
+  it('Validation rule ends_with requires at least 1 parameter', function() {
+    validator.setData({ value: 'test' }).setRules({ value: 'ends_with' });
+    assert.throws(() => validator.validate());
+  });
+  it('Validation should fail if value is not a string', function() {
+    validator.setData({ value: [] }).setRules({ value: 'ends_with:test' });
+    assert.throws(() => validator.validate());
+  });
+  describe('The field under validation must end with one of the given values.', function() {
+    it('Validation should fail if field under validation does not end with one of the given values', function() {
+        validator.setData({ value: 'test' }).setRules({ value: 'ends_with:john,doe' });
+        assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.firstError(), 'The value must end with one of the following: john, doe.');
+    });
+    it('Validation should succeed if field under validation ends with one of the given values', function() {
+        validator.setData({ value: 'john' });
+        assert.ok(validator.validate());
+
+        validator.setData({ value: 'john doe' });
+        assert.ok(validator.validate());
+    });
+  });
+});
+
+describe('Starts With', function() {
+  it('Validation rule starts_with requires at least 1 parameter', function() {
+    validator.setData({ value: 'test' }).setRules({ value: 'starts_with' });
+    assert.throws(() => validator.validate());
+  });
+  it('Validation should fail if value is not a string', function() {
+    validator.setData({ value: [] }).setRules({ value: 'starts_with:test' });
+    assert.throws(() => validator.validate());
+  });
+  describe('The field under validation must start with one of the given values.', function() {
+    it('Validation should fail if field under validation does not start with one of the given values', function() {
+        validator.setData({ value: 'test' }).setRules({ value: 'starts_with:john,doe' });
+        assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+        assert.equal(validator.firstError(), 'The value must start with one of the following: john, doe.');
+    });
+    it('Validation should succeed if field under validation starts with one of the given values', function() {
+        validator.setData({ value: 'john test' });
+        assert.ok(validator.validate());
+    });
+  });
+
+});

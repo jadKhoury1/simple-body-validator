@@ -18,6 +18,7 @@ export default {
     digits: 'The :attribute must be :digits digits.',
     digits_between: 'The :attribute must be between :min and :max digits.',
     email: 'The :attribute must be a valid email address.',
+    ends_with: 'The :attribute must end with one of the following: :values.',
     gt: {
         number: 'The :attribute must be greater than :value.',
         string: 'The :attribute must be greater than :value characters.',
@@ -60,5 +61,6 @@ export default {
     required_with_all: 'The :attribute field is required when :values are present.',
     required_without: 'The :attribute field is required when :values is not present.',
     required_without_all: 'The :attribute field is required when none of :values are present.',
+    starts_with: 'The :attribute must start with one of the following: :values.',
     string: 'The :attribute must be a string.',
 }

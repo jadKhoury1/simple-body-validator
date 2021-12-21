@@ -223,7 +223,47 @@ class ValidateAttributes {
         }
 
         return value.toLowerCase().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null;
-    }
+    };
+
+    /**
+     * Validate the attribute ends with a given substring.
+     */
+    validateEndsWith(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(1, parameters, 'ends_with');
+
+        if (typeof value !== 'string') {
+            throw 'The field under validation must be a string';
+        }
+
+        const valueLength = value.length;
+
+        for (let i = 0; i < parameters.length; i++) {
+            if (typeof parameters[i] === 'string' && value.indexOf(parameters[i], valueLength - parameters[i].length) !== -1) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    /**
+     * Validate the attribute starts with a given substring.
+     */
+    validateStartsWith(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(1, parameters, 'starts_with');
+
+        if (typeof value !== 'string') {
+            throw 'The field under validation must be a string';
+        }
+
+        for (let i = 0; i < parameters.length; i++) {
+            if (typeof parameters[i] === 'string' && value.substr(0, parameters[i].length) === parameters[i]) {
+                return true;
+            }
+        }
+
+        return false;
+    };
 
     /** 
      * Validate that a required attribute exists

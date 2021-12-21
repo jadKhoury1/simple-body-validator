@@ -40,6 +40,7 @@ export interface ReplaceAttribueInterface {
     replaceDateEquals: (message: string, parameters: string[]) => string;
     replaceDigits: (message: string, paramaters: string[]) => string;
     replaceDigitsBetween: (message: string, paramters: string[]) => string;
+    replaceEndsWith: (message: string, paramters: string[]) => string;
     replaceMin: (message: string, parameters: string[]) => string;
     replaceMax: (message: string, parameters: string[]) => string;
     replaceRequiredWith: (message: string, parameters: string[]) => string;
@@ -51,4 +52,5 @@ export interface ReplaceAttribueInterface {
     replaceGte: (message: string, parameters: string[], data: object) => string;
     replaceLte: (message: string, parameters: string[], data: object) => string;
     replaceRequiredIf: (message: string, parameters: any) => string;
+    replaceStartsWith: (message: string, paramters: string[]) => string;
 };

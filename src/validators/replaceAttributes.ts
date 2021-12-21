@@ -67,6 +67,20 @@ const replaceAttributes: ReplaceAttribueInterface = {
     },
 
     /**
+     * Replace all place-holders for the ends_with rule.
+     */
+    replaceEndsWith: function(message: string, parameters: string[]): string {
+        return message.replace(':values', parameters.join(', '));
+    },
+
+    /**
+     * Replace all place-holders for the starts_with rule.
+     */
+     replaceStartsWith: function(message: string, parameters: string[]): string {
+        return message.replace(':values', parameters.join(', '));
+    },
+
+    /**
      * Replace all place-holders for the min rule.
      */
     replaceMin: function (message: string, parameters: string[]): string {
