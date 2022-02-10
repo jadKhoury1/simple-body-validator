@@ -320,3 +320,255 @@ describe('Greater Than or equal', function() {
         });
     });
 });
+
+describe('Less Than', function() {
+    it('Validation rule lt requires at least 1 parameter', function() {
+        validator.setData({ value: '1' }).setRules({ value: 'lt' });
+        assert.throws(() => validator.validate());
+    });
+    it('The field under validation can only be a number, string, array or object', function() {
+        validator.setData({ value: () => console.log('test') }).setRules({ value: 'lt:2' });
+        assert.throws(() => validator.validate());
+    });
+    it('In case the parameter is not a number, and the type of the value does not match the type of the parameter, then the validation should fail', function() {
+        validator.setData({ value: [1], other_value: {fname: 'john', lname: 'doe'} }).setRules({ value: 'lt:other_value' });
+        assert.throws(() => validator.validate());
+
+        validator.setData({ value: 'jad', other_value: [1,2,3] });
+        assert.throws(() => validator.validate());
+    });
+    describe('If the paramter is a number, then the size of the value should be compared with the parameter', function() {
+        it('If value is an array, then the length of the array should be compared with the parameter', function() {
+            validator.setData({ value: [1, 2] }).setRules({ value: 'lt:3' });
+            assert.ok(validator.validate());
+
+            validator.setRules({ value: 'lt:1' });
+            assert.equal(validator.validate(), false);
+        });
+        it('If the value is an object, the length of the object should be compared with the parameter', function() {
+            validator.setData({ value: {fname: 'test', lname: 'test' }}).setRules({ value: 'lt:3' });
+            assert.ok(validator.validate());
+
+            validator.setRules({ value: 'lt:2' });
+            assert.equal(validator.validate(), false);
+        });
+        it('If the value is a string, the length of the string should be compared with the parameter', function() {
+            validator.setData({ value: 'test' }).setRules({ value: 'lt:5' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: '0001' }).setRules({ value: 'lt:5' });
+            assert.ok(validator.validate());
+            
+            validator.setRules({ value: 'lt:4' });
+            assert.equal(validator.validate(), false);
+        });
+        it('If the value is a number in a string, and has the numeric rule, then it will be compared as a number and not a string', function() {
+            validator.setData({ value: '13' }).setRules({ value: 'numeric|lt:15'});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: '20' });
+            assert.equal(validator.validate(), false);
+        });
+        it('If the value is a number, then it should be compared with the other number', function() {
+            validator.setData({ value: 12.5 }).setRules({ value: 'lt:15' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: 15.3 });
+            assert.equal(validator.validate(), false);
+        });
+    });
+    describe('The length of the array must be lesser than the length of the other array', function() {
+        it('Validation should fail if array length is not less than the other array length', function() {
+            validator.setData({ value: [1, 2], other_value: [1,2] }).setRules({ value: 'lt:other_value'});
+            assert.equal(validator.validate(), false);
+        }); 
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must have less than 2 items.');
+        });
+        it('Validation should succeed if array length is less than the other array length', function() {
+            validator.setData({ value: [1,2], other_value: [1,2,3] });
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The length of the object must be less than the length of the other object', function() {
+        it('Validation should fail if object length is not less than the other object length', function() {
+            validator.setData({ 
+                value: {fname: 'john', lname: 'doe'}, 
+                other_value: {fname: 'jane', lname: 'doe'} 
+            }).setRules({ value: 'lt:other_value'});
+
+            assert.equal(validator.validate(), false);
+        }); 
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must have less than 2 items.');
+        });
+        it('Validation should succeed if object length is less than the other object length', function() {
+            validator.setData({ 
+                value: {fname: 'john'}, 
+                other_value: {fname: 'jane', lname: 'doe'} 
+            })
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The string under validation must have a length less than the other string', function() {
+        it('Validation should fail if string length is not less than the other string length', function() {
+            validator.setData({ value: 'test' }).setRules({ value: 'lt:john' });
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ value: 'test', other_value: 'john' }).setRules({ value: 'lt:other_value' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must be less than 4 characters.');
+        });
+        it('Validation should succeed if string length is less than the other string length', function() {
+            validator.setData({ value: 'test', other_value: 'test1234'});
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The number under validation must be less than the other number', function() {
+        it('Validation should fail if the number is not less than the other number', function() {
+            validator.setData({ value: 4, other_value: 4 }).setRules({ value: 'lt:other_value' });
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ value: '11', other_value: '010' }).setRules({ value: 'numeric|lt:other_value' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must be less than 10.');
+        });
+        it('Validation should succeed if the number is less than the other number', function() {
+            validator.setData({ value: 10, other_value: 12 });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: '11', other_value: '12' }).setRules({ value: 'numeric|lt:other_value' });
+            assert.ok(validator.validate());
+        });
+    });
+});
+
+describe('Less Than or equal', function() {
+    it('Validation rule lte requires at least 1 parameter', function() {
+        validator.setData({ value: '1' }).setRules({ value: 'lte' });
+        assert.throws(() => validator.validate());
+    });
+    it('The field under validation can only be a number, string, array or object', function() {
+        validator.setData({ value: () => console.log('test') }).setRules({ value: 'lte:2' });
+        assert.throws(() => validator.validate());
+    });
+    it('In case the parameter is not a number, and the type of the value does not match the type of the parameter, then the validation should fail', function() {
+        validator.setData({ value: [1,2], other_value: {fname: 'john', lname: 'doe'} }).setRules({ value: 'lte:other_value' });
+        assert.throws(() => validator.validate());
+
+        validator.setData({ value: 'jad', other_value: [1,2] });
+        assert.throws(() => validator.validate());
+    });
+    describe('If the paramter is a number, then the size of the value should be compared with the parameter', function() {
+        it('If value is an array, then the length of the array should be compared with the parameter', function() {
+            validator.setData({ value: [1, 2] }).setRules({ value: 'lte:2' });
+            assert.ok(validator.validate());
+
+            validator.setRules({ value: 'lte:1' });
+            assert.equal(validator.validate(), false);
+        });
+        it('If the value is an object, then the length of the object should be compared with the parameter', function() {
+            validator.setData({ value: {fname: 'test', lname: 'test' }}).setRules({ value: 'lte:4' });
+            assert.ok(validator.validate());
+
+            validator.setRules({ value: 'lte:1' });
+            assert.equal(validator.validate(), false);
+        });
+        it('If the value is a string, the length of the string should be compared with the parameter', function() {
+            validator.setData({ value: 'test' }).setRules({ value: 'lte:4' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: '0001' }).setRules({ value: 'lte:4' });
+            assert.ok(validator.validate());
+            
+            validator.setRules({ value: 'lte:3' });
+            assert.equal(validator.validate(), false);
+        });
+        it('If the value is a number in a string, and has the numeric rule, then it will be compared as a number and not a string', function() {
+            validator.setData({ value: '10' }).setRules({ value: 'numeric|lte:10'});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: '11' });
+            assert.equal(validator.validate(), false);
+        });
+        it('If the value is a number, then it should be compared with the other number', function() {
+            validator.setData({ value: 12.5 }).setRules({ value: 'lte:15' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: 16 });
+            assert.equal(validator.validate(), false);
+        });
+    });
+    describe('The length of the array must be less than or equal to the length of the other array', function() {
+        it('Validation should fail if array length is not less than or equal to the other array length', function() {
+            validator.setData({ value: [1,2,3], other_value: [1,2] }).setRules({ value: 'lte:other_value'});
+            assert.equal(validator.validate(), false);
+        }); 
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must have 2 items or less.');
+        });
+        it('Validation should succeed if array length is less than or equal to the other array length', function() {
+            validator.setData({ value: [1,2], other_value: [1,2] });
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The length of the object must be less than or equal to the length of the other object', function() {
+        it('Validation should fail if object length is not less than or equal to the other object length', function() {
+            validator.setData({ 
+                value: {fname: 'john', lname: 'doe', address: 'test'}, 
+                other_value: {fname: 'jane', lname: 'doe'} 
+            }).setRules({ value: 'lte:other_value'});
+
+            assert.equal(validator.validate(), false);
+        }); 
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must have 2 items or less.');
+        });
+        it('Validation should succeed if object length is less than or equal to the other object length', function() {
+            validator.setData({ 
+                value: {fname: 'john', lname: 'doe'}, 
+                other_value: {fname: 'jane', lname: 'doe'} 
+            })
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The string under validation must have a length less than or equal to the other string', function() {
+        it('Validation should fail if string length is not less than or equal to the other string length', function() {
+            validator.setData({ value: 'test1' }).setRules({ value: 'lte:test' });
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ value: 'test1', other_value: 'test' }).setRules({ value: 'lte:other_value' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must be less than or equal 4 characters.');
+        });
+        it('Validation should succeed if string length is less than or equal to the other string length', function() {
+            validator.setData({ value: 'test', other_value: 'test'});
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The number under validation must be less than or equal to the other number', function() {
+        it('Validation should fail if the number is not less than or equal to the other number', function() {
+            validator.setData({ value: 5, other_value: 4 }).setRules({ value: 'lte:other_value' });
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ value: '11', other_value: '010' }).setRules({ value: 'numeric|lte:other_value' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must be less than or equal 10.');
+        });
+        it('Validation should succeed if the number is less than or equal to the other number', function() {
+            validator.setData({ value: 10, other_value: 10 });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: '11', other_value: '11' }).setRules({ value: 'numeric|lte:other_value' });
+            assert.ok(validator.validate());
+        });
+    });
+});

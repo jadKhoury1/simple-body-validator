@@ -37,11 +37,13 @@ export default {
         number: 'The :attribute must be less than :value.',
         string: 'The :attribute must be less than :value characters.',
         array: 'The :attribute must have less than :value items.',
+        object: 'The :attribute must have less than :value items.',
     },
     lte: {
         number: 'The :attribute must be less than or equal :value.',
         string: 'The :attribute must be less than or equal :value characters.',
-        array: 'The :attribute must not have more than :value items.'
+        array: 'The :attribute must have :value items or less.',
+        object: 'The :attribute must have :value items or less.',
     },
     max: {
         number: 'The :attribute must not be greater than :max.',

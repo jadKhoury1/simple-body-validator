@@ -372,25 +372,21 @@ class ValidateAttributes {
     /**
      * Validate that an attribute is less than another attribute.
      */
-    validateLt(value: any, parameters: any[]): boolean {
+    validateLt(value: any, parameters: any[], attribute: string): boolean {
         this.requireParameterCount(1, parameters, 'lt');
 
-        const compartedToValue = this.data[parameters[0]];
-
-        if (typeof compartedToValue === 'undefined' && (isNaN(value) === false && isNaN(parameters[0]) === false)) {
-            return value < parameters[0];
+        if (typeof value !== 'number' && typeof value !== 'string' && typeof value !== 'object') {
+            throw 'The field under validation must be a number, string, array or object';
         }
 
-        if (isNaN(parameters[0]) === false) {
-            return false;
-        }
-
-        if (isNaN(value) !== false &&  isNaN(compartedToValue) !== false) {
-            return value < compartedToValue;
+        const compartedToValue = this.data[parameters[0]] || parameters[0];
+    
+        if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
+            return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) < compartedToValue;
         }
 
         if (sameType(value, compartedToValue) === false) {
-            return false;
+            throw 'The fields under validation must be of the same type';
         }
 
         return getSize(value) < getSize(compartedToValue);
@@ -399,25 +395,21 @@ class ValidateAttributes {
     /**
      * Validate that an attribute is less than or equal another attribute.
      */
-    validateLte(value: any, parameters: any[]): boolean {
+    validateLte(value: any, parameters: any[], attribute: string): boolean {
         this.requireParameterCount(1, parameters, 'lte');
 
-        const compartedToValue = this.data[parameters[0]];
-
-        if (typeof compartedToValue === 'undefined' && (isNaN(value) === false && isNaN(parameters[0]) === false)) {
-            return value <= parameters[0];
+        if (typeof value !== 'number' && typeof value !== 'string' && typeof value !== 'object') {
+            throw 'The field under validation must be a number, string, array or object';
         }
 
-        if (isNaN(parameters[0]) === false) {
-            return false;
-        }
-
-        if (isNaN(value) !== false &&  isNaN(compartedToValue) !== false) {
-            return value <= compartedToValue;
+        const compartedToValue = this.data[parameters[0]] || parameters[0];
+    
+        if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
+            return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) <= compartedToValue;
         }
 
         if (sameType(value, compartedToValue) === false) {
-            return false;
+            throw 'The fields under validation must be of the same type';
         }
 
         return getSize(value) <= getSize(compartedToValue);
