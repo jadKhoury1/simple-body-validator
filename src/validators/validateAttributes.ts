@@ -349,25 +349,21 @@ class ValidateAttributes {
     /**
      * Validate that an attribute is greater than or equal  another attribute.
      */
-    validateGte(value: any, parameters: any[]): boolean {
+    validateGte(value: any, parameters: any[], attribute: string): boolean {
         this.requireParameterCount(1, parameters, 'gte');
 
-        const compartedToValue = this.data[parameters[0]];
-
-        if (typeof compartedToValue === 'undefined' && (isNaN(value) === false && isNaN(parameters[0]) === false)) {
-            return value >= parameters[0];
+        if (typeof value !== 'number' && typeof value !== 'string' && typeof value !== 'object') {
+            throw 'The field under validation must be a number, string, array or object';
         }
 
-        if (isNaN(parameters[0]) === false) {
-            return false;
-        }
-
-        if (isNaN(value) !== false &&  isNaN(compartedToValue) !== false) {
-            return value >= compartedToValue;
+        const compartedToValue = this.data[parameters[0]] || parameters[0];
+    
+        if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
+            return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) >= compartedToValue;
         }
 
         if (sameType(value, compartedToValue) === false) {
-            return false;
+            throw 'The fields under validation must be of the same type';
         }
 
         return getSize(value) >= getSize(compartedToValue);
