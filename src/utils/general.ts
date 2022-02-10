@@ -10,6 +10,8 @@ export function getSize(value: any, hasNumericRule: boolean = false): number {
         return Number(value);
     } else if (typeof value === 'string' ||  Array.isArray(value)) {
         return value.length;
+    } else if (typeof value === 'object') {
+        return Object.keys(value).length;
     }
 
     return -1;

@@ -5,6 +5,7 @@ import { builValidationdMethodName } from './utils/build';
 import { getMessage, makeReplacements } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
+import { getNumericRules } from "./utils/general";
 
 class Validator {
 
@@ -113,9 +114,11 @@ class Validator {
 
     private addFailure(attribute: string, rule: string, value: any, parameters: string[]): void {
 
+        const hasNumericRule = validationRuleParser.hasRule(attribute, getNumericRules(), this.rules);
+
         let message: string = makeReplacements(
-            getMessage(attribute, rule, value, this.customMessages, this.rules),
-            attribute, rule, parameters, this.data
+            getMessage(attribute, rule, value, this.customMessages, hasNumericRule),
+            attribute, rule, parameters, this.data, hasNumericRule
         );
 
         this.firstMessage = this.firstMessage || message;

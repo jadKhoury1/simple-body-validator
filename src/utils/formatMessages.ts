@@ -1,11 +1,10 @@
 'use strict';
 
-import { CustomMesages, Rules } from "../types";
-import { isSizeRule, getNumericRules } from "./general";
+import { CustomMesages } from "../types";
+import { isSizeRule } from "./general";
 import validationMessages from '../locales/en';
 import replaceAttributes from '../validators/replaceAttributes';
 import { builValidationdMethodName } from "./build";
-import validationRuleParser from "../validators/validationRuleParser";
 
 
 
@@ -22,7 +21,7 @@ function getMesageType(value: any, hasNumericRule: boolean = false): string {
     return typeof value;
 };
 
-export function getMessage(attribute: string, rule: string, value: any, customMessages: CustomMesages, rules: Rules): string {
+export function getMessage(attribute: string, rule: string, value: any, customMessages: CustomMesages, hasNumericRule: boolean): string {
 
     // check if error exists inside the custom message object provided by the user
     const inlineMessage: string = customMessages[`${attribute}.${rule}`];
@@ -34,7 +33,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
     // check if rule has sizes such as min, max, between ... 
     // and get message from local object
     if (isSizeRule(rule) === true) {
-        return validationMessages[rule][getMesageType(value, validationRuleParser.hasRule(attribute, getNumericRules(), rules))];
+        return validationMessages[rule][getMesageType(value, hasNumericRule)];
     }
 
     // get message from local object
@@ -43,14 +42,14 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
 };
 
 
-export function makeReplacements(message: string, attribute: string, rule: string, parameters: string[], data: object): string {
+export function makeReplacements(message: string, attribute: string, rule: string, parameters: string[], data: object, hasNumericRule: boolean): string {
 
     message = message.replace(':attribute', attribute.replace('_', ' '));
 
     const methodName = `replace${builValidationdMethodName(rule)}`;
 
     if (typeof replaceAttributes[methodName] === 'function') {
-        message = replaceAttributes[methodName](message, parameters, data);
+        message = replaceAttributes[methodName](message, parameters, data, hasNumericRule);
     }
 
     return message;

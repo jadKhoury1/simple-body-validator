@@ -125,35 +125,35 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all place-holders for the gt rule.
      */
-    replaceGt: function (message: string, parameters: string[], data: object): string {
+    replaceGt: function (message: string, parameters: string[], data: object, hasNumericRule: boolean): string {
         const [ value ] = parameters;
 
         if (typeof data[value] === 'undefined') {
             return message.replace(':value', parameters[0]);
         }
 
-        return message.replace(':value', getSize(value).toString());
+        return message.replace(':value', getSize(data[value], hasNumericRule).toString());
     },
 
     /**
      * Replace all place-holders for the lt rule.
      */
-    replaceLt: function (message: string, parameters: string[], data: object): string {
-        return this.replaceGt(message, parameters, data);
+    replaceLt: function (message: string, parameters: string[], data: object, hasNumericRule: boolean): string {
+        return this.replaceGt(message, parameters, data, hasNumericRule);
     },
 
     /**
     * Replace all place-holders for the gte rule.
     */
-    replaceGte: function (message: string, parameters: string[], data: object): string {
-        return this.replaceGt(message, parameters, data);
+    replaceGte: function (message: string, parameters: string[], data: object, hasNumericRule: boolean): string {
+        return this.replaceGt(message, parameters, data, hasNumericRule);
     },
 
     /**
      * Replace all place-holders for the lte rule.
      */
-    replaceLte: function (message: string, parameters: string[], data: object): string {
-        return this.replaceGt(message, parameters, data);
+    replaceLte: function (message: string, parameters: string[], data: object, hasNumericRule: boolean): string {
+        return this.replaceGt(message, parameters, data, hasNumericRule);
     },
 
     /**

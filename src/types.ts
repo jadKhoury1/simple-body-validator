@@ -47,10 +47,10 @@ export interface ReplaceAttribueInterface {
     replaceRequiredWithAll: (message: string, parameters: string[]) => string;
     replaceRequiredWithout: (message: string, parameters: string[]) => string;
     replaceRequiredWithoutAll: (message: string, parameters: string[]) => string;
-    replaceGt: (message: string, parameters: string[], data: object) => string;
-    replaceLt: (message: string, parameters: string[], data: object) => string;
-    replaceGte: (message: string, parameters: string[], data: object) => string;
-    replaceLte: (message: string, parameters: string[], data: object) => string;
+    replaceGt: (message: string, parameters: string[], data: object, hasNumericRule: boolean) => string;
+    replaceLt: (message: string, parameters: string[], data: object, hasNumericRule: boolean) => string;
+    replaceGte: (message: string, parameters: string[], data: object, hasNumericRule: boolean) => string;
+    replaceLte: (message: string, parameters: string[], data: object, hasNumericRule: boolean) => string;
     replaceRequiredIf: (message: string, parameters: any) => string;
     replaceStartsWith: (message: string, paramters: string[]) => string;
 };

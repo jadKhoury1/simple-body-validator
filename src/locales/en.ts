@@ -23,11 +23,13 @@ export default {
         number: 'The :attribute must be greater than :value.',
         string: 'The :attribute must be greater than :value characters.',
         array: 'The :attribute must have more than :value items.',
+        object: 'The :attribute must have more than :value items.',
     },
     gte: {
         number: 'The :attribute must be greater than or equal :value.',
         string: 'The :attribute must be greater than or equal :value characters.',
         array: 'The :attribute must have :value items or more.',
+        object: 'The :attribute must have :value items or more.',
     },
     in: 'The selected :attribute is invalid.',
     integer: 'The :attribute must be an integer.',
