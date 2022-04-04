@@ -75,7 +75,7 @@ describe('Greater Than', function() {
         assert.throws(() => validator.validate());
     });
     it('The field under validation can only be a number, string, array or object', function() {
-        validator.setData({ value: () => console.log('test') }).setRules({ value: 'gt:2' });
+        validator.setData({ value: () => '' }).setRules({ value: 'gt:2' });
         assert.throws(() => validator.validate());
     });
     it('In case the parameter is not a number, and the type of the value does not match the type of the parameter, then the validation should fail', function() {
@@ -201,7 +201,7 @@ describe('Greater Than or equal', function() {
         assert.throws(() => validator.validate());
     });
     it('The field under validation can only be a number, string, array or object', function() {
-        validator.setData({ value: () => console.log('test') }).setRules({ value: 'gte:2' });
+        validator.setData({ value: () => '' }).setRules({ value: 'gte:2' });
         assert.throws(() => validator.validate());
     });
     it('In case the parameter is not a number, and the type of the value does not match the type of the parameter, then the validation should fail', function() {
@@ -327,7 +327,7 @@ describe('Less Than', function() {
         assert.throws(() => validator.validate());
     });
     it('The field under validation can only be a number, string, array or object', function() {
-        validator.setData({ value: () => console.log('test') }).setRules({ value: 'lt:2' });
+        validator.setData({ value: () => '' }).setRules({ value: 'lt:2' });
         assert.throws(() => validator.validate());
     });
     it('In case the parameter is not a number, and the type of the value does not match the type of the parameter, then the validation should fail', function() {
@@ -453,7 +453,7 @@ describe('Less Than or equal', function() {
         assert.throws(() => validator.validate());
     });
     it('The field under validation can only be a number, string, array or object', function() {
-        validator.setData({ value: () => console.log('test') }).setRules({ value: 'lte:2' });
+        validator.setData({ value: () => '' }).setRules({ value: 'lte:2' });
         assert.throws(() => validator.validate());
     });
     it('In case the parameter is not a number, and the type of the value does not match the type of the parameter, then the validation should fail', function() {
