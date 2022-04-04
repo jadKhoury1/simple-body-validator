@@ -1,6 +1,7 @@
 'use strict';
 
-import { Rules, ValidationRuleParserInterface } from "../types";
+import { Rules, ValidationRuleParserInterface } from '../types';
+import validationData from './validationData';
 
 
 const validationRuleParser: ValidationRuleParserInterface =  {
@@ -8,16 +9,48 @@ const validationRuleParser: ValidationRuleParserInterface =  {
     /**
      * Convert rules to array
      */
-    explodeRules: function name(rules: Rules): Rules {
+    explodeRules: function(rules: Rules, data: object = {}): Rules {
         for (const key in rules) {
-            if (rules.hasOwnProperty(key)) {
+            if (key.indexOf('*') !== -1) {
+                rules = this.explodeWildCardRules(rules, key, data);    
+                
+                delete rules[key];
+            }
+            else if (rules.hasOwnProperty(key)) {
                 rules[key] = this.explodeExplicitRules(rules[key]);
             }
         }
 
         return rules;  
     },
-    
+
+    /**
+     * Define a set of rules that apply to each element in an array attribute.
+     */
+    explodeWildCardRules: function(results: object, attribute: string, masterData: object): object {
+        const pattern: RegExp = new RegExp('^' + attribute.replace('*', '[^.]*') + '\z');
+        const data: object = validationData.initializeAndGatherData(attribute, masterData);
+        const rule: string = results[attribute];
+
+        for (let key in data) {
+            if (key.match(new RegExp(`^${attribute}`)) !== null || key.match(pattern) !== null) {
+                results = this.mergeRulesForAttribute(results, key, rule);  
+            } 
+        }
+
+        return results;
+    },
+
+    /**
+     * Merge additional rules into a given attribute.
+     */
+    mergeRulesForAttribute(results: object, attribute: string, rules: string|string[]): object {
+        const merge = this.explodeRules([rules])[0];
+
+        results[attribute] = [ ...results[attribute] ? this.explodeExplicitRules(results[attribute]) : [], ...merge ];
+
+        return results;
+    },
 
     /**
      * In case the rules specified by the user are a string seperated with '|' - convert them to an array
@@ -95,7 +128,7 @@ const validationRuleParser: ValidationRuleParserInterface =  {
     hasRule: function (attribute: string, searchRules: string|string[], availableRules: Rules): boolean {
         return this.getRule(attribute, searchRules, availableRules).length > 0;
     },
-}
+};
 
 
 export default validationRuleParser;
