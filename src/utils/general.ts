@@ -1,6 +1,5 @@
 'use strict';
 
-
 /**
  * Get the size of a value based on its type
  */
@@ -87,22 +86,4 @@ export function compare(first: any, second: any, operator: string, strict: boole
         default:
             throw 'Invalid operator parameter';
     }
-}
-
-/**
- * Get value at path of object. If the resolved value is undifined, the returned result will be undefined
- */
-export function deepFind(obj: object, path: string): any {
-
-    const paths: string[] = path.split('.');
-
-    for (let i = 0; i < path.length; i++) {
-        if (obj[paths[i]] === 'undefined') {
-            return 'undefined';
-        }
-        obj = obj[paths[i]];
-    }
-
-    return obj;
-
 }
