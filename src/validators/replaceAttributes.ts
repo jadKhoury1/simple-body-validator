@@ -1,6 +1,6 @@
-import { ReplaceAttribueInterface } from "../types";
-import { toDate } from "../utils/date";
-import { getSize } from "../utils/general";
+import { ReplaceAttribueInterface } from '../types';
+import { toDate } from '../utils/date';
+import { getSize } from '../utils/general';
 
 const replaceAttributes: ReplaceAttribueInterface = {
 

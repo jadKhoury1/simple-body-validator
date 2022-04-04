@@ -6,6 +6,7 @@ import { getMessage, makeReplacements } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
 import { getNumericRules } from "./utils/general";
+import { deepFind } from './utils/object';
 
 class Validator {
 
@@ -43,7 +44,7 @@ class Validator {
     constructor(data: object, rules: Rules, customMessages: CustomMesages = {}) {
         this.data = data;
         this.customMessages = customMessages;
-        this.rules = validationRuleParser.explodeRules(rules);
+        this.rules = validationRuleParser.explodeRules(rules, JSON.parse(JSON.stringify(data)));
     };
 
     setData(data: object): Validator {
@@ -52,7 +53,7 @@ class Validator {
     };
 
     setRules(rules: Rules): Validator {
-        this.rules = validationRuleParser.explodeRules(rules);
+        this.rules = validationRuleParser.explodeRules(rules, this.data);
         return this;
     };
 
@@ -103,7 +104,7 @@ class Validator {
 
         [rule ,parameters] = validationRuleParser.parseStringRule(rule);
 
-        const value = this.data[attribute];
+        const value = deepFind(this.data, attribute);
         const method = `validate${builValidationdMethodName(rule)}`;
 
         if (this.validateAttributes[method](value, parameters, attribute) === false) {

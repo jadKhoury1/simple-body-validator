@@ -1,6 +1,6 @@
 'use strict';
 
-import { Rules } from "../types";
+import { Rules } from '../types';
 import { toDate } from '../utils/date';
 import { getSize, sameType, getNumericRules, isInteger, compare } from '../utils/general';
 import validationRuleParser from './validationRuleParser';
