@@ -23,12 +23,22 @@ export interface ErrorConfig {
 };
 
 export interface ValidationRuleParserInterface {
-    explodeRules: (rules: Rules) => Rules;
-    explodeExplicitRules(rule: string|string[]): string[];
-    parseStringRule(rule: string): [string, string[]];
-    parseParameters(rule: string, parameter: string): string[];
-    getRule(attribute: string, searchRules: string|string[], availableRules: Rules): Partial<[string, string[]]>;
-    hasRule(attrtibute: string, searchRules: string|string[], availableRules: Rules): boolean; 
+    explodeRules: (rules: Rules, data: Object) => Rules;
+    explodeWildCardRules:(results: object, attribute: string, data: object) => object;
+    explodeExplicitRules: (rule: string|string[]) => string[];
+    mergeRulesForAttribute: (results: object, attribute: string, rules: string|string[]) => object;
+    parseStringRule: (rule: string) => [string, string[]];
+    parseParameters: (rule: string, parameter: string) => string[];
+    getRule: (attribute: string, searchRules: string|string[], availableRules: Rules) => Partial<[string, string[]]>;
+    hasRule: (attrtibute: string, searchRules: string|string[], availableRules: Rules) => boolean; 
+};
+
+export interface ValidationDataInterface {
+    initializeAndGatherData: (attribute: string, masterData: object) => object;
+    initializeAttributeOnData: (attribute: string, masterData: object) => object;
+    extractValuesFromWildCards: (masterData: object, data: object, attribute: string) => object;
+    getLeadingExplicitAttributePath: (attribute: string) => string;
+    extractDataFromPath: (path: string, masterData: object) => object;
 };
 
 export interface ReplaceAttribueInterface {
