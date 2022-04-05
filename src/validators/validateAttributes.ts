@@ -83,6 +83,13 @@ class ValidateAttributes {
     };
 
     /**
+     * Validate that an attribute is an object
+     */
+    validateObject(value: any): boolean {
+        return typeof value === 'object' && !Array.isArray(value);
+    };
+
+    /**
      *  Validate the date is before a given date. 
      */
      validateBefore(value: any, parameters: string[]): boolean {
@@ -276,6 +283,8 @@ class ValidateAttributes {
         } else if (typeof value === 'string' && value.trim() === '') {
             return false;
         } else if (Array.isArray(value) && value.length < 1) {
+            return false;
+        } else if (typeof value === 'object' && Object.keys(value).length < 1) {
             return false;
         }
 

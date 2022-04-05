@@ -280,6 +280,29 @@ describe('Ends With', function() {
   });
 });
 
+describe('Object', function() {
+  describe('The field under validation must be an object', function() {
+    it('Validation should fail in case value is not an object', function() {
+      validator.setData({ value: [1,2]}).setRules({ value: 'object' });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 2 });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 'test' });
+      assert.equal(validator.validate(), false);
+
+    });
+    it('An Error Message should be returned in case of failure', function() {
+      assert.equal(validator.firstError(), 'The value must be an object.');
+    });
+    it('Validation should succeed in case value is an object', function() {
+          validator.setData({ value: {} });
+          assert.ok(validator.validate());
+    });
+  });
+});
+
 describe('Starts With', function() {
   it('Validation rule starts_with requires at least 1 parameter', function() {
     validator.setData({ value: 'test' }).setRules({ value: 'starts_with' });
