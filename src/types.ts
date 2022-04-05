@@ -4,6 +4,10 @@ export interface Rules {
     [key: string]: string|string[]
 };
 
+export interface ImplicitAttributes {
+    [key: string]: string[]
+}
+
 export interface CustomMesages {
     [key: string]: string
 };
@@ -23,8 +27,8 @@ export interface ErrorConfig {
 };
 
 export interface ValidationRuleParserInterface {
-    explodeRules: (rules: Rules, data: Object) => Rules;
-    explodeWildCardRules:(results: object, attribute: string, data: object) => object;
+    explodeRules: (rules: Rules, data: Object) => { rules: Rules, implicitAttributes: ImplicitAttributes};
+    explodeWildCardRules:(results: object, attribute: string, data: object, implicitAttributes: ImplicitAttributes) => object;
     explodeExplicitRules: (rule: string|string[]) => string[];
     mergeRulesForAttribute: (results: object, attribute: string, rules: string|string[]) => object;
     parseStringRule: (rule: string) => [string, string[]];
