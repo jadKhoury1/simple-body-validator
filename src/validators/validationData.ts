@@ -37,7 +37,7 @@ const validationData: ValidationDataInterface = {
     extractValuesFromWildCards(masterData: object, data: object, attribute: string): object {
 
         let keys: string[] = [];
-        const pattern: RegExp  = new RegExp('^' + attribute.replace('*', '[^\.]*'));
+        const pattern: RegExp  = new RegExp('^' + attribute.replace(/\*/g, '[^\.]*'));
         let result: RegExpMatchArray = null;
 
         for (let key in data) {
