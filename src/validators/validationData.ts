@@ -20,7 +20,7 @@ const validationData: ValidationDataInterface = {
     initializeAttributeOnData: function (attribute: string, masterData: object): object {
         const explicitPath: string = this.getLeadingExplicitAttributePath(attribute);
         
-        let data: object = this.extractDataFromPath(explicitPath, masterData);
+        let data: object = this.extractDataFromPath(explicitPath, JSON.parse(JSON.stringify(masterData)));
 
         if (attribute.indexOf('*') === -1 || attribute.indexOf('*') === attribute.length - 1) {
             return data;

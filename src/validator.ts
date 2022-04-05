@@ -119,7 +119,7 @@ class Validator {
         // of the explicit rules needed for the given data. For example the rule
         // names.* would get expanded to names.0, names.1, etc. for this data.
         const response: {rules: Rules, implicitAttributes: ImplicitAttributes} = 
-            validationRuleParser.explodeRules(rules, JSON.parse(JSON.stringify(this.data)));
+            validationRuleParser.explodeRules(rules, this.data);
 
         this.rules = response.rules;
         this.implicitAttributes = response.implicitAttributes;
@@ -136,7 +136,7 @@ class Validator {
 
         const keys: string[] = this.getExplicitKeys(attribute);
 
-        if (keys.length > 0) {
+        if (keys.length > 0 && parameters.length > 0) {
             parameters = this.replaceAsterisksInParameters(parameters, keys);
         }
 

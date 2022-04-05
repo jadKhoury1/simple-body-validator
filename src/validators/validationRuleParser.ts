@@ -13,9 +13,9 @@ const validationRuleParser: ValidationRuleParserInterface =  {
 
         let implicitAttributes: ImplicitAttributes = {};
 
-        for (const key in rules) {
-            if (key.indexOf('*') !== -1) {
-                rules = this.explodeWildCardRules(rules, key, data, implicitAttributes);    
+        for (let key in rules) {
+            if (key.indexOf('*') !== -1) { 
+                rules = this.explodeWildCardRules(rules, key, data, implicitAttributes);  
                 delete rules[key];
             }
             else if (rules.hasOwnProperty(key)) {
