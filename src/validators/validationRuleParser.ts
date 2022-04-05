@@ -1,6 +1,6 @@
 'use strict';
 
-import { Rules, ValidationRuleParserInterface } from '../types';
+import { ImplicitAttributes, Rules, ValidationRuleParserInterface } from '../types';
 import validationData from './validationData';
 
 
@@ -9,11 +9,13 @@ const validationRuleParser: ValidationRuleParserInterface =  {
     /**
      * Convert rules to array
      */
-    explodeRules: function(rules: Rules, data: object = {}): Rules {
+    explodeRules: function(rules: Rules, data: object = {}): {rules: Rules, implicitAttributes: ImplicitAttributes} {
+
+        let implicitAttributes: ImplicitAttributes = {};
+
         for (const key in rules) {
             if (key.indexOf('*') !== -1) {
-                rules = this.explodeWildCardRules(rules, key, data);    
-                
+                rules = this.explodeWildCardRules(rules, key, data, implicitAttributes);    
                 delete rules[key];
             }
             else if (rules.hasOwnProperty(key)) {
@@ -21,19 +23,27 @@ const validationRuleParser: ValidationRuleParserInterface =  {
             }
         }
 
-        return rules;  
+        return {
+            rules, implicitAttributes
+        }  
     },
 
     /**
      * Define a set of rules that apply to each element in an array attribute.
      */
-    explodeWildCardRules: function(results: object, attribute: string, masterData: object): object {
-        const pattern: RegExp = new RegExp('^' + attribute.replace('*', '[^.]*') + '\z');
+    explodeWildCardRules: function(results: object, attribute: string, masterData: object, implicitAttributes: ImplicitAttributes): object {
+        const pattern: RegExp = new RegExp('^' + attribute.replace(/\*/g, '[^.]*') + '\z');
         const data: object = validationData.initializeAndGatherData(attribute, masterData);
         const rule: string = results[attribute];
 
         for (let key in data) {
             if (key.match(new RegExp(`^${attribute}`)) !== null || key.match(pattern) !== null) {
+
+                if (Array.isArray(implicitAttributes[attribute])) {
+                    implicitAttributes[attribute].push(key);
+                } else {
+                    implicitAttributes[attribute] = [key];
+                }
                 results = this.mergeRulesForAttribute(results, key, rule);  
             } 
         }
@@ -45,8 +55,8 @@ const validationRuleParser: ValidationRuleParserInterface =  {
      * Merge additional rules into a given attribute.
      */
     mergeRulesForAttribute(results: object, attribute: string, rules: string|string[]): object {
-        const merge = this.explodeRules([rules])[0];
-
+ 
+        const merge = this.explodeRules([rules]).rules[0];
         results[attribute] = [ ...results[attribute] ? this.explodeExplicitRules(results[attribute]) : [], ...merge ];
 
         return results;

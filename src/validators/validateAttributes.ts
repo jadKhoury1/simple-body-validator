@@ -2,6 +2,7 @@
 
 import { Rules } from '../types';
 import { toDate } from '../utils/date';
+import { deepFind } from '../utils/object';
 import { getSize, sameType, getNumericRules, isInteger, compare } from '../utils/general';
 import validationRuleParser from './validationRuleParser';
 
@@ -288,11 +289,12 @@ class ValidateAttributes {
     validateRequiredIf(value: any, parameters: string[]): boolean {
         this.requireParameterCount(2, parameters, 'required_if');
 
-        if (!this.data.hasOwnProperty(parameters[0])) {
+        const other = deepFind(this.data, parameters[0]);
+
+        if (!other) {
             return true;
         }
 
-        const other = this.data[parameters[0]];
         const values = parameters.slice(1);
 
         if (values.indexOf(other) !== -1) {
@@ -471,7 +473,7 @@ class ValidateAttributes {
     };
 
     /**
-     * Always returns true - this method will be used in conbinatio with other rules
+     * Always returns true - this method will be used in conbination with other rules
      */
     validateStrict() {
         return true;

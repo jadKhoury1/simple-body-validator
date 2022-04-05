@@ -1,6 +1,6 @@
 'use strict';
 
-import { Rules, Messages, CustomMesages, ErrorMessage, ErrorConfig } from './types';
+import { Rules, Messages, CustomMesages, ErrorMessage, ErrorConfig, ImplicitAttributes } from './types';
 import { builValidationdMethodName } from './utils/build';
 import { getMessage, makeReplacements } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
@@ -21,6 +21,11 @@ class Validator {
     private rules: Rules;
 
     /**
+     * The array of wildcard attributes with their asterisks expanded.
+     */
+    private implicitAttributes: ImplicitAttributes;
+
+    /**
      * Custom mesages returrned based on the error 
      */
     private customMessages: CustomMesages;
@@ -38,13 +43,13 @@ class Validator {
     /**
      * Stores an instance of the validateAtteibutes class
      */
-    validateAttributes: validateAttributes;
+    private validateAttributes: validateAttributes;
 
 
     constructor(data: object, rules: Rules, customMessages: CustomMesages = {}) {
         this.data = data;
         this.customMessages = customMessages;
-        this.rules = validationRuleParser.explodeRules(rules, JSON.parse(JSON.stringify(data)));
+        this.addRules(rules);
     };
 
     setData(data: object): Validator {
@@ -53,7 +58,7 @@ class Validator {
     };
 
     setRules(rules: Rules): Validator {
-        this.rules = validationRuleParser.explodeRules(rules, this.data);
+        this.addRules(rules);
         return this;
     };
 
@@ -61,6 +66,7 @@ class Validator {
         this.customMessages = customMessages;
         return this;
     };
+
 
     validate(): boolean {
         this.firstMessage = '';
@@ -78,6 +84,9 @@ class Validator {
         return Object.keys(this.messages).length === 0;
     };
 
+    /**
+     * Get all the error messages
+     */
     errors(errorConfig: Partial<ErrorConfig> = {}): object {
 
         const messages = { ... this.messages };
@@ -94,15 +103,42 @@ class Validator {
 
     };
 
+    /**
+     * Get only the first error message from the messages object
+     */
     firstError(): string {
         return this.firstMessage;
     };
 
+    /**
+     * Parse the given rules add assign them to the current rules 
+     */
+    private addRules(rules: Rules) {
+
+        // The primary purpose of this parser is to expand any "*" rules to the all
+        // of the explicit rules needed for the given data. For example the rule
+        // names.* would get expanded to names.0, names.1, etc. for this data.
+        const response: {rules: Rules, implicitAttributes: ImplicitAttributes} = 
+            validationRuleParser.explodeRules(rules, JSON.parse(JSON.stringify(this.data)));
+
+        this.rules = response.rules;
+        this.implicitAttributes = response.implicitAttributes;
+    }
+
+    /**
+     * validate a given attribute against a rule.
+     */
     private validateAttribute(attribute: string, rule: string): void {
          
         let parameters: string[] = [];
 
         [rule ,parameters] = validationRuleParser.parseStringRule(rule);
+
+        const keys: string[] = this.getExplicitKeys(attribute);
+
+        if (keys.length > 0) {
+            parameters = this.replaceAsterisksInParameters(parameters, keys);
+        }
 
         const value = deepFind(this.data, attribute);
         const method = `validate${builValidationdMethodName(rule)}`;
@@ -113,6 +149,9 @@ class Validator {
 
     };
 
+    /**
+     * Add a new error message to the messages object
+     */
     private addFailure(attribute: string, rule: string, value: any, parameters: string[]): void {
 
         const hasNumericRule = validationRuleParser.hasRule(attribute, getNumericRules(), this.rules);
@@ -136,6 +175,61 @@ class Validator {
         }
 
     };
+
+    /**
+     * Replace each field parameter which has asterisks with the given keys.
+     * 
+     * Example: parameters = [name.*.first] and keys = [1], then the result will be name.1.first
+     */
+    private replaceAsterisksInParameters(parameters: string[], keys: string[]): string[] {
+        return parameters.map(parameter => {
+            let result: string = '';
+            if (parameter.indexOf('*') !== -1) {
+                let parameterArray: string[] = parameter.split('*');
+                result = parameterArray[0];
+                for (let i = 1; i < parameterArray.length; i++) {
+                    result = result.concat((keys[i-1] || '*') + parameterArray[i])
+                }
+            }
+            return result || parameter;
+        });
+    }
+
+
+    /**
+     * Get the primary attribute name
+     * 
+     * Example:  if "name.0" is given, "name.*" will be returned
+     */
+    private getPrimaryAttribute(attribute: string): string {
+        for (let unparsed in this.implicitAttributes) {
+            if (this.implicitAttributes[unparsed].indexOf(attribute) !== -1) {
+                return unparsed;
+            }
+        }
+
+        return attribute;
+    }
+
+    /**
+     * Get the explicit keys from an attribute flattened with dot notation.
+     * 
+     * Example: 'foo.1.bar.spark.baz' -> [1, 'spark'] for 'foo.*.bar.*.baz'
+     */
+    private getExplicitKeys(attribute: string): string[] {
+
+       const pattern: RegExp = new RegExp('^' + this.getPrimaryAttribute(attribute).replace(/\*/g, '([^\.]*)'));
+       let keys = attribute.match(pattern);
+       
+       if (keys) {
+           keys.shift();
+           return keys;
+       }
+
+       return [];
+
+    };
+
 }
 
 export default Validator;
