@@ -1,6 +1,11 @@
 'use strict';
 
-export interface Rules {
+
+export interface GenericObject {
+    [key: string]: any
+};
+
+export interface Rules extends GenericObject {
     [key: string]: string|string[]
 };
 

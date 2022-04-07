@@ -1,5 +1,7 @@
 'use strict';
 
+import { GenericObject } from "../types";
+
 /**
  * Get value at path of object. If the resolved value is undifined, the returned result will be undefined
  */
@@ -50,7 +52,7 @@ export function deepSet(obj: any[]|object, path: string|string[], value: any): v
 /**
  * Flatten a multi-dimensional associative array with dots.
  */
-export function dotify(obj: object) {
+export function dotify(obj: object, ignoreArray: boolean = false): GenericObject {
     let res: object = {};
 
     (function recurse(obj: object|any[], current: string = '') {
@@ -59,9 +61,13 @@ export function dotify(obj: object) {
             let newKey: string = (current ? `${current}.${key}` : key);
 
             if (value && typeof value === 'object' && !(value instanceof Date)) {
-                recurse(value, newKey);
+                if (ignoreArray === true && Array.isArray(value) && typeof value[0] !== 'object') {
+                    res[newKey] = value;
+                } else {
+                    recurse(value, newKey);
+                }
             } else {
-                res[newKey] = obj[key];
+                res[newKey] = value;
             }
         }
     })(obj);

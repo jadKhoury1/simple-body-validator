@@ -292,7 +292,6 @@ class ValidateAttributes {
     };
 
     /**
-     * 
      * Validate that an attribute exists when another atteribute has a given value
      */
     validateRequiredIf(value: any, parameters: string[]): boolean {
@@ -308,6 +307,77 @@ class ValidateAttributes {
 
         if (values.indexOf(other) !== -1) {
             return this.validateRequired(value);
+        }
+
+        return true;
+    };
+
+
+    /**
+     * Validate that an attribute exists when any other attribute exists.
+     */
+    validateRequiredWith(value: any, parameters: string[]): boolean {
+        if (! this.allFailingRequired(parameters)) {
+            return this.validateRequired(value);
+        }
+
+        return true;
+    };
+
+    /**
+     * Validate that an attribute exists when all other attributes exist.
+     */
+    validateRequiredWithAll(value: any, parameters: string[]): boolean {
+        if (! this.anyFailingRequired(parameters)) {
+            return this.validateRequired(value);
+        }
+
+        return true;
+    };
+
+    /**
+     * Validate that an attribute exists when another attribute does not.
+     */
+    validateRequiredWithout(value: any, parameters: string[]): boolean {
+        if (this.anyFailingRequired(parameters)) {
+            return this.validateRequired(value);
+        }
+
+        return true;
+    };
+
+    /**
+     * Validate that an attribute exists when all other attributes do not.
+     */
+    validateRequiredWithoutAll(value: any, parameters: string[]): boolean {
+        if (this.allFailingRequired(parameters)) {
+            return this.validateRequired(value);
+        }
+
+        return true;
+    };
+
+    /**
+     * Determine if any of the given attributes fail the required test.
+     */
+    anyFailingRequired(attributes: string[]): boolean  {
+        for (let i = 0; i < attributes.length; i++) {
+            if (! this.validateRequired(deepFind(this.data, attributes[i]))) {
+                return true;
+            }
+        }
+
+        return false;
+    };
+
+    /**
+     * Determine if all of the given attributes fail the required test.
+     */
+    allFailingRequired(attributes: string[]): boolean {
+        for (let i = 0; i < attributes.length; i++) {
+            if (this.validateRequired(deepFind(this.data, attributes[i]))) {
+                return false;
+            }
         }
 
         return true;
@@ -344,7 +414,7 @@ class ValidateAttributes {
             throw 'The field under validation must be a number, string, array or object';
         }
 
-        const compartedToValue = this.data[parameters[0]] || parameters[0];
+        const compartedToValue = deepFind(this.data, parameters[0]) || parameters[0];
     
         if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
             return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) > compartedToValue;
@@ -367,7 +437,7 @@ class ValidateAttributes {
             throw 'The field under validation must be a number, string, array or object';
         }
 
-        const compartedToValue = this.data[parameters[0]] || parameters[0];
+        const compartedToValue = deepFind(this.data, parameters[0]) || parameters[0];
     
         if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
             return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) >= compartedToValue;
@@ -390,7 +460,7 @@ class ValidateAttributes {
             throw 'The field under validation must be a number, string, array or object';
         }
 
-        const compartedToValue = this.data[parameters[0]] || parameters[0];
+        const compartedToValue = deepFind(this.data, parameters[0]) || parameters[0];
     
         if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
             return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) < compartedToValue;
@@ -413,7 +483,7 @@ class ValidateAttributes {
             throw 'The field under validation must be a number, string, array or object';
         }
 
-        const compartedToValue = this.data[parameters[0]] || parameters[0];
+        const compartedToValue = deepFind(this.data, parameters[0]) || parameters[0];
     
         if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
             return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) <= compartedToValue;
@@ -499,7 +569,7 @@ class ValidateAttributes {
             throw `Validation rule ${rule} requires the field under valation to be a date.`;
         }
 
-        const compartedToValue = toDate(this.data[parameter] || parameter);
+        const compartedToValue = toDate(deepFind(this.data, parameter) || parameter);
 
         if (!compartedToValue) {
             throw `Validation rule ${rule} requires the parameter to be a date.`;

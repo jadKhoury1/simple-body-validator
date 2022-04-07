@@ -5,8 +5,8 @@ import { builValidationdMethodName } from './utils/build';
 import { getMessage, makeReplacements } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
-import { getNumericRules } from "./utils/general";
-import { deepFind } from './utils/object';
+import { getNumericRules } from './utils/general';
+import { deepFind, dotify } from './utils/object';
 
 class Validator {
 
@@ -119,7 +119,7 @@ class Validator {
         // of the explicit rules needed for the given data. For example the rule
         // names.* would get expanded to names.0, names.1, etc. for this data.
         const response: {rules: Rules, implicitAttributes: ImplicitAttributes} = 
-            validationRuleParser.explodeRules(rules, this.data);
+            validationRuleParser.explodeRules(dotify(rules, true), this.data);
 
         this.rules = response.rules;
         this.implicitAttributes = response.implicitAttributes;
