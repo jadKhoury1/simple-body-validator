@@ -5,7 +5,7 @@ import { builValidationdMethodName } from './utils/build';
 import { getMessage, makeReplacements } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
-import { getNumericRules } from './utils/general';
+import { getNumericRules, isImplicitRule } from './utils/general';
 import { deepFind, dotify } from './utils/object';
 
 class Validator {
@@ -143,7 +143,9 @@ class Validator {
         const value = deepFind(this.data, attribute);
         const method = `validate${builValidationdMethodName(rule)}`;
 
-        if (this.validateAttributes[method](value, parameters, attribute) === false) {
+        if (this.isValidatable(rule, value) && 
+                this.validateAttributes[method](value, parameters, attribute) === false
+        ) {
             this.addFailure(attribute, rule, value, parameters);
         }
 
@@ -193,6 +195,13 @@ class Validator {
             }
             return result || parameter;
         });
+    }
+
+    /**
+     * Determine if the attribute is validatable.
+     */
+    private isValidatable(rule: string, value: any) {
+        return value || isImplicitRule(rule);
     }
 
 
