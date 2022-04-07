@@ -10,7 +10,7 @@ import { builValidationdMethodName } from "./build";
 
 function getMesageType(value: any, hasNumericRule: boolean = false): string {
 
-    if (typeof value === 'number' || (isNaN(value) === false && hasNumericRule === true)) {
+    if (typeof value === 'number' || typeof value === 'undefined' || (isNaN(value) === false && hasNumericRule === true)) {
         return 'number';
     }
 

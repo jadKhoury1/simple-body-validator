@@ -398,6 +398,37 @@ class ValidateAttributes {
     };
 
     /**
+     * Validate the size of an attribute is less than a maximum value.
+     */
+    validateMax(value: any, parameters: number[], attribute: string): boolean {
+
+        this.requireParameterCount(1, parameters, 'max');
+
+        if (isNaN(parameters[0])) {
+            throw 'Validation rule max requires parameter to be a number.';
+        }
+
+        const size = getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules));
+        return size <= Number(parameters[0]);
+    
+    };
+
+    /**
+     * Validate the size of an attribute is greater than a minimum value.
+     */
+    validateMin(value: any, parameters: number[], attribute: string): boolean {
+
+        this.requireParameterCount(1, parameters, 'min');
+
+        if (isNaN(parameters[0])) {
+            throw 'Validation rule min requires parameter to be a number.';
+        }
+
+        const size = getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules));
+        return size >= Number(parameters[0]);
+    };
+
+    /**
      * Validate that an attribute is an integer.
      */
     validateInteger(value: any): boolean {

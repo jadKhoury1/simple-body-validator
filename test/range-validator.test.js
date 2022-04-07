@@ -572,3 +572,194 @@ describe('Less Than or equal', function() {
         });
     });
 });
+
+
+describe('Min', function() {
+    it('Validation rule min requires at least 1 parameter', function() {
+        validator.setData({ value: '1' }).setRules({ value: 'min' });
+        assert.throws(() => validator.validate());
+    });
+    it('The parameter must be a number', function() {
+        validator.setRules({ value: 'min:jad' });
+        assert.throws(() => validator.validate());
+    });
+    describe('The length of the array must have a min value', function() {
+        it('Validation should fail if the length of the array does not match the min value', function() {
+            validator.setData({ value: [1, 2] }).setRules({ value: 'min:3' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must have at least 3 items.');
+        });
+        it('Validation should succeed if the length of the array matches the min value', function() {
+            validator.setRules({ value: 'min:1' });
+            assert.ok(validator.validate());
+
+            validator.setRules({ value: 'min:2' });
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The length of the object must have a min value', function() {
+        it('Validation should fail if the length of the object does not match the min value', function() {
+            validator.setData({ value: { first: 'Jad', last: 'Khoury' }}).setRules({ value: 'min:3' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must have at least 3 items.');
+        });
+        it('Validation should succeed if the length of the object matches the min value', function() {
+            validator.setRules({ value: 'min:1' });
+            assert.ok(validator.validate());
+
+            validator.setRules({ value: 'min:2' });
+            assert.ok(validator.validate());
+        });
+
+    });
+    describe('The length of the string should have a min value', function() {
+        it('Validation should fail if the length of the string does not match the min value', function() {
+            validator.setData({ value: 'test' }).setRules({ value: 'min:5' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must be at least 5 characters.');
+        });
+        it('Validation should succeed if the length of the string matches the min value', function() {
+            validator.setRules({ value: 'min:3' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: '0001' }).setRules({ value: 'min:4' });
+            assert.ok(validator.validate());
+        });
+    });
+    describe('If the value is a number in a string, and has the numeric rule, then it will be compared as a number and not a string', function() {
+        it('Validation should fail if the number is not greater then or equal to the min value', function() {
+            validator.setData({ value: '00002' }).setRules({ value: 'numeric|min:3' });
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ value: '10' }).setRules({ value: 'numeric|min:11' });
+            assert.equal(validator.validate(), false);
+        }); 
+        it('An error should be returned in case of failure', function() {
+           assert.equal(validator.firstError(), 'The value must be at least 11.');
+        });
+        it('Validation should succeed if number is greater then or equal to the min value', function() {
+            validator.setData({ value: '00002' }).setRules({ value: 'numeric|min:2' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: '11' }).setRules({ value: 'numeric|min:10' });
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The number under validation must be greater than or equal to min specified value', function() {
+        it('Validation should fail if the number is not greater then or equal to the min value', function() {
+            validator.setData({ value: 2 }).setRules({ value: 'min:3' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must be at least 3.');
+        });
+        it('Validation should succeed if number is greater then or equal to the min value', function() {
+            validator.setData({ value: 3 }).setRules({ value: 'min:2' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: 2 });
+            assert.ok(validator.validate());
+        });
+    });
+});
+
+describe('Max', function() {
+    it('Validation rule max requires at least 1 parameter', function() {
+        validator.setData({ value: '1' }).setRules({ value: 'max' });
+        assert.throws(() => validator.validate());
+    });
+    it('The parameter must be a number', function() {
+        validator.setRules({ value: 'max:jad' });
+        assert.throws(() => validator.validate());
+    });
+    describe('The length of the array must have a max value', function() {
+        it('Validation should fail if the length of the array does not match the max value', function() {
+            validator.setData({ value: [1, 2, 3] }).setRules({ value: 'max:2' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must not have more than 2 items.');
+        });
+        it('Validation should succeed if the length of the array matches the max value', function() {
+            validator.setRules({ value: 'max:4' });
+            assert.ok(validator.validate());
+
+            validator.setRules({ value: 'max:3' });
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The length of the object must have a max value', function() {
+        it('Validation should fail if the length of the object does not match the max value', function() {
+            validator.setData({ value: { first: 'Jad', last: 'Khoury' }}).setRules({ value: 'max:1' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must not have more than 1 items.');
+        });
+        it('Validation should succeed if the length of the object matches the max value', function() {
+            validator.setRules({ value: 'max:3' });
+            assert.ok(validator.validate());
+
+            validator.setRules({ value: 'max:2' });
+            assert.ok(validator.validate());
+        });
+
+    });
+    describe('The length of the string should have a max value', function() {
+        it('Validation should fail if the length of the string does not match the max value', function() {
+            validator.setData({ value: 'test' }).setRules({ value: 'max:3' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must not be greater than 3 characters.');
+        });
+        it('Validation should succeed if the length of the string matches the max value', function() {
+            validator.setRules({ value: 'max:5' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: '0001' }).setRules({ value: 'max:4' });
+            assert.ok(validator.validate());
+        });
+    });
+    describe('If the value is a number in a string, and has the numeric rule, then it will be compared as a number and not a string', function() {
+        it('Validation should fail if the number is not less then or equal to the max value', function() {
+            validator.setData({ value: '00002' }).setRules({ value: 'numeric|max:1' });
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ value: '11' }).setRules({ value: 'numeric|max:10' });
+            assert.equal(validator.validate(), false);
+        }); 
+        it('An error should be returned in case of failure', function() {
+           assert.equal(validator.firstError(), 'The value must not be greater than 10.');
+        });
+        it('Validation should succeed if number is less then or equal to the max value', function() {
+            validator.setData({ value: '00002' }).setRules({ value: 'numeric|max:2' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: '10' }).setRules({ value: 'numeric|max:11' });
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The number under validation must be less than or equal to max specified value', function() {
+        it('Validation should fail if the number is not less then or equal to the max value', function() {
+            validator.setData({ value: 4 }).setRules({ value: 'max:3' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.firstError(), 'The value must not be greater than 3.');
+        });
+        it('Validation should succeed if number is less then or equal to the max value', function() {
+            validator.setData({ value: 2 }).setRules({ value: 'max:3' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: 3 });
+            assert.ok(validator.validate());
+        });
+    });
+});

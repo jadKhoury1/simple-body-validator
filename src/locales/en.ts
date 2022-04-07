@@ -49,11 +49,13 @@ export default {
         number: 'The :attribute must not be greater than :max.',
         string: 'The :attribute must not be greater than :max characters.',
         array: 'The :attribute must not have more than :max items.',
+        object: 'The :attribute must not have more than :max items.',
     },
     min: {
         number: 'The :attribute must be at least :min.',
         string: 'The :attribute must be at least :min characters.',
         array: 'The :attribute must have at least :min items.',
+        object: 'The :attribute must have at least :min items.',
     },
     not_in: 'The selected :attribute is invalid.',
     not_regex: 'The :attribute format is invalid.',
