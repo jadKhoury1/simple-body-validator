@@ -40,18 +40,30 @@ export function isInteger(value: any): boolean {
  */
 export function isSizeRule(rule: string): boolean {
 
-    const sizeRules = [
+    const sizeRules: string[] = [
         'size', 'between', 'min', 'max', 'gt', 'lt', 'gte', 'lte'
     ];
 
     return sizeRules.indexOf(rule) !== -1;
 };
 
+/**
+ * Check if rule implies that the field is required
+ */
+export function isImplicitRule(rule: string): boolean {
+    const implicitRues: string[] = [
+        'accepted', 'filled', 'present', 'required', 'required_if', 'required_unless',
+        'required_with', 'required_with_all', 'required_without', 'required_without_all'
+    ];
+
+    return implicitRues.indexOf(rule) !== -1;
+};
+
 
 /**
  * Returns the numeric rules
  */
-export function getNumericRules() {
+export function getNumericRules(): string[] {
     return ['numeric', 'integer'];
 };
 
@@ -60,7 +72,7 @@ export function getNumericRules() {
  */
 export function isNumericRule(rule: string): boolean {
    
-    const numericRules = getNumericRules();
+    const numericRules: string[] = getNumericRules();
 
     return numericRules.indexOf(rule) !== -1;
 };
