@@ -182,11 +182,7 @@ describe('Digits Between', function() {
   });
   it('Validation rule digits_between requires the parameters to be an integer greater than 0', function() {
     validator.setRules({ value: 'digits_between:-1,3'});
-    try {
-      validator.validate();
-    } catch (e) {
-        assert.equal(e, 'Validation rule digits_between requires the parameters to be an integer greater than 0.');
-    }
+    assert.throws(() => validator.validate());
   });
   it('Validation rule digits_between requires the max param to be greater than the min param', function() {
      validator.setRules({ value: 'digits_between:3,2'});
