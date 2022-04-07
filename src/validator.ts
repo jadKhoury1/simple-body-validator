@@ -21,6 +21,11 @@ class Validator {
     private rules: Rules;
 
     /**
+     * This is an unchanged version of the inital rules before being changed for wildcard validations
+     */
+    private initalRules: Rules
+
+    /**
      * The array of wildcard attributes with their asterisks expanded.
      */
     private implicitAttributes: ImplicitAttributes;
@@ -49,16 +54,19 @@ class Validator {
     constructor(data: object, rules: Rules, customMessages: CustomMesages = {}) {
         this.data = data;
         this.customMessages = customMessages;
+        this.initalRules = rules;
         this.addRules(rules);
     };
 
     setData(data: object): Validator {
         this.data = data;
+        this.addRules(this.initalRules);
         return this;
     };
 
     setRules(rules: Rules): Validator {
         this.addRules(rules);
+        this.initalRules = rules;
         return this;
     };
 
