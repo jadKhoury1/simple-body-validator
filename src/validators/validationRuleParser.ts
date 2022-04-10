@@ -32,13 +32,12 @@ const validationRuleParser: ValidationRuleParserInterface =  {
      * Define a set of rules that apply to each element in an array attribute.
      */
     explodeWildCardRules: function(results: object, attribute: string, masterData: object, implicitAttributes: ImplicitAttributes): object {
-        const pattern: RegExp = new RegExp('^' + attribute.replace(/\*/g, '[^.]*') + '\z');
+        const pattern: RegExp = new RegExp('^' + attribute.replace(/\*/g, '[^.]*') + '$');
         const data: object = validationData.initializeAndGatherData(attribute, masterData);
         const rule: string = results[attribute];
 
         for (let key in data) {
-            if (key.match(new RegExp(`^${attribute}`)) !== null || key.match(pattern) !== null) {
-
+            if (key.slice(0, attribute.length) === attribute || key.match(pattern) !== null) {
                 if (Array.isArray(implicitAttributes[attribute])) {
                     implicitAttributes[attribute].push(key);
                 } else {

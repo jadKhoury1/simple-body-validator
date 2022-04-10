@@ -1,7 +1,7 @@
 'use strict';
 
 import { CustomMesages } from "../types";
-import { isSizeRule } from "./general";
+import { isSizeRule } from './general';
 import validationMessages from '../locales/en';
 import replaceAttributes from '../validators/replaceAttributes';
 import { builValidationdMethodName } from "./build";

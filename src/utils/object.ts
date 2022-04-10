@@ -23,29 +23,30 @@ import { GenericObject } from "../types";
 /**
  * Set value at path of object. 
  */
-export function deepSet(obj: any[]|object, path: string|string[], value: any): void {
+export function deepSet(target: any, path: string|string[], value: any): void {
     const paths: string[] = typeof path === 'string' ? path.split('.') : path;
     const segment = paths.shift();
 
     if (segment === '*') {
-        obj = Array.isArray(obj) ? obj : [];
+        target = Array.isArray(target) ? target : [];
         
         if (paths.length > 0) {
-            // @ts-ignore
-            obj.forEach(inner => deepSet(inner, [...paths], value));
+            target.forEach(inner => deepSet(inner, [...paths], value));
         } else {
-            // @ts-ignore
-            for (let i = 0; i < obj.length; i++) {
-                obj[i] = value;
+            for (let i = 0; i < target.length; i++) {
+                target[i] = value;
             }
         }
     } else if (paths.length > 0) {
-        if (typeof obj[segment] !== 'object') {
-            obj[segment] = {};
+        if (typeof target[segment] !== 'object') {
+            target[segment] = {};
         }
-        deepSet(obj[segment], paths, value);
+        deepSet(target[segment], paths, value);
     } else {
-        obj[segment] = value;
+        if (typeof target !== 'object') {
+            target = {};
+        }
+        target[segment] = value;
     }
 }
 
