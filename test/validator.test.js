@@ -125,7 +125,7 @@ describe('Boolean', function() {
 
 describe('Digits', function() {
   it('Validation rule digits requires 1 parameter', function() {
-    validator.setRules({ value: 'digits' });
+    validator.setData({ value: 'test' }).setRules({ value: 'digits' });
     assert.throws(() => validator.validate());
   });
   it('Validation rule digits requires the parameter to be an integer', function() {

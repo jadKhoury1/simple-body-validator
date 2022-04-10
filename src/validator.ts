@@ -209,7 +209,7 @@ class Validator {
      * Determine if the attribute is validatable.
      */
     private isValidatable(rule: string, value: any) {
-        return value || isImplicitRule(rule);
+        return typeof value !== 'undefined' || isImplicitRule(rule);
     }
 
 
