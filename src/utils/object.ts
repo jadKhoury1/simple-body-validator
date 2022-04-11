@@ -1,6 +1,6 @@
 'use strict';
 
-import { GenericObject } from "../types";
+import { GenericObject } from '../types';
 
 /**
  * Get value at path of object. If the resolved value is undifined, the returned result will be undefined

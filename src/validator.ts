@@ -7,8 +7,14 @@ import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
 import { getNumericRules, isImplicitRule } from './utils/general';
 import { deepFind, dotify } from './utils/object';
+import Lang from './lang';
 
 class Validator {
+
+    /**
+     * The lang used to return error messages
+     */
+    private lang: string;
 
     /**
      * The data object that will be validated
@@ -51,10 +57,11 @@ class Validator {
     private validateAttributes: validateAttributes;
 
 
-    constructor(data: object, rules: Rules, customMessages: CustomMesages = {}) {
+    constructor(data: object, rules: Rules, customMessages: CustomMesages = {}, lang: string = Lang.getDefaultLang()) {
         this.data = data;
         this.customMessages = customMessages;
         this.initalRules = rules;
+        this.lang = lang;
         this.addRules(rules);
     };
 
@@ -67,6 +74,11 @@ class Validator {
     setRules(rules: Rules): Validator {
         this.addRules(rules);
         this.initalRules = rules;
+        return this;
+    };
+
+    setLang(lang: string): Validator {
+        this.lang = lang;
         return this;
     };
 
@@ -167,7 +179,7 @@ class Validator {
         const hasNumericRule = validationRuleParser.hasRule(attribute, getNumericRules(), this.rules);
 
         let message: string = makeReplacements(
-            getMessage(attribute, rule, value, this.customMessages, hasNumericRule),
+            getMessage(attribute, rule, value, this.customMessages, hasNumericRule, this.lang),
             attribute, rule, parameters, this.data, hasNumericRule
         );
 

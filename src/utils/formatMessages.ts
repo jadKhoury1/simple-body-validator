@@ -2,9 +2,9 @@
 
 import { CustomMesages } from "../types";
 import { isSizeRule } from './general';
-import validationMessages from '../locales/en';
 import replaceAttributes from '../validators/replaceAttributes';
-import { builValidationdMethodName } from "./build";
+import { builValidationdMethodName } from './build';
+import Lang from '../lang';
 
 
 
@@ -49,7 +49,7 @@ function getFromLocalObject(attribute: string, rule: string, customMessages: Cus
 /**
  * Get the validation message for an attribute and rule.
  */
-export function getMessage(attribute: string, rule: string, value: any, customMessages: CustomMesages, hasNumericRule: boolean): string {
+export function getMessage(attribute: string, rule: string, value: any, customMessages: CustomMesages, hasNumericRule: boolean, lang: string): string {
 
     // check if error exists inside the custom message object provided by the user
     const inlineMessage: string|null = getFromLocalObject(attribute, rule, customMessages);
@@ -57,6 +57,8 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
     if (inlineMessage) {
         return inlineMessage;
     }
+
+    const validationMessages: object = Lang.get(lang);
 
     // check if rule has sizes such as min, max, between ... 
     // and get message from local object

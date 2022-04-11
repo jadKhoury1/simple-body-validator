@@ -73,3 +73,17 @@ export interface ReplaceAttribueInterface {
     replaceRequiredIf: (message: string, parameters: any) => string;
     replaceStartsWith: (message: string, paramters: string[]) => string;
 };
+
+
+export interface LangInterface {
+    defaultLang: string;
+    existingLangs: string[];
+    messages: object;
+    defaultMessages: object;
+    path: string;
+    get: (lang: string) => object;
+    setPath: (path: string) => void;
+    setDefaultLang: (lang: string) => void;
+    getDefaultLang: () => string;
+    load: (lang: string) => void;
+};
