@@ -18,7 +18,7 @@ import { GenericObject } from "../types";
 
     return obj;
 
-}
+};
 
 /**
  * Set value at path of object. 
@@ -48,7 +48,7 @@ export function deepSet(target: any, path: string|string[], value: any): void {
         }
         target[segment] = value;
     }
-}
+};
 
 /**
  * Flatten a multi-dimensional associative array with dots.
@@ -74,4 +74,38 @@ export function dotify(obj: object, ignoreArray: boolean = false): GenericObject
     })(obj);
 
     return res;
+};
+
+/**
+ * Check if the value is an object
+ */
+export function isObject(value: any) {
+    return typeof value === 'object' && !Array.isArray(value);
+};
+
+/**
+ * Deeply merge nested objects
+ */
+export function mergeDeep(target, source) {
+    let output = Object.assign({}, target);
+
+    if (!isObject(target) || !isObject(source)) {
+        return output;
+    }
+
+    for (const key in source) {
+        if (isObject(source[key])) {
+            if (!target[key]) {
+                Object.assign(output, {[key]: source[key] });
+            } else {
+                output[key] = mergeDeep(target[key], source[key]);
+            }
+
+        } else {
+            Object.assign(output, { [key]: source[key] });
+        }
+    }
+
+    return output;
+
 }
