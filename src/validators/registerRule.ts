@@ -14,7 +14,6 @@ export default {
 
         let validateAttribute = new ValidateAttributes({}, {});
         if (validateAttribute[`validate${method}`]) {
-            console.log('This was reached');
             return false;
         }
 
