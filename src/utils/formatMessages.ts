@@ -32,6 +32,8 @@ function getFromLocalObject(attribute: string, rule: string, customMessages: Cus
 
     if (typeof customMessages[key] !== 'undefined') {
         return customMessages[key];
+    } else if (typeof customMessages[rule] !== 'undefined') {
+        return customMessages[rule];
     }
 
     for (let messageKey in customMessages) {
