@@ -76,7 +76,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all place-holders for the starts_with rule.
      */
-     replaceStartsWith: function(message: string, parameters: string[]): string {
+    replaceStartsWith: function(message: string, parameters: string[]): string {
         return message.replace(':values', parameters.join(', '));
     },
 
@@ -119,7 +119,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
      * Replace all place-holders for the required_without_all rule.
      */
     replaceRequiredWithoutAll: function (message: string, parameters: string[]): string {
-    return this.replaceRequiredWith(message, parameters);
+        return this.replaceRequiredWith(message, parameters);
     },
 
     /**

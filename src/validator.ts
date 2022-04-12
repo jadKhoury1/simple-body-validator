@@ -7,7 +7,6 @@ import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
 import { getNumericRules, isImplicitRule } from './utils/general';
 import { deepFind, dotify } from './utils/object';
-import Lang from './lang';
 
 class Validator {
 
@@ -57,7 +56,7 @@ class Validator {
     private validateAttributes: validateAttributes;
 
 
-    constructor(data: object, rules: Rules, customMessages: CustomMesages = {}, lang: string = Lang.getDefaultLang()) {
+    constructor(data: object, rules: Rules, customMessages: CustomMesages = {}, lang: string) {
         this.data = data;
         this.customMessages = customMessages;
         this.initalRules = rules;

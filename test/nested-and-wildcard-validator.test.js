@@ -53,7 +53,7 @@ describe('Nested Objects', function() {
     it('Error messages should be returned for all the failed validations', function() {
         const errors = validator.errors();
         assert.equal(errors.name, 'The name must be a string.');
-        assert.equal(errors.address, 'The address field is required.');
+        assert.equal(errors.address, 'The address field is required for test.');
         assert.equal(errors['bio.age'], 'The bio.age must be an integer.');
         assert.equal(errors['bio.education.secondary'], 'The bio.education.secondary must be a string.');
     });
@@ -124,7 +124,7 @@ describe('Nested objects with flattened rules', function() {
     it('Error messages should be returned for all the failed validations', function() {
         const errors = validator.errors();
         assert.equal(errors.name, 'The name must be a string.');
-        assert.equal(errors.address, 'The address field is required.');
+        assert.equal(errors.address, 'The address field is required for test.');
         assert.equal(errors['bio.age'], 'The bio.age must be an integer.');
         assert.equal(errors['bio.education.secondary'], 'The bio.education.secondary must be a string.');
     });

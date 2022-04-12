@@ -1,5 +1,11 @@
 'use strict';
 
+
+const implicitRues: string[] = [
+    'accepted', 'filled', 'present', 'required', 'required_if', 'required_unless',
+    'required_with', 'required_with_all', 'required_without', 'required_without_all'
+];
+
 /**
  * Get the size of a value based on its type
  */
@@ -23,7 +29,7 @@ export function sameType(value: any, otherValue: any): boolean {
 
     const valueType = Array.isArray(value) ? 'array' : typeof value;
     const otherValueType = Array.isArray(otherValue) ? 'array' : typeof otherValue;
-    return valueType == otherValueType;
+    return valueType === otherValueType;
 
 };
 
@@ -47,17 +53,20 @@ export function isSizeRule(rule: string): boolean {
     return sizeRules.indexOf(rule) !== -1;
 };
 
+
 /**
  * Check if rule implies that the field is required
  */
 export function isImplicitRule(rule: string): boolean {
-    const implicitRues: string[] = [
-        'accepted', 'filled', 'present', 'required', 'required_if', 'required_unless',
-        'required_with', 'required_with_all', 'required_without', 'required_without_all'
-    ];
-
     return implicitRues.indexOf(rule) !== -1;
 };
+
+/**
+ * Add a new implicit rule
+ */
+export function addImplicitRule(rule: string): void {
+    implicitRues.push(rule);
+}
 
 
 /**
