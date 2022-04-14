@@ -76,7 +76,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
 /**
  * Replace all error message place-holders with actual values.
  */
-export function makeReplacements(message: string, attribute: string, rule: string, parameters: string[], data: object, hasNumericRule: boolean): string {
+export function makeReplacements(message: string, attribute: string, rule: string, parameters: string[], data: object = {}, hasNumericRule: boolean = false): string {
 
     message = message.replace(':attribute', attribute.replace('_', ' '));
 
