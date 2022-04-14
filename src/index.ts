@@ -1,17 +1,22 @@
 import { CustomMesages, Rules } from './types';
 import Validator from './validator';
 import Lang from './lang';
-import registerRule from './validators/registerRule';
+import RuleContract from './ruleContract';
 
-export default  {
-    make: function(data: object = {}, rules: Rules = {}, customMessages: CustomMesages = {}, lang: string =  Lang.getDefaultLang()): Validator {
-        return new Validator(data, rules, customMessages, lang);
-    },
-    setDefaultLang: function(lang: string): void {
-        Lang.setDefaultLang(lang);
-    },
-    setTranslationPath: function(path: string): void {
-        Lang.setPath(path);
-    },
-    ... registerRule
+
+export class Rule extends RuleContract {};
+
+export * from './rules/registerRule';
+
+export function make(data: object = {}, rules: Rules = {}, customMessages: CustomMesages = {}, lang: string =  Lang.getDefaultLang()): Validator {
+    return new Validator(data, rules, customMessages, lang);
 };
+
+export function setDefaultLang(lang: string): void {
+    Lang.setDefaultLang(lang);
+};
+
+export function setTranslationPath(path: string): void {
+    Lang.setPath(path);
+};
+
