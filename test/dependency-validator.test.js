@@ -1,7 +1,7 @@
 const assert = require('assert');
-const SimpleValidator = require('../lib/index').default;
+const { make } = require('../lib/index');
 
-const validator = SimpleValidator.make();
+const validator = make();
 
 
 describe('Required With', function() {
@@ -11,7 +11,7 @@ describe('Required With', function() {
             assert.equal(validator.validate(), false);
         });
         it ('An error should be returned to the user in case of failure', function() {
-            assert.equal(validator.firstError(), 'The last field is required when name, age is present.');
+            assert.equal(validator.errors().first(), 'The last field is required when name, age is present.');
         });
         it ('Validation should succeed when field is present and any of the other specified fields are present', function() {
             validator.setData({ name: 'Jad', last: 'Khoury' });
@@ -31,7 +31,7 @@ describe('Required With All', function() {
             assert.equal(validator.validate(), false);
         });
         it ('An error should be returned to the user in case of failure', function() {
-            assert.equal(validator.firstError(), 'The last field is required when name, age are present.');
+            assert.equal(validator.errors().first(), 'The last field is required when name, age are present.');
         });
         it ('Validation should succeed when field is present and all of the other specified fields are present', function() {
             validator.setData({ name: 'Jad', age: 28, last: 'khoury' });
@@ -51,7 +51,7 @@ describe('Required Without', function() {
             assert.equal(validator.validate(), false);
         });
         it ('An error should be returned to the user in case of failure', function() {
-            assert.equal(validator.firstError(), 'The name field is required when middle, last is not present.');
+            assert.equal(validator.errors().first(), 'The name field is required when middle, last is not present.');
         });
         it ('Validation should succeed when field is present and any of the other fields is not present', function() {
             validator.setData({ age: 28, name: 'Jad', last: 'Khoury'});
@@ -71,7 +71,7 @@ describe('Required Without All', function() {
             assert.equal(validator.validate(), false);
         });
         it ('An error should be returned to the user in case of failure', function() {
-            assert.equal(validator.firstError(), 'The name field is required when none of middle, last are present.');
+            assert.equal(validator.errors().first(), 'The name field is required when none of middle, last are present.');
         });
         it ('Validation should succeed when field is present and all of the other fields are not present', function() {
             validator.setData({ age: 28, name: 'Jad' });

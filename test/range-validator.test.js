@@ -1,7 +1,7 @@
 const assert = require('assert');
-const SimpleValidator = require('../lib/index').default;
+const { make } = require('../lib/index');
 
-const validator = SimpleValidator.make();
+const validator = make();
 
 
 describe('Between', function() {
@@ -23,14 +23,14 @@ describe('Between', function() {
             assert.equal(validator.validate(), false);
         });
         it('The Numeric error message should be sent to the user', function() {
-            assert.equal(validator.firstError(), 'The value must be between 4 and 13.');
+            assert.equal(validator.errors().first(), 'The value must be between 4 and 13.');
         });
         it('The value will be evaluated as a string in case the number was sent as a string', function() {
             validator.setData({ value: '5' });
             assert.equal(validator.validate(), false);
         });
         it('The String error message should be sent to the user', function() {
-            assert.equal(validator.firstError(), 'The value must be between 4 and 13 characters.')
+            assert.equal(validator.errors().first(), 'The value must be between 4 and 13 characters.')
         });
         it('For the string to be evaluated as a number, the numeric rule should be added to the rules', function() {
             validator.setRules({ value: 'numeric|between:4,13'});
@@ -43,7 +43,7 @@ describe('Between', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be between 5 and 10 characters.');
+            assert.equal(validator.errors().first(), 'The value must be between 5 and 10 characters.');
         });
         it('Validation should succeed if the string contains the correct number of characters', function() {
             validator.setData({ value: 'test1234'});
@@ -60,7 +60,7 @@ describe('Between', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have between 2 and 5 items.');
+            assert.equal(validator.errors().first(), 'The value must have between 2 and 5 items.');
         });
         it('Validation should succeed if array length matches the specified range', function() {
             validator.setData({ value: [1,2] });
@@ -131,7 +131,7 @@ describe('Greater Than', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have more than 2 items.');
+            assert.equal(validator.errors().first(), 'The value must have more than 2 items.');
         });
         it('Validation should succeed if array length is greater than the other array length', function() {
             validator.setData({ value: [1,2,3], other_value: [1,2] });
@@ -148,7 +148,7 @@ describe('Greater Than', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have more than 2 items.');
+            assert.equal(validator.errors().first(), 'The value must have more than 2 items.');
         });
         it('Validation should succeed if object length is greater than the other object length', function() {
             validator.setData({ 
@@ -167,7 +167,7 @@ describe('Greater Than', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be greater than 4 characters.');
+            assert.equal(validator.errors().first(), 'The value must be greater than 4 characters.');
         });
         it('Validation should succeed if string length is greater than the other string length', function() {
             validator.setData({ value: 'test1234', other_value: 'test'});
@@ -183,7 +183,7 @@ describe('Greater Than', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be greater than 11.');
+            assert.equal(validator.errors().first(), 'The value must be greater than 11.');
         });
         it('Validation should succeed if the number is greater than the other number', function() {
             validator.setData({ value: 12, other_value: 10 });
@@ -257,7 +257,7 @@ describe('Greater Than or equal', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have 2 items or more.');
+            assert.equal(validator.errors().first(), 'The value must have 2 items or more.');
         });
         it('Validation should succeed if array length is greater than or equal to the other array length', function() {
             validator.setData({ value: [1,2], other_value: [1,2] });
@@ -274,7 +274,7 @@ describe('Greater Than or equal', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have 2 items or more.');
+            assert.equal(validator.errors().first(), 'The value must have 2 items or more.');
         });
         it('Validation should succeed if object length is greater than or equal to the other object length', function() {
             validator.setData({ 
@@ -293,7 +293,7 @@ describe('Greater Than or equal', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be greater than or equal 5 characters.');
+            assert.equal(validator.errors().first(), 'The value must be greater than or equal 5 characters.');
         });
         it('Validation should succeed if string length is greater than or equal to the other string length', function() {
             validator.setData({ value: 'test', other_value: 'test'});
@@ -309,7 +309,7 @@ describe('Greater Than or equal', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be greater than or equal 11.');
+            assert.equal(validator.errors().first(), 'The value must be greater than or equal 11.');
         });
         it('Validation should succeed if the number is greater than or equal to the other number', function() {
             validator.setData({ value: 10, other_value: 10 });
@@ -383,7 +383,7 @@ describe('Less Than', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have less than 2 items.');
+            assert.equal(validator.errors().first(), 'The value must have less than 2 items.');
         });
         it('Validation should succeed if array length is less than the other array length', function() {
             validator.setData({ value: [1,2], other_value: [1,2,3] });
@@ -400,7 +400,7 @@ describe('Less Than', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have less than 2 items.');
+            assert.equal(validator.errors().first(), 'The value must have less than 2 items.');
         });
         it('Validation should succeed if object length is less than the other object length', function() {
             validator.setData({ 
@@ -419,7 +419,7 @@ describe('Less Than', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be less than 4 characters.');
+            assert.equal(validator.errors().first(), 'The value must be less than 4 characters.');
         });
         it('Validation should succeed if string length is less than the other string length', function() {
             validator.setData({ value: 'test', other_value: 'test1234'});
@@ -435,7 +435,7 @@ describe('Less Than', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be less than 10.');
+            assert.equal(validator.errors().first(), 'The value must be less than 10.');
         });
         it('Validation should succeed if the number is less than the other number', function() {
             validator.setData({ value: 10, other_value: 12 });
@@ -509,7 +509,7 @@ describe('Less Than or equal', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have 2 items or less.');
+            assert.equal(validator.errors().first(), 'The value must have 2 items or less.');
         });
         it('Validation should succeed if array length is less than or equal to the other array length', function() {
             validator.setData({ value: [1,2], other_value: [1,2] });
@@ -526,7 +526,7 @@ describe('Less Than or equal', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have 2 items or less.');
+            assert.equal(validator.errors().first(), 'The value must have 2 items or less.');
         });
         it('Validation should succeed if object length is less than or equal to the other object length', function() {
             validator.setData({ 
@@ -545,7 +545,7 @@ describe('Less Than or equal', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be less than or equal 4 characters.');
+            assert.equal(validator.errors().first(), 'The value must be less than or equal 4 characters.');
         });
         it('Validation should succeed if string length is less than or equal to the other string length', function() {
             validator.setData({ value: 'test', other_value: 'test'});
@@ -561,7 +561,7 @@ describe('Less Than or equal', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be less than or equal 10.');
+            assert.equal(validator.errors().first(), 'The value must be less than or equal 10.');
         });
         it('Validation should succeed if the number is less than or equal to the other number', function() {
             validator.setData({ value: 10, other_value: 10 });
@@ -589,7 +589,7 @@ describe('Min', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have at least 3 items.');
+            assert.equal(validator.errors().first(), 'The value must have at least 3 items.');
         });
         it('Validation should succeed if the length of the array matches the min value', function() {
             validator.setRules({ value: 'min:1' });
@@ -605,7 +605,7 @@ describe('Min', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must have at least 3 items.');
+            assert.equal(validator.errors().first(), 'The value must have at least 3 items.');
         });
         it('Validation should succeed if the length of the object matches the min value', function() {
             validator.setRules({ value: 'min:1' });
@@ -622,7 +622,7 @@ describe('Min', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be at least 5 characters.');
+            assert.equal(validator.errors().first(), 'The value must be at least 5 characters.');
         });
         it('Validation should succeed if the length of the string matches the min value', function() {
             validator.setRules({ value: 'min:3' });
@@ -641,7 +641,7 @@ describe('Min', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-           assert.equal(validator.firstError(), 'The value must be at least 11.');
+           assert.equal(validator.errors().first(), 'The value must be at least 11.');
         });
         it('Validation should succeed if number is greater then or equal to the min value', function() {
             validator.setData({ value: '00002' }).setRules({ value: 'numeric|min:2' });
@@ -657,7 +657,7 @@ describe('Min', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be at least 3.');
+            assert.equal(validator.errors().first(), 'The value must be at least 3.');
         });
         it('Validation should succeed if number is greater then or equal to the min value', function() {
             validator.setData({ value: 3 }).setRules({ value: 'min:2' });
@@ -684,7 +684,7 @@ describe('Max', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must not have more than 2 items.');
+            assert.equal(validator.errors().first(), 'The value must not have more than 2 items.');
         });
         it('Validation should succeed if the length of the array matches the max value', function() {
             validator.setRules({ value: 'max:4' });
@@ -700,7 +700,7 @@ describe('Max', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must not have more than 1 items.');
+            assert.equal(validator.errors().first(), 'The value must not have more than 1 items.');
         });
         it('Validation should succeed if the length of the object matches the max value', function() {
             validator.setRules({ value: 'max:3' });
@@ -717,7 +717,7 @@ describe('Max', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must not be greater than 3 characters.');
+            assert.equal(validator.errors().first(), 'The value must not be greater than 3 characters.');
         });
         it('Validation should succeed if the length of the string matches the max value', function() {
             validator.setRules({ value: 'max:5' });
@@ -736,7 +736,7 @@ describe('Max', function() {
             assert.equal(validator.validate(), false);
         }); 
         it('An error should be returned in case of failure', function() {
-           assert.equal(validator.firstError(), 'The value must not be greater than 10.');
+           assert.equal(validator.errors().first(), 'The value must not be greater than 10.');
         });
         it('Validation should succeed if number is less then or equal to the max value', function() {
             validator.setData({ value: '00002' }).setRules({ value: 'numeric|max:2' });
@@ -752,7 +752,7 @@ describe('Max', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must not be greater than 3.');
+            assert.equal(validator.errors().first(), 'The value must not be greater than 3.');
         });
         it('Validation should succeed if number is less then or equal to the max value', function() {
             validator.setData({ value: 2 }).setRules({ value: 'max:3' });

@@ -1,7 +1,7 @@
 const assert = require('assert');
-const SimpleValidator = require('../lib/index').default;
+const { make } = require('../lib/index');
 
-const validator = SimpleValidator.make();
+const validator = make();
 
 describe('Array', function() {
     describe('The field under validation must be an array', function() {
@@ -18,7 +18,7 @@ describe('Array', function() {
 
       });
       it('An Error Message should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be an array.');
+            assert.equal(validator.errors().first(), 'The value must be an array.');
       });
       it('Validation should succeed in case value is an array', function() {
             validator.setData({ value: [] });
@@ -39,7 +39,7 @@ describe('Alpha', function() {
 
     });
     it('An Error Message should be returned in case of failure', function() {
-        assert.equal(validator.firstError(), 'The value must only contain letters.');
+        assert.equal(validator.errors().first(), 'The value must only contain letters.');
     });
     it('Validation should succeed in case value contain only alphabetic characters', function() {
         validator.setData({ value: 'test' });
@@ -60,7 +60,7 @@ describe('AlphaDash', function() {
 
     });
     it('An Error Message should be returned in case of failure', function() {
-        assert.equal(validator.firstError(), 'The value must only contain letters, numbers, dashes and underscores.');
+        assert.equal(validator.errors().first(), 'The value must only contain letters, numbers, dashes and underscores.');
     });
     it('Validation should succeed in case value contain only alphabetic characters', function() {
         validator.setData({ value: 'test_test-test12' });
@@ -78,7 +78,7 @@ describe('AlphaNum', function() {
 
     });
     it('An Error Message should be returned in case of failure', function() {
-        assert.equal(validator.firstError(), 'The value must only contain letters and numbers.');
+        assert.equal(validator.errors().first(), 'The value must only contain letters and numbers.');
     });
     it('Validation should succeed in case value contain only alphabetic characters', function() {
         validator.setData({ value: 'test123' });
@@ -94,7 +94,7 @@ describe('Boolean', function() {
       assert.equal(validator.validate(), false);
     });
     it('An Error Message should be returned in case of failure', function() {
-       assert.equal(validator.firstError(), 'The value field must be true or false.');
+       assert.equal(validator.errors().first(), 'The value field must be true or false.');
     });
     it('Validation should succeed in case value is a boolean', function() {
       const validValues = [true, false, '0', '1', 0, 1];
@@ -159,7 +159,7 @@ describe('Digits', function() {
       assert.equal(validator.validate(), false);
     });
     it('An Error message should be returned in case of failure', function() {
-      assert.equal(validator.firstError(), 'The value must be 4 digits.');
+      assert.equal(validator.errors().first(), 'The value must be 4 digits.');
     });
     it('Validation should succeed in case the number matches the specified the number of digits', function() {
       validator.setData({ value: 1234 });
@@ -212,7 +212,7 @@ describe('Digits Between', function() {
       assert.equal(validator.validate(), false);
     });
     it('An Error message should be returned in case of failure', function() {
-      assert.equal(validator.firstError(), 'The value must be between 4 and 5 digits.');
+      assert.equal(validator.errors().first(), 'The value must be between 4 and 5 digits.');
     });
     it('Validation should succeed in case the number matches the specified digits range', function() {
       validator.setData({ value: 1234 });
@@ -237,7 +237,7 @@ describe('Email', function() {
       assert.equal(validator.validate(), false);
     });
     it('An Error message should be returned in case of failure', function() {
-      assert.equal(validator.firstError(), 'The value must be a valid email address.');
+      assert.equal(validator.errors().first(), 'The value must be a valid email address.');
     });
     it('Validation should succeed if field under validation is an email', function() {
       validator.setData({ value: 'test@gtest.com' });
@@ -264,7 +264,7 @@ describe('Ends With', function() {
         assert.equal(validator.validate(), false);
     });
     it('An Error message should be returned in case of failure', function() {
-      assert.equal(validator.firstError(), 'The value must end with one of the following: john, doe.');
+      assert.equal(validator.errors().first(), 'The value must end with one of the following: john, doe.');
     });
     it('Validation should succeed if field under validation ends with one of the given values', function() {
         validator.setData({ value: 'john' });
@@ -290,7 +290,7 @@ describe('Object', function() {
 
     });
     it('An Error Message should be returned in case of failure', function() {
-      assert.equal(validator.firstError(), 'The value must be an object.');
+      assert.equal(validator.errors().first(), 'The value must be an object.');
     });
     it('Validation should succeed in case value is an object', function() {
           validator.setData({ value: {} });
@@ -314,7 +314,7 @@ describe('Starts With', function() {
         assert.equal(validator.validate(), false);
     });
     it('An Error message should be returned in case of failure', function() {
-        assert.equal(validator.firstError(), 'The value must start with one of the following: john, doe.');
+        assert.equal(validator.errors().first(), 'The value must start with one of the following: john, doe.');
     });
     it('Validation should succeed if field under validation starts with one of the given values', function() {
         validator.setData({ value: 'john test' });

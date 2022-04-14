@@ -1,8 +1,7 @@
 const assert = require('assert');
-const SimpleValidator = require('../lib/index').default;
+const { make } = require('../lib/index');
 
-const validator = SimpleValidator.make();
-
+const validator = make();
 
 
 describe('After', function() {
@@ -35,7 +34,7 @@ describe('After', function() {
 
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be a date after 2021-12-11 08:30:30.')
+            assert.equal(validator.errors().first(), 'The value must be a date after 2021-12-11 08:30:30.')
         });
         it('Validation should succeed if the value is a date that comes after the given date', function() {
             validator.setData({ value: '2021-12-11 08:30:31' });
@@ -55,7 +54,7 @@ describe('After', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be a date after other value.')
+            assert.equal(validator.errors().first(), 'The value must be a date after other value.')
         });
         it('Validation should succeed if the value is a date greater than the given date', function() {
             validator.setData({ value: '2022', other_value: '2021' });
@@ -95,7 +94,7 @@ describe('After or Equal', function() {
 
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be a date after or equal to 2021-12-11 08:30:30.')
+            assert.equal(validator.errors().first(), 'The value must be a date after or equal to 2021-12-11 08:30:30.')
         });
         it('Validation should succeed if the value is a date that comes after or equal the given date', function() {
             validator.setData({ value: '2021-12-11 08:30:30' });
@@ -115,7 +114,7 @@ describe('After or Equal', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be a date after or equal to other value.')
+            assert.equal(validator.errors().first(), 'The value must be a date after or equal to other value.')
         });
         it('Validation should succeed if the value is a date greater than or equal the given date', function() {
             validator.setData({ value: '2021', other_value: '2021' });
@@ -154,7 +153,7 @@ describe('Before', function() {
 
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be a date before 2021-12-11 08:30:30.')
+            assert.equal(validator.errors().first(), 'The value must be a date before 2021-12-11 08:30:30.')
         });
         it('Validation should succeed if the value is a date preceding the given date', function() {
             validator.setData({ value: '2021-12-11 08:29:30' });
@@ -174,7 +173,7 @@ describe('Before', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be a date before other value.')
+            assert.equal(validator.errors().first(), 'The value must be a date before other value.')
         });
         it('Validation should succeed if the value is a date preceding the given date', function() {
             validator.setData({ value: '2020', other_value: '2021' });
@@ -214,7 +213,7 @@ describe('Before or Equal', function() {
 
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be a date before or equal to 2021-12-11 08:30:30.')
+            assert.equal(validator.errors().first(), 'The value must be a date before or equal to 2021-12-11 08:30:30.')
         });
         it('Validation should succeed if the value is a date preceding or equal the given date', function() {
             validator.setData({ value: '2021-12-11 08:30:30' });
@@ -234,7 +233,7 @@ describe('Before or Equal', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be a date before or equal to other value.')
+            assert.equal(validator.errors().first(), 'The value must be a date before or equal to other value.')
         });
         it('Validation should succeed if the value is a date preceding or equal to the given date', function() {
             validator.setData({ value: '2020', other_value: '2021' });
@@ -254,7 +253,7 @@ describe('Date', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error message should be retuerned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value is not a valid date.');
+            assert.equal(validator.errors().first(), 'The value is not a valid date.');
         });
         it('Validation should succeed in case value is a valid date', function() {
             validator.setData({ value: '2021-12-12 12:30:30' });
@@ -294,7 +293,7 @@ describe('Date Equals', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be a date equal to 2021-12-11 08:30:30.')
+            assert.equal(validator.errors().first(), 'The value must be a date equal to 2021-12-11 08:30:30.')
         });
         it('Validation should succeed if the value is a equal to the given date', function() {
             validator.setData({ value: '2021-12-11 08:30:30'});
@@ -313,7 +312,7 @@ describe('Date Equals', function() {
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
-            assert.equal(validator.firstError(), 'The value must be a date equal to other value.')
+            assert.equal(validator.errors().first(), 'The value must be a date equal to other value.')
         });
         it('Validation should succeed if the value is a equal to the given date', function() {
             validator.setData({ value: '2021', other_value: '2021' });

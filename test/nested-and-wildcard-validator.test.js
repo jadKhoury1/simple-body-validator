@@ -1,7 +1,7 @@
 const assert = require('assert');
-const SimpleValidator = require('../lib/index').default;
+const { make } = require('../lib/index');
 
-const validator = SimpleValidator.make();
+const validator = make();
 
 describe('Nested Objects', function() {
 
@@ -44,16 +44,16 @@ describe('Nested Objects', function() {
         assert.equal(validator.validate(), false);
     });
     it('Error keys should be returned for all the failed validations', function() {
-        const errors = validator.errors();
+        const errors = validator.errors().all();
         assert.ok(errors.hasOwnProperty('name'));
         assert.ok(errors.hasOwnProperty('address'));
         assert.ok(errors.hasOwnProperty('bio.age'));
         assert.ok(errors.hasOwnProperty('bio.education.secondary'));
     });
     it('Error messages should be returned for all the failed validations', function() {
-        const errors = validator.errors();
+        const errors = validator.errors().all(false);
         assert.equal(errors.name, 'The name must be a string.');
-        assert.equal(errors.address, 'The address field is required for test.');
+        assert.equal(errors.address, 'The address field is required.');
         assert.equal(errors['bio.age'], 'The bio.age must be an integer.');
         assert.equal(errors['bio.education.secondary'], 'The bio.education.secondary must be a string.');
     });
@@ -115,16 +115,16 @@ describe('Nested objects with flattened rules', function() {
             assert.equal(validator.validate(), false);
     });
     it('Error keys should be returned for all the failed validations', function() {
-        const errors = validator.errors();
+        const errors = validator.errors().all();
         assert.ok(errors.hasOwnProperty('name'));
         assert.ok(errors.hasOwnProperty('address'));
         assert.ok(errors.hasOwnProperty('bio.age'));
         assert.ok(errors.hasOwnProperty('bio.education.secondary'));
     });
     it('Error messages should be returned for all the failed validations', function() {
-        const errors = validator.errors();
+        const errors = validator.errors().all(false);
         assert.equal(errors.name, 'The name must be a string.');
-        assert.equal(errors.address, 'The address field is required for test.');
+        assert.equal(errors.address, 'The address field is required.');
         assert.equal(errors['bio.age'], 'The bio.age must be an integer.');
         assert.equal(errors['bio.education.secondary'], 'The bio.education.secondary must be a string.');
     });
@@ -194,13 +194,13 @@ describe('Wildcard rules', function() {
         assert.equal(validator.validate(), false);
     });
     it('Error keys should be returned for all the failed validations', function() {
-        const errors = validator.errors();
+        const errors = validator.errors().all();
         assert.ok(errors.hasOwnProperty('users.1.name'));
         assert.ok(errors.hasOwnProperty('users.0.bio.age'));
         assert.ok(errors.hasOwnProperty('users.0.bio.education.1.institute'));
     });
     it('Error messages should be returned for all the failed validations', function() {
-        const errors = validator.errors();
+        const errors = validator.errors().all(false);
         assert.equal(errors['users.1.name'], 'The users.1.name must be a string.');
         assert.equal(errors['users.0.bio.age'], 'The users.0.bio.age must be at least 18.');
         assert.equal(errors['users.0.bio.education.1.institute'], 'The users.0.bio.education.1.institute field is required when users.0.bio.education.1.level is present.');
@@ -238,7 +238,7 @@ describe('Wildcard validation on array elements', function() {
         assert.equal(validator.validate(), false);
     });
     it ('Error messages should be returned for all the failed validations', function() {
-        const errors = validator.errors();
+        const errors = validator.errors().all(false);
         assert.equal(errors['value.1'], 'The value.1 must be a number.');
         assert.equal(errors['value.3'], 'The value.3 must be a number.');
     });
@@ -255,7 +255,7 @@ describe('Wildcard validation on object values', function() {
         assert.equal(validator.validate(), false);
     });
     it('Error messages should be returned for all the failed validations', function() {
-        const errors = validator.errors();
+        const errors = validator.errors().all(false);
         assert.equal(errors['value.address'], 'The value.address must be a string.');
         assert.equal(errors['value.education'], 'The value.education must be a string.');
     });
