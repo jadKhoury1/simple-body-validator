@@ -1,12 +1,22 @@
 'use strict';
 
+import RuleContract  from './ruleContract';
+
 
 export interface GenericObject {
     [key: string]: any
 };
 
+export type InitialRule = string|ValidationCallback|RuleContract;
+
+export type Rule = string|RuleContract;
+
+export interface InitialRules extends GenericObject {
+    [key: string]: string|InitialRule[]
+};
+
 export interface Rules extends GenericObject {
-    [key: string]: string|string[]
+    [key: string]: Rule[]
 };
 
 export interface ImplicitAttributes {
@@ -22,20 +32,22 @@ export interface ErrorMessage {
     message: string,
 };
 
-export interface Messages {
+export interface Errors {
     [key: string]: ErrorMessage[]
 };
 
-export interface ErrorConfig {
-    allMessages: boolean,
-    withErrorTypes: boolean,
-};
+
+export interface Messages {
+    [key: string]: string[]
+}
 
 export interface ValidationRuleParserInterface {
     explodeRules: (rules: Rules, data: Object) => { rules: Rules, implicitAttributes: ImplicitAttributes};
     explodeWildCardRules:(results: object, attribute: string, data: object, implicitAttributes: ImplicitAttributes) => object;
-    explodeExplicitRules: (rule: string|string[]) => string[];
+    explodeExplicitRules: (rule: string|InitialRule[]) => Rule[];
+    prepareRule: (rule: InitialRule) => Rule;
     mergeRulesForAttribute: (results: object, attribute: string, rules: string|string[]) => object;
+    parse: (rule: Rule) => [Rule, string[]];
     parseStringRule: (rule: string) => [string, string[]];
     parseParameters: (rule: string, parameter: string) => string[];
     getRule: (attribute: string, searchRules: string|string[], availableRules: Rules) => Partial<[string, string[]]>;
@@ -87,3 +99,5 @@ export interface LangInterface {
     getDefaultLang: () => string;
     load: (lang: string) => void;
 };
+
+export type ValidationCallback = (value: any, fail: (message: string) => void, attribute) => void;
