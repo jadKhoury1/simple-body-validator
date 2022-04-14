@@ -8,14 +8,14 @@ class ClosureValidationRule extends RuleContract {
     /**
      * The callback that validates the attribute
      */
-    callback: ValidationCallback;
+    callback: Function|ValidationCallback;
 
     /**
      * Indicates if the validation callback failed.
      */
     failed: boolean = false;
 
-    constructor(callback: ValidationCallback) {
+    constructor(callback: Function|ValidationCallback) {
         super();
         this.callback = callback;
     }

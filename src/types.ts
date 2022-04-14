@@ -1,13 +1,14 @@
 'use strict';
 
 import RuleContract  from './ruleContract';
+import BaseRule from './rules/baseRule';
 
 
 export interface GenericObject {
     [key: string]: any
 };
 
-export type InitialRule = string|ValidationCallback|RuleContract;
+export type InitialRule = string|ValidationCallback|RuleContract|BaseRule;
 
 export type Rule = string|RuleContract;
 

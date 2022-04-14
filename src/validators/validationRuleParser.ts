@@ -15,6 +15,7 @@ const validationRuleParser: ValidationRuleParserInterface =  {
 
         let implicitAttributes: ImplicitAttributes = {};
 
+
         for (let key in rules) {
             if (key.indexOf('*') !== -1) { 
                 rules = this.explodeWildCardRules(rules, key, data, implicitAttributes);  
@@ -68,11 +69,10 @@ const validationRuleParser: ValidationRuleParserInterface =  {
      */
     explodeExplicitRules: function(rules: string|InitialRule[]): Rule[] {
         if (typeof rules === 'string') {
-            rules =  rules.split('|');
+             rules = rules.split('|');
         } 
 
         return rules.map((rule: InitialRule) => this.prepareRule(rule));
-        
     },
 
     /**
@@ -81,10 +81,14 @@ const validationRuleParser: ValidationRuleParserInterface =  {
     prepareRule(rule: InitialRule): Rule {
         
         if (typeof rule === 'function') {
-            rule = new ClosureValidationRule(rule);
+            return new ClosureValidationRule(rule);
         }
 
-        return rule;
+        if (rule instanceof RuleContract) {
+            return rule;
+        }
+
+        return rule.toString();
     },
 
     /**

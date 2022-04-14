@@ -9,9 +9,10 @@ import { getMessage, makeReplacements } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
 import { getNumericRules, isImplicitRule } from './utils/general';
-import { deepFind, dotify, mergeDeep } from './utils/object';
+import { deepFind, dotify } from './utils/object';
 import ErrorBag from './validators/errorBag';
 import RuleContract  from './ruleContract';
+import Lang from './lang';
 
 class Validator {
 
@@ -57,11 +58,11 @@ class Validator {
     private validateAttributes: validateAttributes;
 
 
-    constructor(data: object, rules: InitialRules, customMessages: CustomMesages = {}, lang: string) {
+    constructor(data: object, rules: InitialRules, customMessages: CustomMesages = {}) {
         this.data = data;
         this.customMessages = customMessages;
         this.initalRules = rules;
-        this.lang = lang;
+        this.lang = Lang.getDefaultLang();
         this.addRules(rules);
     };
 

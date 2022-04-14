@@ -8,8 +8,10 @@ export class Rule extends RuleContract {};
 
 export * from './rules/registerRule';
 
-export function make(data: object = {}, rules: Rules = {}, customMessages: CustomMesages = {}, lang: string =  Lang.getDefaultLang()): Validator {
-    return new Validator(data, rules, customMessages, lang);
+export * from './rule';
+
+export function make(data: object = {}, rules: Rules = {}, customMessages: CustomMesages = {}): Validator {
+    return new Validator(data, rules, customMessages);
 };
 
 export function setDefaultLang(lang: string): void {

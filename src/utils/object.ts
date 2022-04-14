@@ -1,5 +1,7 @@
 'use strict';
 
+import RuleContract from '../ruleContract';
+import BaseRule from '../rules/baseRule';
 import { GenericObject } from '../types';
 
 /**
@@ -62,7 +64,7 @@ export function dotify(obj: object, ignoreArray: boolean = false): GenericObject
             let newKey: string = (current ? `${current}.${key}` : key);
 
             if (value && typeof value === 'object' && !(value instanceof Date)) {
-                if (ignoreArray === true && Array.isArray(value) && typeof value[0] !== 'object') {
+                if (ignoreArray === true && Array.isArray(value) && (typeof value[0] !== 'object' || value[0] instanceof RuleContract || value[0] instanceof BaseRule)) {
                     res[newKey] = value;
                 } else {
                     recurse(value, newKey);
