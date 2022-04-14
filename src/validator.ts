@@ -1,12 +1,17 @@
 'use strict';
 
-import { Rules, Messages, CustomMesages, ErrorMessage, ErrorConfig, ImplicitAttributes } from './types';
+import { 
+    Rules, CustomMesages, ErrorMessage, 
+    ImplicitAttributes, Rule, InitialRules 
+} from './types';
 import { builValidationdMethodName } from './utils/build';
 import { getMessage, makeReplacements } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
 import { getNumericRules, isImplicitRule } from './utils/general';
-import { deepFind, dotify } from './utils/object';
+import { deepFind, dotify, mergeDeep } from './utils/object';
+import ErrorBag from './validators/errorBag';
+import RuleContract  from './ruleContract';
 
 class Validator {
 
@@ -28,7 +33,7 @@ class Validator {
     /**
      * This is an unchanged version of the inital rules before being changed for wildcard validations
      */
-    private initalRules: Rules
+    private initalRules: InitialRules;
 
     /**
      * The array of wildcard attributes with their asterisks expanded.
@@ -43,12 +48,8 @@ class Validator {
     /**
      * Hold the error messages
      */
-    private messages: Messages[];
+    private messages: ErrorBag;
 
-    /**
-     * Stores the first error message
-     */
-    private firstMessage: string;
 
     /**
      * Stores an instance of the validateAtteibutes class
@@ -56,7 +57,7 @@ class Validator {
     private validateAttributes: validateAttributes;
 
 
-    constructor(data: object, rules: Rules, customMessages: CustomMesages = {}, lang: string) {
+    constructor(data: object, rules: InitialRules, customMessages: CustomMesages = {}, lang: string) {
         this.data = data;
         this.customMessages = customMessages;
         this.initalRules = rules;
@@ -70,7 +71,7 @@ class Validator {
         return this;
     };
 
-    setRules(rules: Rules): Validator {
+    setRules(rules: InitialRules): Validator {
         this.addRules(rules);
         this.initalRules = rules;
         return this;
@@ -87,9 +88,13 @@ class Validator {
     };
 
 
+    errors(): ErrorBag {
+        return this.messages;
+    }
+
+
     validate(): boolean {
-        this.firstMessage = '';
-        this.messages = [];
+        this.messages = new ErrorBag();
         this.validateAttributes = new validateAttributes(this.data, this.rules);
 
         for(const property in this.rules) {
@@ -100,39 +105,13 @@ class Validator {
             }
         }
 
-        return Object.keys(this.messages).length === 0;
-    };
-
-    /**
-     * Get all the error messages
-     */
-    errors(errorConfig: Partial<ErrorConfig> = {}): object {
-
-        const messages = { ... this.messages };
-
-        if (!errorConfig.withErrorTypes) {
-            Object.keys(messages).map(attribute => messages[attribute] = messages[attribute].map(data => data.message));
-        }
-
-        if (!errorConfig.allMessages) {
-            Object.keys(messages).map(attribute => messages[attribute] = messages[attribute][0]);
-        }
-
-        return messages;
-
-    };
-
-    /**
-     * Get only the first error message from the messages object
-     */
-    firstError(): string {
-        return this.firstMessage;
+        return this.messages.keys().length === 0;
     };
 
     /**
      * Parse the given rules add assign them to the current rules 
      */
-    private addRules(rules: Rules) {
+    private addRules(rules: InitialRules): void {
 
         // The primary purpose of this parser is to expand any "*" rules to the all
         // of the explicit rules needed for the given data. For example the rule
@@ -147,11 +126,11 @@ class Validator {
     /**
      * validate a given attribute against a rule.
      */
-    private validateAttribute(attribute: string, rule: string): void {
+    private validateAttribute(attribute: string, rule: Rule): void {
          
         let parameters: string[] = [];
 
-        [rule ,parameters] = validationRuleParser.parseStringRule(rule);
+        [rule ,parameters] = validationRuleParser.parse(rule);
 
         const keys: string[] = this.getExplicitKeys(attribute);
 
@@ -160,13 +139,32 @@ class Validator {
         }
 
         const value = deepFind(this.data, attribute);
+        const validatable: boolean = this.isValidatable(rule, value);
+
+        if (rule instanceof RuleContract) {
+            return validatable ? this.validateUsingCustomRule(attribute, value, rule) : null;
+        }
+
         const method = `validate${builValidationdMethodName(rule)}`;
 
-        if (this.isValidatable(rule, value) && 
+        if (validatable && 
                 this.validateAttributes[method](value, parameters, attribute) === false
         ) {
             this.addFailure(attribute, rule, value, parameters);
         }
+
+    };
+
+    private validateUsingCustomRule(attribute: string, value: any, rule: RuleContract): void {
+        if (rule.setData(this.data).setLang(this.lang).passes(value, attribute)) {
+            return;
+        }
+
+        this.messages.add(attribute, {
+            error_type: rule.constructor.name, message: makeReplacements(
+                rule.getMessage(), attribute, rule.constructor.name, []
+            )
+        });
 
     };
 
@@ -177,24 +175,17 @@ class Validator {
 
         const hasNumericRule = validationRuleParser.hasRule(attribute, getNumericRules(), this.rules);
 
-        let message: string = makeReplacements(
+        const message: string = makeReplacements(
             getMessage(attribute, rule, value, this.customMessages, hasNumericRule, this.lang),
             attribute, rule, parameters, this.data, hasNumericRule
         );
 
-        this.firstMessage = this.firstMessage || message;
-
-        let error: ErrorMessage = {
+        const error: ErrorMessage = {
             error_type: rule,
             message
         };
 
-        if (Array.isArray(this.messages[attribute])) {
-            this.messages[attribute].push(error);
-        } else {
-            this.messages[attribute] = [error];
-        }
-
+        this.messages.add(attribute, error);
     };
 
     /**
@@ -219,8 +210,8 @@ class Validator {
     /**
      * Determine if the attribute is validatable.
      */
-    private isValidatable(rule: string, value: any) {
-        return typeof value !== 'undefined' || isImplicitRule(rule);
+    private isValidatable(rule: Rule, value: any) {
+        return typeof value !== 'undefined' || (typeof rule === 'string' && isImplicitRule(rule));
     }
 
 

@@ -18,7 +18,7 @@ class ValidateAttributes {
      */
     rules: Rules;
 
-    constructor(data: object, rules: Rules) {
+    constructor(data: object = {}, rules: Rules = {}) {
         this.data = data;
         this.rules = rules;
     };
