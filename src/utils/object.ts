@@ -1,8 +1,7 @@
 'use strict';
 
-import RuleContract from '../ruleContract';
-import BaseRule from '../rules/baseRule';
 import { GenericObject } from '../types';
+import { isArrayOfRules, isRule } from './general';
 
 /**
  * Get value at path of object. If the resolved value is undifined, the returned result will be undefined
@@ -45,7 +44,7 @@ export function deepSet(target: any, path: string|string[], value: any): void {
         }
         deepSet(target[segment], paths, value);
     } else {
-        if (typeof target !== 'object') {
+        if (typeof target !== 'object' || target === null) {
             target = {};
         }
         target[segment] = value;
@@ -55,7 +54,7 @@ export function deepSet(target: any, path: string|string[], value: any): void {
 /**
  * Flatten a multi-dimensional associative array with dots.
  */
-export function dotify(obj: object, ignoreArray: boolean = false): GenericObject {
+export function dotify(obj: object, ignoreRulesArray: boolean = false): GenericObject {
     let res: object = {};
 
     (function recurse(obj: object|any[], current: string = '') {
@@ -63,8 +62,8 @@ export function dotify(obj: object, ignoreArray: boolean = false): GenericObject
             let value: any = obj[key];
             let newKey: string = (current ? `${current}.${key}` : key);
 
-            if (value && typeof value === 'object' && !(value instanceof Date)) {
-                if (ignoreArray === true && Array.isArray(value) && (typeof value[0] !== 'object' || value[0] instanceof RuleContract || value[0] instanceof BaseRule)) {
+            if (value && typeof value === 'object' && !isRule(value) && !(value instanceof Date)) {
+                if (ignoreRulesArray === true && Array.isArray(value) && isArrayOfRules(value)) {
                     res[newKey] = value;
                 } else {
                     recurse(value, newKey);
@@ -82,7 +81,7 @@ export function dotify(obj: object, ignoreArray: boolean = false): GenericObject
  * Check if the value is an object
  */
 export function isObject(value: any) {
-    return typeof value === 'object' && !Array.isArray(value);
+    return value && typeof value === 'object' && !Array.isArray(value);
 };
 
 /**

@@ -2,7 +2,7 @@
 
 import { Rules } from '../types';
 import { toDate } from '../utils/date';
-import { deepFind } from '../utils/object';
+import { deepFind, isObject } from '../utils/object';
 import { getSize, sameType, getNumericRules, isInteger, compare } from '../utils/general';
 import validationRuleParser from './validationRuleParser';
 
@@ -86,7 +86,7 @@ class ValidateAttributes {
      * Validate that an attribute is an object
      */
     validateObject(value: any): boolean {
-        return typeof value === 'object' && !Array.isArray(value);
+        return isObject(value);
     };
 
     /**

@@ -1,6 +1,6 @@
 'use strict';
 
-import { GenericObject, ImplicitAttributes, InitialRule, InitialRules, Rule, Rules, ValidationRuleParserInterface } from '../types';
+import { GenericObject, ImplicitAttributes, InitialRule, Rule, Rules, ValidationRuleParserInterface } from '../types';
 import validationData from './validationData';
 import ClosureValidationRule from '../rules/closureValidationRule';
 import  RuleContract from '../ruleContract';
@@ -14,7 +14,6 @@ const validationRuleParser: ValidationRuleParserInterface =  {
     explodeRules: function(rules: GenericObject, data: object = {}): {rules: Rules, implicitAttributes: ImplicitAttributes} {
 
         let implicitAttributes: ImplicitAttributes = {};
-
 
         for (let key in rules) {
             if (key.indexOf('*') !== -1) { 
@@ -67,10 +66,14 @@ const validationRuleParser: ValidationRuleParserInterface =  {
     /**
      * In case the rules specified by the user are a string seperated with '|' - convert them to an array
      */
-    explodeExplicitRules: function(rules: string|InitialRule[]): Rule[] {
+    explodeExplicitRules: function(rules: InitialRule|InitialRule[]): Rule[] {
         if (typeof rules === 'string') {
-             rules = rules.split('|');
+             return rules.split('|');
         } 
+
+        if (!Array.isArray(rules)) {
+            return [this.prepareRule(rules)];
+        }
 
         return rules.map((rule: InitialRule) => this.prepareRule(rule));
     },
@@ -109,7 +112,7 @@ const validationRuleParser: ValidationRuleParserInterface =  {
 
         let parameters: string[] = [];
         let parameter: string;
-
+        
         if (rule.indexOf(':') !== -1) {
             [rule, parameter] = rule.split(/:(.+)/);
 
@@ -150,7 +153,7 @@ const validationRuleParser: ValidationRuleParserInterface =  {
         searchRules = Array.isArray(searchRules) ? searchRules : [ searchRules ];
 
         for (let i = 0; i < availableRules[attribute].length; i++) {
-            let [ rule, parameters ] = this.parseStringRule(availableRules[attribute][i]);
+            let [ rule, parameters ] = this.parse(availableRules[attribute][i]);
 
             if (searchRules.indexOf(rule) !== -1) {
                 // return the rule and parameters for the first match

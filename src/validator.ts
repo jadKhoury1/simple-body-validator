@@ -8,8 +8,8 @@ import { builValidationdMethodName } from './utils/build';
 import { getMessage, makeReplacements } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
-import { getNumericRules, isImplicitRule } from './utils/general';
-import { deepFind, dotify } from './utils/object';
+import { getNumericRules, isImplicitRule, isRule } from './utils/general';
+import { deepFind, dotify, isObject } from './utils/object';
 import ErrorBag from './validators/errorBag';
 import RuleContract  from './ruleContract';
 import Lang from './lang';
@@ -95,6 +95,10 @@ class Validator {
 
 
     validate(): boolean {
+        if (!isObject(this.data)) {
+            throw 'The data attribute must be an object';
+        }
+
         this.messages = new ErrorBag();
         this.validateAttributes = new validateAttributes(this.data, this.rules);
 
@@ -147,6 +151,10 @@ class Validator {
         }
 
         const method = `validate${builValidationdMethodName(rule)}`;
+
+        if (typeof this.validateAttributes[method] === 'undefined') {
+            throw `Rule ${rule} is not valid`;
+        }
 
         if (validatable && 
                 this.validateAttributes[method](value, parameters, attribute) === false
@@ -212,7 +220,7 @@ class Validator {
      * Determine if the attribute is validatable.
      */
     private isValidatable(rule: Rule, value: any) {
-        return typeof value !== 'undefined' || (typeof rule === 'string' && isImplicitRule(rule));
+        return value !== null && typeof value !== 'undefined' || (typeof rule === 'string' && isImplicitRule(rule));
     }
 
 

@@ -1,5 +1,8 @@
 'use strict';
 
+import RuleContract from '../ruleContract';
+import BaseRule from '../rules/baseRule';
+
 
 const implicitRues: string[] = [
     'accepted', 'filled', 'present', 'required', 'required_if', 'required_unless',
@@ -40,6 +43,30 @@ export function sameType(value: any, otherValue: any): boolean {
 export function isInteger(value: any): boolean {
     return isNaN(value) === false && value % 1 === 0;
 };
+
+/**
+ * Check if the value can be considered as rule
+ */
+export function isRule(value: any): boolean {
+    return typeof value === 'string' || 
+           typeof value === 'function' ||
+           value instanceof RuleContract ||
+           value instanceof BaseRule;
+
+};
+
+/**
+ * Check if the array contain any potentiel valid rule
+ */
+export function isArrayOfRules(values: any[]): boolean {
+    for (let i = 0; i < values.length; i++) {
+        if (isRule(values[i])) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 /**
  * Check if the rule is related to size
