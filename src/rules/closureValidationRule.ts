@@ -1,7 +1,7 @@
 'use strict';
 
 import { ValidationCallback } from '../types';
-import RuleContract  from '../ruleContract';
+import RuleContract  from './ruleContract';
 
 class ClosureValidationRule extends RuleContract {
 

@@ -69,7 +69,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
     }
 
     // get message from local object
-    return validationMessages[rule];
+    return validationMessages[rule] || '';
     
 };
 

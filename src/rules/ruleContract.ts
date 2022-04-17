@@ -1,9 +1,8 @@
 'use strict';
 
 
-import Lang from './lang';
-import { Rules } from './types';
-import { deepFind } from './utils/object';
+import Lang from '../lang';
+import { deepFind } from '../utils/object';
 
 export default class RuleContract {
 

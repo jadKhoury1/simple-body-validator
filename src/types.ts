@@ -1,6 +1,6 @@
 'use strict';
 
-import RuleContract  from './ruleContract';
+import RuleContract  from './rules/ruleContract';
 import BaseRule from './rules/baseRule';
 
 

@@ -1,10 +1,13 @@
 import { CustomMesages, Rules } from './types';
 import Validator from './validator';
 import Lang from './lang';
-import RuleContract from './ruleContract';
+import RuleContract from './rules/ruleContract';
+import ImplicitRuleContract from './rules/implicitRuleContract';
 
 
 export class Rule extends RuleContract {};
+
+export class ImplicitRule extends ImplicitRuleContract {};
 
 export * from './rules/registerRule';
 

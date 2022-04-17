@@ -3,7 +3,7 @@
 import { GenericObject, ImplicitAttributes, InitialRule, Rule, Rules, ValidationRuleParserInterface } from '../types';
 import validationData from './validationData';
 import ClosureValidationRule from '../rules/closureValidationRule';
-import  RuleContract from '../ruleContract';
+import  RuleContract from '../rules/ruleContract';
 
 
 const validationRuleParser: ValidationRuleParserInterface =  {

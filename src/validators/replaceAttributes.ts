@@ -1,6 +1,7 @@
 import { ReplaceAttribueInterface } from '../types';
 import { toDate } from '../utils/date';
 import { getSize } from '../utils/general';
+import { deepFind } from '../utils/object';
 
 const replaceAttributes: ReplaceAttribueInterface = {
 
@@ -127,12 +128,13 @@ const replaceAttributes: ReplaceAttribueInterface = {
      */
     replaceGt: function (message: string, parameters: string[], data: object, hasNumericRule: boolean): string {
         const [ value ] = parameters;
+        const result = deepFind(data, value);
 
-        if (typeof data[value] === 'undefined') {
-            return message.replace(':value', parameters[0]);
+        if (typeof result === 'undefined') {
+            return message.replace(':value', value);
         }
 
-        return message.replace(':value', getSize(data[value], hasNumericRule).toString());
+        return message.replace(':value', getSize(result, hasNumericRule).toString());
     },
 
     /**

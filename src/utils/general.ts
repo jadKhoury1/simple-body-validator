@@ -1,7 +1,9 @@
 'use strict';
 
-import RuleContract from '../ruleContract';
+import RuleContract from '../rules/ruleContract';
 import BaseRule from '../rules/baseRule';
+import { Rule } from '../types';
+import ImplicitRuleContract from '../rules/implicitRuleContract';
 
 
 const implicitRues: string[] = [
@@ -84,8 +86,17 @@ export function isSizeRule(rule: string): boolean {
 /**
  * Check if rule implies that the field is required
  */
-export function isImplicitRule(rule: string): boolean {
-    return implicitRues.indexOf(rule) !== -1;
+export function isImplicitRule(rule: Rule): boolean {
+
+    if (rule instanceof ImplicitRuleContract) {
+        return true;
+    }
+
+    if (typeof rule === 'string') {
+        return implicitRues.indexOf(rule) !== -1;
+    }
+
+    return false;
 };
 
 /**

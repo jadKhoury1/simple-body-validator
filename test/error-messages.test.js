@@ -1,6 +1,7 @@
 const assert = require('assert');
 const { make, setTranslationPath, setDefaultLang } = require('../lib/index');
 
+setTranslationPath(__dirname + '/lang');
 
 describe('Translation', function() {
     it ('By default if no default lang was specified the en language should be used', function() {
@@ -10,7 +11,6 @@ describe('Translation', function() {
         assert.equal(validator.errors().first(), 'The name must be a string.');
     });
     it ('If path was defined, the default message should be fetched from path if available', function() {
-        setTranslationPath(__dirname + '/lang');
         setDefaultLang('te');
         const validator = make({}, { name: 'required' });
 

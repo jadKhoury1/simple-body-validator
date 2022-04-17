@@ -11,7 +11,7 @@ import validationRuleParser from './validators/validationRuleParser';
 import { getNumericRules, isImplicitRule, isRule } from './utils/general';
 import { deepFind, dotify, isObject } from './utils/object';
 import ErrorBag from './validators/errorBag';
-import RuleContract  from './ruleContract';
+import RuleContract  from './rules/ruleContract';
 import Lang from './lang';
 
 class Validator {
@@ -157,7 +157,7 @@ class Validator {
         }
 
         if (validatable && 
-                this.validateAttributes[method](value, parameters, attribute) === false
+                !this.validateAttributes[method](value, parameters, attribute)
         ) {
             this.addFailure(attribute, rule, value, parameters);
         }
@@ -220,7 +220,7 @@ class Validator {
      * Determine if the attribute is validatable.
      */
     private isValidatable(rule: Rule, value: any) {
-        return value !== null && typeof value !== 'undefined' || (typeof rule === 'string' && isImplicitRule(rule));
+        return value !== null && typeof value !== 'undefined' ||  isImplicitRule(rule);
     }
 
 
