@@ -3,14 +3,14 @@ import Validator from './validator';
 import Lang from './lang';
 import RuleContract from './rules/ruleContract';
 import ImplicitRuleContract from './rules/implicitRuleContract';
+import { default as PasswordRule } from './rules/password';
 
 
 export class Rule extends RuleContract {};
-
 export class ImplicitRule extends ImplicitRuleContract {};
+export class Password extends PasswordRule {};
 
 export * from './rules/registerRule';
-
 export * from './rule';
 
 export function make(data: object = {}, rules: Rules = {}, customMessages: CustomMesages = {}): Validator {

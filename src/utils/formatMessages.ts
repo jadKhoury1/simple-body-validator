@@ -78,7 +78,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
  */
 export function makeReplacements(message: string, attribute: string, rule: string, parameters: string[], data: object = {}, hasNumericRule: boolean = false): string {
 
-    message = message.replace(':attribute', attribute.replace('_', ' '));
+    message = message.replace(':attribute', attribute.replace(/_/g, ' '));
 
     const methodName = `replace${builValidationdMethodName(rule)}`;
 

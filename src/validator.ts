@@ -13,6 +13,7 @@ import { deepFind, dotify, isObject } from './utils/object';
 import ErrorBag from './validators/errorBag';
 import RuleContract  from './rules/ruleContract';
 import Lang from './lang';
+import Password from './rules/password';
 
 class Validator {
 
@@ -42,11 +43,6 @@ class Validator {
     private implicitAttributes: ImplicitAttributes;
 
     /**
-     * Custom mesages returrned based on the error 
-     */
-    private customMessages: CustomMesages;
-
-    /**
      * Hold the error messages
      */
     private messages: ErrorBag;
@@ -56,6 +52,11 @@ class Validator {
      * Stores an instance of the validateAtteibutes class
      */
     private validateAttributes: validateAttributes;
+
+    /**
+     * Custom mesages returrned based on the error 
+     */
+    customMessages: CustomMesages;
 
 
     constructor(data: object, rules: InitialRules, customMessages: CustomMesages = {}) {
@@ -87,6 +88,7 @@ class Validator {
         this.customMessages = customMessages;
         return this;
     };
+
 
 
     errors(): ErrorBag {
@@ -165,15 +167,28 @@ class Validator {
     };
 
     private validateUsingCustomRule(attribute: string, value: any, rule: RuleContract): void {
-        if (rule.setData(this.data).setLang(this.lang).passes(value, attribute)) {
+
+        rule.setData(this.data).setLang(this.lang);
+
+        if (rule instanceof Password) {
+            rule.setValidator(this);
+        }
+
+        if (rule.passes(value, attribute)) {
             return;
         }
 
-        this.messages.add(attribute, {
-            error_type: rule.constructor.name, message: makeReplacements(
-                rule.getMessage(), attribute, rule.constructor.name, []
-            )
-        });
+        let result: object|string = rule.getMessage();
+        let messages: object = typeof result === 'string' ? [ result ] : result;
+
+
+        for(let key in messages) {
+            this.messages.add(attribute, {
+                error_type: rule.constructor.name, message: makeReplacements(
+                    messages[key], attribute, rule.constructor.name, []
+                )
+            });
+        }
 
     };
 

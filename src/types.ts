@@ -29,7 +29,7 @@ export interface CustomMesages {
 };
 
 export interface ErrorMessage {
-    error_type: string,
+    error_type?: string,
     message: string,
 };
 
@@ -43,7 +43,7 @@ export interface Messages {
 }
 
 export interface ValidationRuleParserInterface {
-    explodeRules: (rules: Rules, data: Object) => { rules: Rules, implicitAttributes: ImplicitAttributes};
+    explodeRules: (rules: Rules, data: object) => { rules: Rules, implicitAttributes: ImplicitAttributes};
     explodeWildCardRules:(results: object, attribute: string, data: object, implicitAttributes: ImplicitAttributes) => object;
     explodeExplicitRules: (rule: string|InitialRule[]) => Rule[];
     prepareRule: (rule: InitialRule) => Rule;

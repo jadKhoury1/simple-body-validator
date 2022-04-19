@@ -9,7 +9,7 @@ export default class RuleContract {
     /**
      * The validation error message.
      */
-    message: string = '';
+    message: string|object = '';
 
     /**
      * All of the data under validation.
@@ -31,7 +31,7 @@ export default class RuleContract {
     /**
      * Get the validation error message.
      */
-    getMessage(): string {
+    getMessage(): string|object {
         return this.message;
     };
 
@@ -55,6 +55,7 @@ export default class RuleContract {
      * Get the translated error message based on the specified path
      */
     trans(path: string, params: object = {}): string {
+
         const validatonMessages = Lang.get(this.lang);
         let message: string = deepFind(validatonMessages, path) || '';
 
