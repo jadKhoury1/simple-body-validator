@@ -17,6 +17,8 @@ export default {
     boolean: 'The :attribute field must be true or false.',
     date: 'The :attribute is not a valid date.',
     date_equals: 'The :attribute must be a date equal to :date.',
+    declined: 'The :attribute must be declined.',
+    declined_if: 'The :attribute must be declined when :other is :value.',
     digits: 'The :attribute must be :digits digits.',
     digits_between: 'The :attribute must be between :min and :max digits.',
     email: 'The :attribute must be a valid email address.',
