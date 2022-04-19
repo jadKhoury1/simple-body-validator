@@ -5,6 +5,22 @@ import { deepFind } from '../utils/object';
 
 const replaceAttributes: ReplaceAttribueInterface = {
 
+
+    /**
+     * Replace all place-holders for the required_if rule.
+     */
+    replaceAcceptedIf: function (message: string, parameters: string[]): string {
+        parameters[0] = parameters[0].replace('_', ' ');
+
+        const values = { 
+            ':other': parameters[0].replace('_', ' '),
+            ':value': parameters[1]
+        }
+        
+        return message.replace(/:other|:value/gi, matched => values[matched]);
+
+    },
+
     /**
      * Replace all place-holders for the after rule.
      */

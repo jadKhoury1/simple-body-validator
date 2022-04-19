@@ -64,6 +64,7 @@ export interface ValidationDataInterface {
 };
 
 export interface ReplaceAttribueInterface {
+    replaceAcceptedIf: (message: string, parameters: string[]) => string;
     replaceBefore: (message: string, parameters: string[]) => string;
     replaceBeforeOrEqual: (message: string, parameters: string[]) => string;
     replaceAfter: (message: string, parameters: string[]) => string;

@@ -23,6 +23,38 @@ class ValidateAttributes {
         this.rules = rules;
     };
 
+    /**
+     * Validate that an attribute was "accepted".
+     *  
+     * This validation rule implies the attribute is "required".
+     */
+    validateAccepted(value: any): boolean {
+        const acceptable  = ['yes', 'on', '1', 1, true, 'true'];
+        return this.validateRequired(value) && acceptable.indexOf(value) !== -1;
+    }
+
+
+    /**
+     * Validate that an attribute was "accepted" when another attribute has a given value.
+     */
+    validateAcceptedIf(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(2, parameters, 'accepted_if');
+
+        const other = deepFind(this.data, parameters[0]);
+
+        if (!other) {
+            return true;
+        }
+
+        const values = parameters.slice(1);
+
+        if (values.indexOf(other) !== -1) {
+            return this.validateAccepted(value);
+        }
+
+        return true;
+    }
+
 
     /**
      *  Validate the date is after a given date. 
