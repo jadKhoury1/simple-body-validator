@@ -7,7 +7,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
 
 
     /**
-     * Replace all place-holders for the required_if rule.
+     * Replace all place-holders for the accepted_if rule.
      */
     replaceAcceptedIf: function (message: string, parameters: string[]): string {
         parameters[0] = parameters[0].replace('_', ' ');
@@ -67,6 +67,21 @@ const replaceAttributes: ReplaceAttribueInterface = {
      */
     replaceDateEquals: function (message: string, parameters: string[]): string {
         return this.replaceBefore(message, parameters);
+    },
+
+    /**
+     *  Replace all place-holders for the declined_if rule.
+     */
+    replaceDeclinedIf: function (message: string, parameters: string[]): string {
+        parameters[0] = parameters[0].replace('_', ' ');
+
+        const values = { 
+            ':other': parameters[0].replace('_', ' '),
+            ':value': parameters[1]
+        }
+        
+        return message.replace(/:other|:value/gi, matched => values[matched]);
+
     },
 
     /**

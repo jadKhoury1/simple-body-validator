@@ -71,6 +71,7 @@ export interface ReplaceAttribueInterface {
     replaceAfterOrEqual: (message: string, parameters: string[]) => string;
     replaceBetween: (message: string, parameters: string[]) => string;
     replaceDateEquals: (message: string, parameters: string[]) => string;
+    replaceDeclinedIf: (message: string, paramaters: string[]) => string;
     replaceDigits: (message: string, paramaters: string[]) => string;
     replaceDigitsBetween: (message: string, paramters: string[]) => string;
     replaceEndsWith: (message: string, paramters: string[]) => string;

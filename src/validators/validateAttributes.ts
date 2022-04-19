@@ -199,6 +199,38 @@ class ValidateAttributes {
     };
 
     /**
+     * Validate that an attribute was "declined".
+     * 
+     * This validation rule implies the attribute is "required".
+     */
+    validateDeclined(value: any): boolean {
+        const acceptable = ['no', 'off', '0', 0, false, 'false'];
+
+        return this.validateRequired(value) && acceptable.indexOf(value) !== -1;
+    };
+
+    /**
+     * Validate that an attribute was "declined" when another attribute has a given value. 
+     */
+    validateDeclinedIf(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(2, parameters, 'declined_if');
+
+        const other = deepFind(this.data, parameters[0]);
+
+        if (!other) {
+            return true;
+        }
+
+        const values = parameters.slice(1);
+
+        if (values.indexOf(other) !== -1) {
+            return this.validateDeclined(value);
+        }
+
+        return true;
+    };
+
+    /**
      *  Validate that an attribute has a given number of digits.
      */
     validateDigits(value: any, parameters: any[]): boolean {
