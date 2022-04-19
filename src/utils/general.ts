@@ -7,7 +7,8 @@ import ImplicitRuleContract from '../rules/implicitRuleContract';
 
 
 const implicitRues: string[] = [
-    'accepted', 'filled', 'present', 'required', 'required_if', 'required_unless',
+    'accepted', 'accepted_if', 'declined', 'declined_if', 
+    'filled', 'present', 'required', 'required_if', 'required_unless',
     'required_with', 'required_with_all', 'required_without', 'required_without_all'
 ];
 
