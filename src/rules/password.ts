@@ -102,7 +102,7 @@ class Password extends RuleContract {
         this.minSymbols = symbols;
         return this;
     }
-    
+
     /**
      * Determine if the validation rule passes.
      */
@@ -180,7 +180,7 @@ class Password extends RuleContract {
             if (!value || pattern.test(value) === false) {
                 this.validator.errors().add(attribute, {
                     error_type: 'min_symbols',
-                    message: this.trans(`password.${this.minNumbers === 1 ? 'symbol' : 'symbols'}`, { 
+                    message: this.trans(`password.${this.minSymbols === 1 ? 'symbol' : 'symbols'}`, { 
                         attribute: formattedAttribute, amount: this.minSymbols 
                     }) 
                 })
