@@ -154,7 +154,7 @@ class Validator {
 
         const method = `validate${builValidationdMethodName(rule)}`;
 
-        if (typeof this.validateAttributes[method] === 'undefined') {
+        if (rule !== '' && typeof this.validateAttributes[method] === 'undefined') {
             throw `Rule ${rule} is not valid`;
         }
 
