@@ -16,6 +16,7 @@ export default {
         object: 'The :attribute must have between :min and :max items.',
     },
     boolean: 'The :attribute field must be true or false.',
+    confirmed: 'The :attribute confirmation does not match.',
     date: 'The :attribute is not a valid date.',
     date_equals: 'The :attribute must be a date equal to :date.',
     declined: 'The :attribute must be declined.',
@@ -38,6 +39,7 @@ export default {
     },
     in: 'The selected :attribute is invalid.',
     integer: 'The :attribute must be an integer.',
+    json: 'The :attribute must be a valid JSON string',
     lt: {
         number: 'The :attribute must be less than :value.',
         string: 'The :attribute must be less than :value characters.',
