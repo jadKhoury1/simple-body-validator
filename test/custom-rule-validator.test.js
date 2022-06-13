@@ -27,8 +27,8 @@ describe('Register Rule', function() {
             this.requireParameterCount(1, paramters, 'complex_telephone');
             const pattern = new RegExp('^\\+' + paramters[0] + ' \\d{3}-\\d{3}-\\d{4}$');
             return value.match(pattern);
-        }, function (message, paramters) {
-            return message.replace(':code', paramters[0]);
+        }, function (message, parameters) {
+            return message.replace(':code', parameters[0]);
         });
 
         const validator = make();
@@ -49,7 +49,7 @@ describe('Register Rule', function() {
             assert.ok(validator.validate());
         });
     });
-    describe('Registering a already existing rule should not work', function() {
+    describe('Registering an already existing rule should not work', function() {
         register('required', () => false);
         register('required_test', () => false);
         const validator = make();
