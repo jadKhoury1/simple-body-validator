@@ -150,8 +150,8 @@ class ValidateAttributes {
      */
      validateBetween(value: any, parameters: number[], attribute: string): boolean {
 
-        if (typeof value !== 'string' && typeof value !== 'number' && !Array.isArray(value)) {
-            throw 'Validation rule between requires the field under validation to be a number, string or array.';
+        if (typeof value !== 'string' && typeof value !== 'number' && typeof value !== 'object') {
+            throw 'Validation rule between requires the field under validation to be a number, string, array, or object.';
         }
 
         this.requireParameterCount(2, parameters, 'between');
@@ -188,6 +188,12 @@ class ValidateAttributes {
         return acceptable.indexOf(value) !== -1;
     };
 
+    /**
+     * Validate that an attribute has matching confirmation.
+     */
+    validateConfirmed(value: any, parameters: any, attribute: string): boolean {
+        return this.validateSame(value, [`${attribute}_confirmation`]);
+    };
 
     /**
      * Validate that an attribute is a valid date.
@@ -235,6 +241,17 @@ class ValidateAttributes {
         }
 
         return true;
+    };
+
+    /**
+     * Validate that an attribute is different from another attribute.
+     */
+    validateDifferent(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(1, parameters, 'different');
+
+        const other = deepFind(this.data, parameters[0]);
+        
+        return value !== other;
     };
 
     /**
@@ -293,6 +310,8 @@ class ValidateAttributes {
         return /^\d+$/.test(value) && valueLength >= min && valueLength <= max;
     };
 
+
+
     /**
      * Validate that an attribute is a valid email address.
      */
@@ -323,6 +342,33 @@ class ValidateAttributes {
         }
 
         return false;
+    };
+
+    /**
+     * Validate that two attributes match.
+     */
+    validateSame(value: any, paramaters: string[]): boolean {
+        this.requireParameterCount(1, paramaters, 'same');
+
+        const other = deepFind(this.data, paramaters[0]);
+
+        return value === other;
+    };
+
+    /**
+     * Validate the size of an attribute.
+     */
+    validateSize(value: any, parameters: number[], attribute: string): boolean {
+        this.requireParameterCount(1, parameters, 'size');
+
+        return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) === parameters[0];
+    };
+
+    /**
+     * Validate Optinial attributes. Always return true, just lets us put sometimes in rule.
+     */
+    validateSometimes(): boolean {
+        return true;
     };
 
     /**
@@ -514,7 +560,25 @@ class ValidateAttributes {
 
         return isInteger(value);
     };
-    
+
+    /**
+     * Validate that the attribute is a valid JSON string
+     */
+    validateJson(value: any): boolean {
+        if (typeof value !== 'string') {
+            throw 'The field inder validation must be a string';
+        }
+
+        try {
+            JSON.parse(value);
+        } catch (e) {
+            return false;
+        }
+
+        return true;
+    };
+
+
     /**
      * Validate that an attribute is greater than another attribute.
      */
