@@ -13,6 +13,7 @@ export default {
         number: 'The :attribute must be between :min and :max.',
         string: 'The :attribute must be between :min and :max characters.',
         array: 'The :attribute must have between :min and :max items.',
+        object: 'The :attribute must have between :min and :max items.',
     },
     boolean: 'The :attribute field must be true or false.',
     date: 'The :attribute is not a valid date.',
