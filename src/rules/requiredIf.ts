@@ -21,7 +21,7 @@ class RequiredIf extends BaseRule {
     /**
      * Convert the rule to a validation string.
      */
-    toString() {
+    toString(): string {
         if (typeof this.condition === 'function') {
             return this.condition() ? 'required' : '';
         }

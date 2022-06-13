@@ -85,7 +85,7 @@ export interface ReplaceAttribueInterface {
     replaceLt: (message: string, parameters: string[], data: object, hasNumericRule: boolean) => string;
     replaceGte: (message: string, parameters: string[], data: object, hasNumericRule: boolean) => string;
     replaceLte: (message: string, parameters: string[], data: object, hasNumericRule: boolean) => string;
-    replaceRequiredIf: (message: string, parameters: any) => string;
+    replaceRequiredIf: (message: string, parameters: any, data: object) => string;
     replaceStartsWith: (message: string, paramters: string[]) => string;
 };
 

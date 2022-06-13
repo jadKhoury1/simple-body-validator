@@ -192,12 +192,13 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all place-holders for the required_if rule.
      */
-    replaceRequiredIf: function (message: string, parameters: string[]): string {
-        parameters[0] = parameters[0].replace('_', ' ');
+    replaceRequiredIf: function (message: string, parameters: string[], data: object): string {
+        const [ value ] = parameters;
+        const result = deepFind(data, value);
 
         const values = { 
-            ':other': parameters[0].replace('_', ' '),
-            ':value': parameters[1]
+            ':other': value.replace('_', ' '),
+            ':value': result
         }
         
         return message.replace(/:other|:value/gi, matched => values[matched]);
