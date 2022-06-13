@@ -5,8 +5,8 @@ const validator = make();
 
 
 describe('Between', function() {
-    it('The field under validation can only be a number, string or array', function() {
-        validator.setData({ value: { name: 'test' } }).setRules({ value: 'between:1,2' });
+    it('The field under validation can only be a number, string, array, or object.', function() {
+        validator.setData({ value: () => console.log('test') }).setRules({ value: 'between:1,2' });
         assert.throws(() => validator.validate());
     });
     it('Validation rule between requires at least 2 parameters', function() {
@@ -64,6 +64,19 @@ describe('Between', function() {
         });
         it('Validation should succeed if array length matches the specified range', function() {
             validator.setData({ value: [1,2] });
+            assert.ok(validator.validate());
+        });
+    });
+    describe('The length of the object must match the specified range', function() {
+        it('Validation should fail if object length does not match the specified range', function() {
+            validator.setData({ value: { name: 'jad' }}).setRules({ value: 'between:2,3'});
+            assert.equal(validator.validate(), false);
+        }); 
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The value must have between 2 and 3 items.');
+        });
+        it('Validation should succeed if object length matches the specified range', function() {
+            validator.setData({ value: { first: 'jad', last: 'khoury' }});
             assert.ok(validator.validate());
         });
     });
