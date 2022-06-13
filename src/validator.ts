@@ -53,6 +53,13 @@ class Validator {
      */
     private validateAttributes: validateAttributes;
 
+
+    /**
+     * Flag that defines wether or not validation should stop on first failure
+     */
+    private stopOnFirstFailureFlag: boolean;
+
+
     /**
      * Custom mesages returrned based on the error 
      */
@@ -84,16 +91,19 @@ class Validator {
         return this;
     };
 
-    setCustomMessages(customMessages: CustomMesages = {}) {
+    setCustomMessages(customMessages: CustomMesages = {}): Validator {
         this.customMessages = customMessages;
         return this;
     };
 
-
+    stopOnFirstFailure(stopOnFirstFailure: boolean = true): Validator {
+        this.stopOnFirstFailureFlag = stopOnFirstFailure;
+        return this;
+    };
 
     errors(): ErrorBag {
         return this.messages;
-    }
+    };
 
 
     validate(): boolean {
@@ -108,11 +118,23 @@ class Validator {
             if (this.rules.hasOwnProperty(property) && Array.isArray(this.rules[property])) {
                 for (let i = 0; i < this.rules[property].length; i++) {
                     this.validateAttribute(property, this.rules[property][i]);
+
+                    if (this.messages.keys().length > 0 && this.stopOnFirstFailureFlag === true) {
+                        return false;
+                    }
+
+                    if (this.shouldStopValidating(property)) {
+                        break;
+                    }
                 }
             }
         }
 
         return this.messages.keys().length === 0;
+    };
+
+    private shouldStopValidating(attribute: string): boolean {
+       return this.messages.has(attribute) && validationRuleParser.hasRule(attribute, ['bail'], this.rules);
     };
 
     /**

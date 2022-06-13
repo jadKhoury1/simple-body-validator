@@ -122,6 +122,13 @@ class ValidateAttributes {
     };
 
     /**
+     * Always returns true - this method will be used in conbination with other rules and will be used to stop validation of first failure
+     */
+    validateBail(): boolean {
+        return true;
+    };
+
+    /**
      *  Validate the date is before a given date. 
      */
      validateBefore(value: any, parameters: string[]): boolean {
