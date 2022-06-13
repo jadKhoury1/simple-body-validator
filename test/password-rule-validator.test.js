@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { make, Password, Rule, setTranslationPath, setDefaultLang } = require('../lib/index');
+const { make, Password, Rule, setTranslationPath } = require('../lib/index');
 
 
 setTranslationPath(__dirname + '/lang');
@@ -15,7 +15,7 @@ describe('Password Validation', function() {
         validator.setData({ password: 'test' });
         assert.equal(validator.validate(), false);
     });
-    it('The defaukt validation should succeed if the password matches the default rules', function() {
+    it('The default validation should succeed if the password matches the default rules', function() {
         validator.setData({ password: 'password' });
         assert.ok(validator.validate());
     });
