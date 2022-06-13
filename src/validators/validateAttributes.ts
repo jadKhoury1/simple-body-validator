@@ -457,7 +457,11 @@ class ValidateAttributes {
     /**
      * Validate that an attribute is numeric.
      */
-    validateNumeric(value: any): boolean {
+    validateNumeric(value: any, parameters: number[], attribute: string): boolean {
+        if (validationRuleParser.hasRule(attribute, 'strict', this.rules) && typeof value !== 'number') {
+            return false;
+        }
+
         return isNaN(value) === false;
     };
 
@@ -495,10 +499,15 @@ class ValidateAttributes {
     /**
      * Validate that an attribute is an integer.
      */
-    validateInteger(value: any): boolean {
+    validateInteger(value: any, parameters: number[], attribute: string): boolean {
+
+        if (validationRuleParser.hasRule(attribute, 'strict', this.rules) && typeof value !== 'number') {
+            return false;
+        }
+
         return isInteger(value);
     };
-
+    
     /**
      * Validate that an attribute is greater than another attribute.
      */
@@ -618,32 +627,6 @@ class ValidateAttributes {
      */
     validateNotIn(value: any, parameters: string[]): boolean {
         return !this.validateIn(value, parameters);
-    };
-
-    /**
-     * Validate that an attribute passes a regular expression check.
-     */
-    validateRegex(value: any, parameters: string[]): boolean {
-        if (typeof value !== 'string') {
-            return false;
-        }
-
-        this.requireParameterCount(1, parameters, 'regex');
-
-        return value.match(/^[a-z]* [a-z]*/) === null ? false : true;
-    };
-
-     /**
-      * Validate that an attribute does not pass a regular expression check.
-      */
-    validateNotRegex(value: any, parameters: string[]): boolean {
-        if (typeof value !== 'string') {
-            return false;
-        }
-
-        this.requireParameterCount(1, parameters, 'not_regex');
-
-        return value.match(/^[a-z]* [a-z]*/) === null ? true : false;
     };
 
     /**
