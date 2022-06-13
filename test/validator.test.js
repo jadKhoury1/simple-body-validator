@@ -276,6 +276,22 @@ describe('Ends With', function() {
   });
 });
 
+describe('Json', function() {
+  describe('The field under validation must be a valid JSON string', function() {
+    it('Validation should fail in case value is not a valid JSON string', function() {
+      validator.setData({ value: 'Jad Khoury' }).setRules({ value: 'json' });
+      assert.equal(validator.validate(), false);
+    });
+    it('An error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must be a valid JSON string');
+    });
+    it('Validation should succeed in case value is a valid JSON string', function() {
+      validator.setData({ value: '{"first": "jad", "last": "khoury"}'});
+      assert.ok(validator.validate());
+    });
+  });
+})
+
 describe('Object', function() {
   describe('The field under validation must be an object', function() {
     it('Validation should fail in case value is not an object', function() {

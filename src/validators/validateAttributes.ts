@@ -565,10 +565,6 @@ class ValidateAttributes {
      * Validate that the attribute is a valid JSON string
      */
     validateJson(value: any): boolean {
-        if (typeof value !== 'string') {
-            throw 'The field inder validation must be a string';
-        }
-
         try {
             JSON.parse(value);
         } catch (e) {
