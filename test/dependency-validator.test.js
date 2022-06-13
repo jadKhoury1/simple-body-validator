@@ -84,3 +84,23 @@ describe('Required Without All', function() {
 
     });
 });
+
+describe('Confirmed', function() {
+    describe('The field under validation must have a matching field if {field}_confirmation.', function() {
+        it('Validation shoulf fail if the {field}_confirmation is not available.', function() {
+            validator.setData({ password: 'test' }).setRules({ password: 'confirmed'});
+            assert.equal(validator.validate(), false);
+        });
+        it ('Validation should fail if the {field}_confirmation value does not match the field value.', function() {
+            validator.setData({ password: 'test', password_confirmation: '1234'});
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned to the user in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The password confirmation does not match.');
+        });
+        it('Validation should succeed if the {field}_confirmation value matches the field value.', function() {
+            validator.setData({ password: 'test', password_confirmation: 'test'});
+            assert.ok(validator.validate());
+        });
+    });
+});
