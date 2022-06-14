@@ -14,6 +14,7 @@ import ErrorBag from './validators/errorBag';
 import RuleContract  from './rules/ruleContract';
 import Lang from './lang';
 import Password from './rules/password';
+import validationData from './validators/validationData';
 
 class Validator {
 
@@ -150,7 +151,7 @@ class Validator {
 
         this.rules = response.rules;
         this.implicitAttributes = response.implicitAttributes;
-    }
+    };
 
     /**
      * validate a given attribute against a rule.
@@ -168,7 +169,7 @@ class Validator {
         }
 
         const value = deepFind(this.data, attribute);
-        const validatable: boolean = this.isValidatable(rule, value);
+        const validatable: boolean = this.isValidatable(attribute, value, rule);
 
         if (rule instanceof RuleContract) {
             return validatable ? this.validateUsingCustomRule(attribute, value, rule) : null;
@@ -251,14 +252,41 @@ class Validator {
             }
             return result || parameter;
         });
-    }
+    };
 
     /**
      * Determine if the attribute is validatable.
      */
-    private isValidatable(rule: Rule, value: any) {
-        return value !== null && typeof value !== 'undefined' ||  isImplicitRule(rule);
-    }
+    private isValidatable(attribute: string, value: any, rule: Rule): boolean {
+        return  (typeof value !== 'undefined' ||  isImplicitRule(rule)) &&
+                this.passesOptionalCheck(attribute) &&
+                this.isNotNullIfMarkedAsNullable(attribute, rule);
+    };
+
+    /**
+     * Determine if the attribute passes any optional check.
+     */
+    private passesOptionalCheck(attribute: string): boolean {
+        if (! validationRuleParser.hasRule(attribute, ['sometimes'], this.rules)) {
+            return true;
+        }
+
+        const data = validationData.initializeAndGatherData(attribute, this.data);
+
+        return data.hasOwnProperty(attribute)
+            || this.data.hasOwnProperty(attribute);
+    };
+
+    /**
+     * Determine if the attribute fails the nullable check.
+     */
+    private isNotNullIfMarkedAsNullable(attribute: string, rule: Rule): boolean {
+        if (isImplicitRule(rule) || ! validationRuleParser.hasRule(attribute, ['nullable'], this.rules)) {
+            return true;
+        }
+
+        return deepFind(this.data, attribute) !== null;
+    };
 
 
     /**
@@ -274,7 +302,7 @@ class Validator {
         }
 
         return attribute;
-    }
+    };
 
     /**
      * Get the explicit keys from an attribute flattened with dot notation.
