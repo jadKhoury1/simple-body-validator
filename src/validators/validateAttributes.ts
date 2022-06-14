@@ -429,6 +429,26 @@ class ValidateAttributes {
         return true;
     };
 
+    /**
+     * Validate that an attribute exists when another attribute does not have a given value.
+     */
+    validateRequiredUnless(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(2, parameters, 'required_unless');
+        
+        const other = deepFind(this.data, parameters[0]);
+
+        if (!other) {
+            return true;
+        }
+
+        const values = parameters.slice(1);
+
+        if (values.indexOf(other) === -1) {
+            return this.validateRequired(value);
+        }
+
+        return true;
+    };
 
     /**
      * Validate that an attribute exists when any other attribute exists.
@@ -688,6 +708,15 @@ class ValidateAttributes {
         return paramters.indexOf(value.toString()) !== -1;
   
     };
+
+    /**
+     * "Indicate" validation should pass if value is null
+     * 
+     * Always returns true, just lets us put "nullable" in rules.
+     */
+    validateNullable(): boolean {
+        return true;
+    }
 
     /**
      * Validate an attribute is not contained within a list of values.

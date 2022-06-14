@@ -193,17 +193,31 @@ const replaceAttributes: ReplaceAttribueInterface = {
      * Replace all place-holders for the required_if rule.
      */
     replaceRequiredIf: function (message: string, parameters: string[], data: object): string {
-        const [ value ] = parameters;
-        const result = deepFind(data, value);
+        const [ other ] = parameters;
+        const result = deepFind(data, other);
 
         const values = { 
-            ':other': value.replace('_', ' '),
+            ':other': other.replace('_', ' '),
             ':value': result
         }
         
         return message.replace(/:other|:value/gi, matched => values[matched]);
 
-    }
+    },
+
+    /**
+     * Replace all the place-holders for the required_unless rule.
+     */
+    replaceRequiredUnless: function(message: string, parameters: string[]): string {
+        const [other] = parameters;
+
+        const values = {
+            ':other': other.replace('_', ' '),
+            ':values': parameters.slice(1).join(', ')
+        };
+
+        return message.replace(/:other|:values/gi, matched => values[matched]);
+    },
 };
 
 export default replaceAttributes;
