@@ -6,7 +6,7 @@ const validator = make();
 
 describe('Between', function() {
     it('The field under validation can only be a number, string, array, or object.', function() {
-        validator.setData({ value: () => console.log('test') }).setRules({ value: 'between:1,2' });
+        validator.setData({ value: () => '' }).setRules({ value: 'between:1,2' });
         assert.throws(() => validator.validate());
     });
     it('Validation rule between requires at least 2 parameters', function() {

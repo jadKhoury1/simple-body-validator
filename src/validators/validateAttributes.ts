@@ -115,13 +115,6 @@ class ValidateAttributes {
     };
 
     /**
-     * Validate that an attribute is an object
-     */
-    validateObject(value: any): boolean {
-        return isObject(value);
-    };
-
-    /**
      * Always returns true - this method will be used in conbination with other rules and will be used to stop validation of first failure
      */
     validateBail(): boolean {
@@ -358,10 +351,9 @@ class ValidateAttributes {
     /**
      * Validate the size of an attribute.
      */
-    validateSize(value: any, parameters: number[], attribute: string): boolean {
+    validateSize(value: any, parameters: string[], attribute: string): boolean {
         this.requireParameterCount(1, parameters, 'size');
-
-        return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) === parameters[0];
+        return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) === Number(parameters[0]);
     };
 
     /**
@@ -527,18 +519,7 @@ class ValidateAttributes {
         return typeof value === 'string';
     };
 
-    /**
-     * Validate that an attribute is numeric.
-     */
-    validateNumeric(value: any, parameters: number[], attribute: string): boolean {
-        if (validationRuleParser.hasRule(attribute, 'strict', this.rules) && typeof value !== 'number') {
-            return false;
-        }
-
-        return isNaN(value) === false;
-    };
-
-    /**
+     /**
      * Validate the size of an attribute is less than a maximum value.
      */
     validateMax(value: any, parameters: number[], attribute: string): boolean {
@@ -570,9 +551,34 @@ class ValidateAttributes {
     };
 
     /**
+     * Validate that an attribute is numeric.
+     */
+    validateNumeric(value: any, parameters: string[], attribute: string): boolean {
+        if (validationRuleParser.hasRule(attribute, 'strict', this.rules) && typeof value !== 'number') {
+            return false;
+        }
+
+        return isNaN(value) === false;
+    };
+
+    /**
+     * Validate that an attribute is an object
+     */
+    validateObject(value: any): boolean {
+        return isObject(value);
+    };
+
+    /**
+     * Validate that an attribute exists even if not filled.
+     */
+    validatePresent(value: any, parameters: string[], attribute: string): boolean {
+        return typeof deepFind(this.data, attribute) !== 'undefined';
+    };
+
+    /**
      * Validate that an attribute is an integer.
      */
-    validateInteger(value: any, parameters: number[], attribute: string): boolean {
+    validateInteger(value: any, parameters: string[], attribute: string): boolean {
 
         if (validationRuleParser.hasRule(attribute, 'strict', this.rules) && typeof value !== 'number') {
             return false;
@@ -716,7 +722,7 @@ class ValidateAttributes {
      */
     validateNullable(): boolean {
         return true;
-    }
+    };
 
     /**
      * Validate an attribute is not contained within a list of values.
@@ -730,12 +736,30 @@ class ValidateAttributes {
      */
     validateStrict() {
         return true;
-    }
+    };
+
+    /**
+     * Validate that an attribute is a valid URL.
+     */
+    validateUrl(value: any): boolean {
+        if (typeof value !== 'string') {
+            return false;
+        }
+
+        const pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        
+        return pattern.test(value);
+    };
 
 
     /**
-    *  Determine if a comparison passes between the given values.
-    */
+     *  Determine if a comparison passes between the given values.
+     */
     compareDates(value: any, parameter: any, operator: string, rule: string): boolean {
         value = toDate(value);
 
@@ -750,7 +774,7 @@ class ValidateAttributes {
         }
 
         return compare(value.getTime(), compartedToValue.getTime(), operator);
-    }
+    };
 
     /**
      * Require a certain number of parameters to be present

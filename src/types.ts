@@ -74,6 +74,7 @@ export interface ReplaceAttribueInterface {
     replaceDeclinedIf: (message: string, paramaters: string[]) => string;
     replaceDigits: (message: string, paramaters: string[]) => string;
     replaceDigitsBetween: (message: string, paramters: string[]) => string;
+    replaceDifferent: (message: string, parameters: string[]) => string;
     replaceEndsWith: (message: string, paramters: string[]) => string;
     replaceMin: (message: string, parameters: string[]) => string;
     replaceMax: (message: string, parameters: string[]) => string;
@@ -88,6 +89,8 @@ export interface ReplaceAttribueInterface {
     replaceRequiredIf: (message: string, parameters: string[], data: object) => string;
     replaceStartsWith: (message: string, paramters: string[]) => string;
     replaceRequiredUnless: (message: string, parameters: string[]) => string;
+    replaceSame: (message: string, parameters: string[]) => string;
+    replaceSize: (message: string, parameters: string[]) => string;
 };
 
 

@@ -73,8 +73,6 @@ const replaceAttributes: ReplaceAttribueInterface = {
      *  Replace all place-holders for the declined_if rule.
      */
     replaceDeclinedIf: function (message: string, parameters: string[]): string {
-        parameters[0] = parameters[0].replace('_', ' ');
-
         const values = { 
             ':other': parameters[0].replace('_', ' '),
             ':value': parameters[1]
@@ -82,6 +80,13 @@ const replaceAttributes: ReplaceAttribueInterface = {
         
         return message.replace(/:other|:value/gi, matched => values[matched]);
 
+    },
+
+    /**
+     * Replace all place-holders for the different rule.
+     */
+    replaceDifferent: function(message: string, parameters: string[]): string {
+        return this.replaceSame(message, parameters);
     },
 
     /**
@@ -217,6 +222,20 @@ const replaceAttributes: ReplaceAttribueInterface = {
         };
 
         return message.replace(/:other|:values/gi, matched => values[matched]);
+    },
+
+    /**
+     * Replace all place-holders for the same rule.
+     */
+    replaceSame: function (message: string, parameters: string[]): string {
+        return message.replace(':other', parameters[0].replace('_', ' '));
+    },
+
+    /**
+     * Replace all place-holders for the size rule.
+     */
+    replaceSize: function (message: string, parameters: string[]): string {
+        return message.replace(':size', parameters[0]);
     },
 };
 
