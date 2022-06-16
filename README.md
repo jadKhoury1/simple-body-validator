@@ -75,7 +75,7 @@ The first argument passed to the <code> make</code> method is the data under val
     const validator = make(data, rules);
 ```
 
-As you can see the validation rules are passed as the second argument to the <code>make</code> method. All available validation rules are documented [here](/available-validation-rules).
+As you can see the validation rules are passed as the second argument to the <code>make</code> method. All available validation rules are documented [here](https://simple-body-validator.vercel.app/available-validation-rules).
 
 Alternatively, validation rules may be specified as arrays of rules instead of a single <code>|</code> delimited string.
 
