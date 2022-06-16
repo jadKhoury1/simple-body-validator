@@ -3,6 +3,24 @@ const { make } = require('../lib/index');
 
 const validator = make();
 
+describe('Accepted', function() {
+  describe('The field under validation be yes, on, 1 or true', function() {
+    it('Validation should fail in case value does not match any of the above values', function() {
+      validator.setData({ value: 'off' }).setRules({ value: 'accepted' });
+      assert.equal(validator.validate(), false);
+    });
+    it('An error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must be accepted.');
+    });
+    it('Validation should succeed if value is accepted', function() {
+      validator.setData({ value: ['on', 'yes', '1', 1, true, 'true'] })
+        .setRules({ 'value.*': 'accepted' });
+
+      assert.ok(validator.validate());
+    });
+  });
+});
+
 describe('Array', function() {
     describe('The field under validation must be an array', function() {
       it('Validation should fail in case value is not an array', function() {

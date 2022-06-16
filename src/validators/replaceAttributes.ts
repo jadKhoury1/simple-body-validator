@@ -9,12 +9,13 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all place-holders for the accepted_if rule.
      */
-    replaceAcceptedIf: function (message: string, parameters: string[]): string {
-        parameters[0] = parameters[0].replace('_', ' ');
+    replaceAcceptedIf: function (message: string, parameters: string[], data: object): string {
+        const [ other ] = parameters;
+        const result = deepFind(data, other);
 
         const values = { 
-            ':other': parameters[0].replace('_', ' '),
-            ':value': parameters[1]
+            ':other': other.replace('_', ' '),
+            ':value': result
         }
         
         return message.replace(/:other|:value/gi, matched => values[matched]);
