@@ -1,7 +1,7 @@
 # Simple Body Validator
-Simple Body Validator is an open source validation library inspired by the [Laravel](https://laravel.com/docs/validation) validation mechanisim. The library's goal is to make data validation as easy as possible for Javascript developers on both client and server side.
+Simple Body Validator is an open source validation library inspired by the [Laravel](https://laravel.com/docs/validation) validation mechanism. The library's goal is to make data validation as easy as possible for Javascript developers on both client and server side.
 
-The validation mechanisim can be used with any popular framework like [Angular](https://angular.io/), [React](https://reactjs.org/), and [Vue](https://vuejs.org/).
+The validation mechanism can be used with any popular framework like [Angular](https://angular.io/), [React](https://reactjs.org/), and [Vue](https://vuejs.org/).
 
 You can learn more about simple body validator by reading the full documentation in our [docs](https://simple-body-validator.vercel.app)
 
@@ -21,19 +21,19 @@ yarn add simple-body-validator
 
 ### Simple 
 
-The main purpose of Simple Body Validator is to make the life of Javascript developers easier when it comes to validating simple and complex data. The methods are very declarative and can be understood easely by developers.
+The main purpose of Simple Body Validator is to make the life of Javascript developers easier when it comes to validating simple and complex data. The methods are very declarative and can be understood easily by developers.
 
-### Built in Translation Mechanisim
+### Built in Translation Mechanism
 
-Simple Body Validator comes with a built-in translation mechanisim that makes it convenient to retreive error messages in multiple languages, thus allowing you to support multiple languages for your validation without the need of external libraries. You can follow the [documentation](https://simple-body-validator.vercel.app/error-messages/translating-error-messages) to know more on how to implement translation for your error messages.
+Simple Body Validator comes with a built-in translation mechanism that makes it convenient to retrieve error messages in multiple languages, thus allowing you to support multiple languages for your validation without the need of external libraries. You can follow the [documentation](https://simple-body-validator.vercel.app/error-messages/translating-error-messages) to know more on how to implement translation for your error messages.
 
 ### No Dependencies 
 
-The whole validation mechanisim does not depend on any external package. There is no need to download several packages each time you want to use Simple Body Validtor or to be linked to any third party library.
+The whole validation mechanism does not depend on any external package. There is no need to download several packages each time you want to use Simple Body Validator or to be linked to any third party library.
 
 ### Flexible
 
-Simple Body Validator is built in a way that gives the developer max flexibility. Rules can be registred easely, thus giving the developers the ability to register as many custom rules as needed. While at the same time taking advantage of the built in localization mechanisim.
+Simple Body Validator is built in a way that gives the developer max flexibility. Rules can be registered easily, thus giving the developers the ability to register as many custom rules as needed. While at the same time taking advantage of the built-in localization mechanism.
 
 
 ## Validation Quick Start
@@ -75,7 +75,7 @@ The first argument passed to the <code> make</code> method is the data under val
     const validator = make(data, rules);
 ```
 
-As you can see the validation rules are passed as a the second argument to the <code>make</code> method. All available validation rules are documented [here](/available-validation-rules).
+As you can see the validation rules are passed as the second argument to the <code>make</code> method. All available validation rules are documented [here](/available-validation-rules).
 
 Alternatively, validation rules may be specified as arrays of rules instead of a single <code>|</code> delimited string.
 
@@ -101,18 +101,18 @@ To run the validation against the defined rules you need to invoke the <code>val
 In case of validation failure, an error object will be returned based on the failed rules. You can find out more about [validation errors](https://simple-body-validator.vercel.app/error-messages/working-with-error-messages)
 
 ```js
-    if (! validor.validate()) {
-        console.log('Errors: ', validor.errors().all());
+    if (! validator.validate()) {
+        console.log('Errors: ', validator.errors().all());
     }
 ```
 
 ### Stopping On First Validation Failure
 
-The <code>stopOnFirstFailure</code> method will inform the validator that it should stop validating all attributes once a single validation failure has occured
+The <code>stopOnFirstFailure</code> method will inform the validator that it should stop validating all attributes once a single validation failure has occurred
 
 
 ```js
-    if (! validor.stopOnFirstFailure().validate()) {
+    if (! validator.stopOnFirstFailure().validate()) {
         console.log('Error: ', validor.errors().first());
     }
 ```
@@ -131,7 +131,7 @@ While the <code>bail</code> rule only stops a specific field when it encounters 
 
 ### A Note On Nested Attributes
 
-If the upcomint HTTP request contains "nested" field data, you may specify these fields in your validation rule using the "dot" syntax.
+If the upcoming HTTP request contains "nested" field data, you may specify these fields in your validation rule using the "dot" syntax.
 
 ```js
      validator.setRules({
