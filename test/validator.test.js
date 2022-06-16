@@ -141,6 +141,24 @@ describe('Boolean', function() {
   });
 });
 
+describe('Declined', function() {
+  describe('The field under validation be no, off, 0 or false', function() {
+    it('Validation should fail in case value does not match any of the above values', function() {
+      validator.setData({ value: 'on' }).setRules({ value: 'declined' });
+      assert.equal(validator.validate(), false);
+    });
+    it('An error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must be declined.');
+    });
+    it('Validation should succeed if value is accepted', function() {
+      validator.setData({ value: ['off', 'no', '0', 0, false, 'false'] })
+        .setRules({ 'value.*': 'declined' });
+
+      assert.ok(validator.validate());
+    });
+  });
+});
+
 describe('Digits', function() {
   it('Validation rule digits requires 1 parameter', function() {
     validator.setData({ value: 'test' }).setRules({ value: 'digits' });
