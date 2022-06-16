@@ -7,7 +7,7 @@ const validator = make();
 describe('Accepted If', function() {
     describe ('The field under validation must be yes, on, 1 or true if another field under validation is equal to a specified value', function() {
         it ('Validation should fail if the field is missing and the other field is equal to any of the specified values', function() {
-            validator.setData({ value: 'foo' }).setRules({ terms: 'accepted_if:value,test,foo' });
+            validator.setData({ value: 'foo' }).setRules({ terms: 'accepted_if:value,foo,test' });
             assert.equal(validator.validate(), false);
         });
         it ('Validation should fail if the field is not accepted and the other fieled is equal to any of the specified values', function() {
@@ -129,6 +129,35 @@ describe('Confirmed', function() {
         });
         it('Validation should succeed if the {field}_confirmation value matches the field value.', function() {
             validator.setData({ password: 'test', password_confirmation: 'test'});
+            assert.ok(validator.validate());
+        });
+    });
+});
+
+describe('Declined If', function() {
+    describe ('The field under validation must be no, off, 0 or false if another field under validation is equal to a specified value', function() {
+        it ('Validation should fail if the field is missing and the other field is equal to any of the specified values', function() {
+            validator.setData({ value: 'foo' }).setRules({ terms: 'declined_if:value,foo,test' });
+            assert.equal(validator.validate(), false);
+        });
+        it ('Validation should fail if the field is not declined and the other fieled is equal to any of the specified values', function() {
+            validator.setData({ value: 'test', terms: 1 });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The terms must be declined when value is test.');
+        });
+        it('Validation should succeed if the field is missing or not declined and the other field is not equal to any of the specified values', function() {
+            validator.setData({ value: 'any' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: 'any', terms: 1 });
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if the field is declined and the othe field is equal to any of the specified values', function() {
+            validator.setData({ value: 'test', terms: ['off', 'no', '0', 0, false, 'false']})
+                .setRules({ 'terms.*': 'declined_if:value,test,foo' });
+
             assert.ok(validator.validate());
         });
     });

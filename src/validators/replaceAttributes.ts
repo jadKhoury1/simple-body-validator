@@ -73,10 +73,13 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      *  Replace all place-holders for the declined_if rule.
      */
-    replaceDeclinedIf: function (message: string, parameters: string[]): string {
+    replaceDeclinedIf: function (message: string, parameters: string[], data: object): string {
+        const [ other ] = parameters;
+        const result = deepFind(data, other);
+
         const values = { 
-            ':other': parameters[0].replace('_', ' '),
-            ':value': parameters[1]
+            ':other': other.replace('_', ' '),
+            ':value': result
         }
         
         return message.replace(/:other|:value/gi, matched => values[matched]);
