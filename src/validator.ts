@@ -6,7 +6,7 @@ import {
 } from './types';
 import { builValidationdMethodName } from './utils/build';
 import { getMessage, makeReplacements } from './utils/formatMessages';
-import validateAttributes from './validators/validateAttributes';
+import ValidateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
 import { getNumericRules, isImplicitRule, isRule } from './utils/general';
 import { deepFind, dotify, isObject } from './utils/object';
@@ -52,7 +52,7 @@ class Validator {
     /**
      * Stores an instance of the validateAtteibutes class
      */
-    private validateAttributes: validateAttributes;
+    private validateAttributes: ValidateAttributes;
 
 
     /**
@@ -113,7 +113,7 @@ class Validator {
         }
 
         this.messages = new ErrorBag();
-        this.validateAttributes = new validateAttributes(this.data, this.rules);
+        this.validateAttributes = new ValidateAttributes(this.data, this.rules);
 
         for(const property in this.rules) {
             if (this.rules.hasOwnProperty(property) && Array.isArray(this.rules[property])) {
