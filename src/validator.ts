@@ -1,12 +1,12 @@
 'use strict';
 
-import { 
-    Rules, CustomMesages, ErrorMessage, 
-    ImplicitAttributes, Rule, InitialRules 
+import {
+    Rules, CustomMesages, ErrorMessage,
+    ImplicitAttributes, Rule, InitialRules
 } from './types';
 import { builValidationdMethodName } from './utils/build';
 import { getMessage, makeReplacements } from './utils/formatMessages';
-import ValidateAttributes from './validators/validateAttributes';
+import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
 import { getNumericRules, isImplicitRule } from './utils/general';
 import { deepFind, dotify, isObject } from './utils/object';
@@ -29,7 +29,7 @@ class Validator {
     private data: object;
 
     /**
-     * The rules that will be used to check the validity of the data    
+     * The rules that will be used to check the validity of the data
      */
     private rules: Rules;
 
@@ -50,9 +50,9 @@ class Validator {
 
 
     /**
-     * Stores an instance of the validateAtteibutes class
+     * Stores an instance of the validateAttributes class
      */
-    private validateAttributes: ValidateAttributes;
+    private validateAttributes: validateAttributes;
 
 
     /**
@@ -62,7 +62,7 @@ class Validator {
 
 
     /**
-     * Custom mesages returrned based on the error 
+     * Custom mesages returrned based on the error
      */
     customMessages: CustomMesages;
 
@@ -113,7 +113,7 @@ class Validator {
         }
 
         this.messages = new ErrorBag();
-        this.validateAttributes = new ValidateAttributes(this.data, this.rules);
+        this.validateAttributes = new validateAttributes(this.data, this.rules);
 
         for(const property in this.rules) {
             if (this.rules.hasOwnProperty(property) && Array.isArray(this.rules[property])) {
@@ -139,14 +139,14 @@ class Validator {
     };
 
     /**
-     * Parse the given rules add assign them to the current rules 
+     * Parse the given rules add assign them to the current rules
      */
     private addRules(rules: InitialRules): void {
 
         // The primary purpose of this parser is to expand any "*" rules to the all
         // of the explicit rules needed for the given data. For example the rule
         // names.* would get expanded to names.0, names.1, etc. for this data.
-        const response: {rules: Rules, implicitAttributes: ImplicitAttributes} = 
+        const response: {rules: Rules, implicitAttributes: ImplicitAttributes} =
             validationRuleParser.explodeRules(dotify(rules, true), this.data);
 
         this.rules = response.rules;
@@ -157,7 +157,7 @@ class Validator {
      * validate a given attribute against a rule.
      */
     private validateAttribute(attribute: string, rule: Rule): void {
-         
+
         let parameters: string[] = [];
 
         [rule ,parameters] = validationRuleParser.parse(rule);
@@ -181,7 +181,7 @@ class Validator {
             throw `Rule ${rule} is not valid`;
         }
 
-        if (validatable && 
+        if (validatable &&
                 !this.validateAttributes[method](value, parameters, attribute)
         ) {
             this.addFailure(attribute, rule, value, parameters);
@@ -237,7 +237,7 @@ class Validator {
 
     /**
      * Replace each field parameter which has asterisks with the given keys.
-     * 
+     *
      * Example: parameters = [name.*.first] and keys = [1], then the result will be name.1.first
      */
     private replaceAsterisksInParameters(parameters: string[], keys: string[]): string[] {
@@ -291,7 +291,7 @@ class Validator {
 
     /**
      * Get the primary attribute name
-     * 
+     *
      * Example:  if "name.0" is given, "name.*" will be returned
      */
     private getPrimaryAttribute(attribute: string): string {
@@ -306,14 +306,14 @@ class Validator {
 
     /**
      * Get the explicit keys from an attribute flattened with dot notation.
-     * 
+     *
      * Example: 'foo.1.bar.spark.baz' -> [1, 'spark'] for 'foo.*.bar.*.baz'
      */
     private getExplicitKeys(attribute: string): string[] {
 
        const pattern: RegExp = new RegExp('^' + this.getPrimaryAttribute(attribute).replace(/\*/g, '([^\.]*)'));
        let keys = attribute.match(pattern);
-       
+
        if (keys) {
            keys.shift();
            return keys;
