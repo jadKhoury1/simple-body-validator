@@ -62,7 +62,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
 
     const validationMessages: object = Lang.get(lang);
 
-    // check if rule has sizes such as min, max, between ... 
+    // check if rule has sizes such as min, max, between ...
     // and get message from local object
     if (isSizeRule(rule) === true) {
         return validationMessages[rule][getMesageType(value, hasNumericRule)];
@@ -70,7 +70,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
 
     // get message from local object
     return validationMessages[rule] || '';
-    
+
 };
 
 /**
