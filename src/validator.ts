@@ -8,7 +8,7 @@ import { builValidationdMethodName } from './utils/build';
 import { getMessage, makeReplacements } from './utils/formatMessages';
 import ValidateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
-import { getNumericRules, isImplicitRule, isRule } from './utils/general';
+import { getNumericRules, isImplicitRule } from './utils/general';
 import { deepFind, dotify, isObject } from './utils/object';
 import ErrorBag from './validators/errorBag';
 import RuleContract  from './rules/ruleContract';
