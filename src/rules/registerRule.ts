@@ -1,6 +1,6 @@
 import { builValidationdMethodName } from '../utils/build';
-import AttributesValidate from '../validators/AttributesValidate';
-import AttributesReplace from '../validators/AttributesReplace';
+import validateAttributes from '../validators/validateAttributes';
+import replaceAttributes from '../validators/replaceAttributes';
 import { addImplicitRule } from '../utils/general';
 
 
@@ -11,15 +11,15 @@ export function register(
 ): boolean {
     const method: string = builValidationdMethodName(rule);
 
-    let validateAttribute = new AttributesValidate();
+    let validateAttribute = new validateAttributes();
     if (validateAttribute[`validate${method}`]) {
         return false;
     }
 
-    AttributesValidate.prototype[`validate${method}`] = validate;
+    validateAttributes.prototype[`validate${method}`] = validate;
 
     if (typeof replaceMessage === 'function') {
-        AttributesReplace[`replace${method}`] = replaceMessage;
+        replaceAttributes[`replace${method}`] = replaceMessage;
     }
 
     return true;

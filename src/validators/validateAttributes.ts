@@ -6,7 +6,7 @@ import { deepFind, isObject } from '../utils/object';
 import { getSize, sameType, getNumericRules, isInteger, compare } from '../utils/general';
 import validationRuleParser from './validationRuleParser';
 
-class AttributesValidate {
+class validateAttributes {
 
     /**
      * Stores the data object
@@ -788,4 +788,4 @@ class AttributesValidate {
 
 };
 
-export default AttributesValidate;
+export default validateAttributes;

@@ -3,7 +3,7 @@ import { toDate } from '../utils/date';
 import { getSize } from '../utils/general';
 import { deepFind } from '../utils/object';
 
-const AttributesReplace: ReplaceAttribueInterface = {
+const replaceAttributes: ReplaceAttribueInterface = {
 
 
     /**
@@ -243,4 +243,4 @@ const AttributesReplace: ReplaceAttribueInterface = {
     },
 };
 
-export default AttributesReplace;
+export default replaceAttributes;

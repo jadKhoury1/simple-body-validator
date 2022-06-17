@@ -2,7 +2,7 @@
 
 import { CustomMesages } from "../types";
 import { isSizeRule } from './general';
-import AttributesReplace from '../validators/AttributesReplace';
+import replaceAttributes from '../validators/replaceAttributes';
 import { builValidationdMethodName } from './build';
 import Lang from '../lang';
 
@@ -82,8 +82,8 @@ export function makeReplacements(message: string, attribute: string, rule: strin
 
     const methodName = `replace${builValidationdMethodName(rule)}`;
 
-    if (typeof AttributesReplace[methodName] === 'function') {
-        message = AttributesReplace[methodName](message, parameters, data, hasNumericRule);
+    if (typeof replaceAttributes[methodName] === 'function') {
+        message = replaceAttributes[methodName](message, parameters, data, hasNumericRule);
     }
 
     return message;
