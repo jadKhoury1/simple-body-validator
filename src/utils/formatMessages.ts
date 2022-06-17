@@ -2,7 +2,7 @@
 
 import { CustomMesages } from "../types";
 import { isSizeRule } from './general';
-import replaceAttributes from '../validators/replaceAttributes';
+import AttributesReplace from '../validators/AttributesReplace';
 import { builValidationdMethodName } from './build';
 import Lang from '../lang';
 
@@ -62,7 +62,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
 
     const validationMessages: object = Lang.get(lang);
 
-    // check if rule has sizes such as min, max, between ... 
+    // check if rule has sizes such as min, max, between ...
     // and get message from local object
     if (isSizeRule(rule) === true) {
         return validationMessages[rule][getMesageType(value, hasNumericRule)];
@@ -70,7 +70,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
 
     // get message from local object
     return validationMessages[rule] || '';
-    
+
 };
 
 /**
@@ -82,8 +82,8 @@ export function makeReplacements(message: string, attribute: string, rule: strin
 
     const methodName = `replace${builValidationdMethodName(rule)}`;
 
-    if (typeof replaceAttributes[methodName] === 'function') {
-        message = replaceAttributes[methodName](message, parameters, data, hasNumericRule);
+    if (typeof AttributesReplace[methodName] === 'function') {
+        message = AttributesReplace[methodName](message, parameters, data, hasNumericRule);
     }
 
     return message;

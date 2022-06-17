@@ -3,7 +3,7 @@ import { toDate } from '../utils/date';
 import { getSize } from '../utils/general';
 import { deepFind } from '../utils/object';
 
-const replaceAttributes: ReplaceAttribueInterface = {
+const AttributesReplace: ReplaceAttribueInterface = {
 
 
     /**
@@ -13,11 +13,11 @@ const replaceAttributes: ReplaceAttribueInterface = {
         const [ other ] = parameters;
         const result = deepFind(data, other);
 
-        const values = { 
+        const values = {
             ':other': other.replace('_', ' '),
             ':value': result
         }
-        
+
         return message.replace(/:other|:value/gi, matched => values[matched]);
 
     },
@@ -77,11 +77,11 @@ const replaceAttributes: ReplaceAttribueInterface = {
         const [ other ] = parameters;
         const result = deepFind(data, other);
 
-        const values = { 
+        const values = {
             ':other': other.replace('_', ' '),
             ':value': result
         }
-        
+
         return message.replace(/:other|:value/gi, matched => values[matched]);
 
     },
@@ -94,7 +94,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
     },
 
     /**
-     * Replace all place-holders for the digits rule. 
+     * Replace all place-holders for the digits rule.
      */
     replaceDigits: function(message: string, parameters: string[]): string {
         return message.replace(':digits', parameters[0]);
@@ -205,11 +205,11 @@ const replaceAttributes: ReplaceAttribueInterface = {
         const [ other ] = parameters;
         const result = deepFind(data, other);
 
-        const values = { 
+        const values = {
             ':other': other.replace('_', ' '),
             ':value': result
         }
-        
+
         return message.replace(/:other|:value/gi, matched => values[matched]);
 
     },
@@ -243,4 +243,4 @@ const replaceAttributes: ReplaceAttribueInterface = {
     },
 };
 
-export default replaceAttributes;
+export default AttributesReplace;

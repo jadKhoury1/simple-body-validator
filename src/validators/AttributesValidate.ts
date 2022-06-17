@@ -6,7 +6,7 @@ import { deepFind, isObject } from '../utils/object';
 import { getSize, sameType, getNumericRules, isInteger, compare } from '../utils/general';
 import validationRuleParser from './validationRuleParser';
 
-class ValidateAttributes {
+class AttributesValidate {
 
     /**
      * Stores the data object
@@ -25,7 +25,7 @@ class ValidateAttributes {
 
     /**
      * Validate that an attribute was "accepted".
-     *  
+     *
      * This validation rule implies the attribute is "required".
      */
     validateAccepted(value: any): boolean {
@@ -57,7 +57,7 @@ class ValidateAttributes {
 
 
     /**
-     *  Validate the date is after a given date. 
+     *  Validate the date is after a given date.
      */
     validateAfter(value: any, parameters: string[]): boolean {
         this.requireParameterCount(1, parameters, 'after');
@@ -65,7 +65,7 @@ class ValidateAttributes {
     };
 
     /**
-     * Validate the date is after or equal a given date. 
+     * Validate the date is after or equal a given date.
      */
     validateAfterOrEqual(value: any, parameters: string[]): boolean {
         this.requireParameterCount(1, parameters, 'after_or_equal');
@@ -108,7 +108,7 @@ class ValidateAttributes {
     }
 
     /**
-     * Validate that an attribute is an array 
+     * Validate that an attribute is an array
      */
     validateArray(value: any): boolean {
         return Array.isArray(value);
@@ -122,7 +122,7 @@ class ValidateAttributes {
     };
 
     /**
-     *  Validate the date is before a given date. 
+     *  Validate the date is before a given date.
      */
      validateBefore(value: any, parameters: string[]): boolean {
         this.requireParameterCount(1, parameters, 'before');
@@ -136,7 +136,7 @@ class ValidateAttributes {
         this.requireParameterCount(1, parameters, 'before_or_equal');
         return this.compareDates(value, parameters[0], '<=', 'before_or_equal');
     }
-    
+
 
     /**
      * Validate the size of an attribute is between a set of values
@@ -206,7 +206,7 @@ class ValidateAttributes {
 
     /**
      * Validate that an attribute was "declined".
-     * 
+     *
      * This validation rule implies the attribute is "required".
      */
     validateDeclined(value: any): boolean {
@@ -216,7 +216,7 @@ class ValidateAttributes {
     };
 
     /**
-     * Validate that an attribute was "declined" when another attribute has a given value. 
+     * Validate that an attribute was "declined" when another attribute has a given value.
      */
     validateDeclinedIf(value: any, parameters: string[]): boolean {
         this.requireParameterCount(2, parameters, 'declined_if');
@@ -243,7 +243,7 @@ class ValidateAttributes {
         this.requireParameterCount(1, parameters, 'different');
 
         const other = deepFind(this.data, parameters[0]);
-        
+
         return value !== other;
     };
 
@@ -269,7 +269,7 @@ class ValidateAttributes {
         value = value.toString();
         return /^\d+$/.test(value) && value.length === parseInt(parameters[0]);
     };
-    
+
     /**
      * Validate that an attribute is between a given number of digits.
      */
@@ -382,7 +382,7 @@ class ValidateAttributes {
         return false;
     };
 
-    /** 
+    /**
      * Validate that a required attribute exists
      */
     validateRequired(value: any): boolean {
@@ -426,7 +426,7 @@ class ValidateAttributes {
      */
     validateRequiredUnless(value: any, parameters: string[]): boolean {
         this.requireParameterCount(2, parameters, 'required_unless');
-        
+
         const other = deepFind(this.data, parameters[0]);
 
         if (!other) {
@@ -532,7 +532,7 @@ class ValidateAttributes {
 
         const size = getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules));
         return size <= Number(parameters[0]);
-    
+
     };
 
     /**
@@ -606,17 +606,17 @@ class ValidateAttributes {
      */
     validateGt(value: any, parameters: any[], attribute: string): boolean {
         this.requireParameterCount(1, parameters, 'gt');
-        
+
         if (typeof value !== 'number' && typeof value !== 'string' && typeof value !== 'object') {
             throw 'The field under validation must be a number, string, array or object';
         }
 
         const compartedToValue = deepFind(this.data, parameters[0]) || parameters[0];
-    
+
         if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
             return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) > compartedToValue;
         }
-    
+
         if (sameType(value, compartedToValue) === false) {
             throw 'The fields under validation must be of the same type';
         }
@@ -635,7 +635,7 @@ class ValidateAttributes {
         }
 
         const compartedToValue = deepFind(this.data, parameters[0]) || parameters[0];
-    
+
         if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
             return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) >= compartedToValue;
         }
@@ -658,7 +658,7 @@ class ValidateAttributes {
         }
 
         const compartedToValue = deepFind(this.data, parameters[0]) || parameters[0];
-    
+
         if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
             return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) < compartedToValue;
         }
@@ -681,7 +681,7 @@ class ValidateAttributes {
         }
 
         const compartedToValue = deepFind(this.data, parameters[0]) || parameters[0];
-    
+
         if (!Array.isArray(compartedToValue) && isNaN(compartedToValue) === false) {
             return getSize(value, validationRuleParser.hasRule(attribute, getNumericRules(), this.rules)) <= compartedToValue;
         }
@@ -712,12 +712,12 @@ class ValidateAttributes {
         }
 
         return paramters.indexOf(value.toString()) !== -1;
-  
+
     };
 
     /**
      * "Indicate" validation should pass if value is null
-     * 
+     *
      * Always returns true, just lets us put "nullable" in rules.
      */
     validateNullable(): boolean {
@@ -752,7 +752,7 @@ class ValidateAttributes {
             '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
             '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
             '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-        
+
         return pattern.test(value);
     };
 
@@ -788,4 +788,4 @@ class ValidateAttributes {
 
 };
 
-export default ValidateAttributes;
+export default AttributesValidate;
