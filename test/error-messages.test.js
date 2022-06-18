@@ -1,7 +1,9 @@
 const assert = require('assert');
-const { make, setTranslationPath, setDefaultLang } = require('../lib/index');
+const { make, setTranslations, setDefaultLang } = require('../lib/index');
+const translations = require('./lang');
 
-setTranslationPath(__dirname + '/lang');
+
+setTranslations(translations);
 
 describe('Translation', function() {
     it ('By default if no default lang was specified the en language should be used', function() {

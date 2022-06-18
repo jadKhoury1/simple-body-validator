@@ -2,6 +2,7 @@
 
 import { LangInterface } from './types';
 import { mergeDeep } from './utils/object';
+import locales from './locales';
 
 const lang: LangInterface = {
 
@@ -21,14 +22,14 @@ const lang: LangInterface = {
     messages: {},
 
     /**
+     * Store the translations passed by the user
+     */
+    translations: {},
+
+    /**
      * Stores the default messages
      */
     defaultMessages: require('./locales/en.js').default,
-
-    /**
-     * Path of the validation translations in the main project
-     */
-    path: '',
 
 
     /**
@@ -42,8 +43,8 @@ const lang: LangInterface = {
     /**
      * Set the path for the validation translations in the main project
      */
-    setPath(path: string): void {
-        this.path = path;
+    setTranslations(translations: object): void {
+        this.translations = translations;
         this.setDefaultLang(this.defaultLang);
     },
 
@@ -54,16 +55,14 @@ const lang: LangInterface = {
 
         this.defaultLang = lang;
 
-        if (this.existingLangs.indexOf(lang) !== -1) {
-            this.defaultMessages= { ... require(`./locales/${lang}.js`).default };
+        // check if the lang translations exist in the library and load them
+        if (locales.hasOwnProperty(lang)) {
+            this.defaultMessages = mergeDeep(this.defaultMessages, locales[lang]);
         }
-
-        if (this.path) {
-            try {
-                let customMessages = require(`${this.path}/${lang}.js`);
-                customMessages = customMessages.default || customMessages;  
-                this.defaultMessages = mergeDeep(this.defaultMessages, customMessages);
-            } catch(e) {};
+        
+        // check if the lang translations exit in the object passed by the user
+        if (this.translations.hasOwnProperty(lang)) {
+            this.defaultMessages = mergeDeep(this.defaultMessages, this.translations[lang]);
         }
     },
 
@@ -83,23 +82,17 @@ const lang: LangInterface = {
             return;
         }
 
-        // check if the lang already exists in the librarry and assign it the message object
-        if (this.existingLangs.indexOf(lang) !== -1) {
-            this.messages[lang] = { ... require(`./locales/${lang}.js`).default };
+        // check if the lang translations exist in the library and load them
+        if (locales.hasOwnProperty(lang)) {
+            this.messages[lang] = mergeDeep(this.defaultMessages, locales[lang]);
         } else {
-            // assign the default messages
-            this.messages[lang] = { ... this.defaultMessages };
-        }
-        
-        // check if the lang file exists in the project directory and merge the messages
-       if (this.path) {
-            try {
-                let customMessages = require(`${this.path}/${lang}.js`);
-                customMessages = customMessages.default || customMessages;
-                this.messages[lang] = mergeDeep(this.messages[lang], customMessages);
-            } catch (e) {};
+            this.messages[lang] = mergeDeep({}, this.defaultMessages);
         }
 
+        // check if the lang translations exist in the object passed by the user
+        if (this.translations.hasOwnProperty(lang)) {
+            this.messages[lang] = mergeDeep(this.defaultMessages, this.translations[lang]);
+        }
     }
 };
 

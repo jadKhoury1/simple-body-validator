@@ -1,8 +1,8 @@
 const assert = require('assert');
-const { make, Password, Rule, setTranslationPath } = require('../lib/index');
+const { make, Password, Rule, setTranslations } = require('../lib/index');
+const translations = require('./lang');
 
-
-setTranslationPath(__dirname + '/lang');
+setTranslations(translations);
 
 const validator = make();
 
