@@ -21,7 +21,7 @@ export function setDefaultLang(lang: string): void {
     Lang.setDefaultLang(lang);
 };
 
-export function setTranslations(translations: object): void {
-    Lang.setTranslations(translations);
+export function setTranslationPath(path: string): void {
+    Lang.setPath(path);
 };
 

@@ -99,9 +99,9 @@ export interface LangInterface {
     existingLangs: string[];
     messages: object;
     defaultMessages: object;
-    translations: object;
+    path: string;
     get: (lang: string) => object;
-    setTranslations: (messages: object) => void;
+    setPath: (path: string) => void;
     setDefaultLang: (lang: string) => void;
     getDefaultLang: () => string;
     load: (lang: string) => void;

@@ -1,8 +1,7 @@
 const assert = require('assert');
-const { make, register, setTranslations, registerImplicit, Rule, ImplicitRule } = require('../lib/index');
-const translations = require('./lang');
+const { make, register, setTranslationPath, registerImplicit, Rule, ImplicitRule } = require('../lib/index');
 
-setTranslations(translations);
+setTranslationPath(__dirname + '/lang');
 
 describe('Register Rule', function() {
     describe('Register simple telephone rule', function() {
