@@ -2,6 +2,7 @@
 
 import { LangInterface } from './types';
 import { mergeDeep } from './utils/object';
+import locales from './locales';
 
 const lang: LangInterface = {
 
@@ -31,6 +32,7 @@ const lang: LangInterface = {
     path: '',
 
 
+
     /**
      * Get messages for lang 
      */
@@ -54,16 +56,18 @@ const lang: LangInterface = {
 
         this.defaultLang = lang;
 
-        if (this.existingLangs.indexOf(lang) !== -1) {
-            this.defaultMessages= { ... require(`./locales/${lang}.js`).default };
+        // check if the lang translations exist in the library and load them
+        if (locales.hasOwnProperty(lang)) {
+            this.defaultMessages = mergeDeep(this.defaultMessages, locales[lang]);
         }
 
+        // Get the translations from the path specified by the user 
         if (this.path) {
             try {
                 let customMessages = require(`${this.path}/${lang}.js`);
-                customMessages = customMessages.default || customMessages;  
-                this.defaultMessages = mergeDeep(this.defaultMessages, customMessages);
-            } catch(e) {};
+                customMessages = customMessages.default || customMessages;
+                this.defaultMessages = mergeDeep(this.defaultMessages, customMessages); 
+            } catch (e) {};
         }
     },
 
@@ -83,15 +87,14 @@ const lang: LangInterface = {
             return;
         }
 
-        // check if the lang already exists in the librarry and assign it the message object
-        if (this.existingLangs.indexOf(lang) !== -1) {
-            this.messages[lang] = { ... require(`./locales/${lang}.js`).default };
+        // check if the lang translations exist in the library and load them
+        if (locales.hasOwnProperty(lang)) {
+            this.messages[lang] = mergeDeep(this.defaultMessages, locales[lang]);
         } else {
-            // assign the default messages
-            this.messages[lang] = { ... this.defaultMessages };
+            this.messages[lang] = mergeDeep({}, this.defaultMessages);
         }
-        
-        // check if the lang file exists in the project directory and merge the messages
+
+          // check if the lang file exists in the project directory and merge the messages
        if (this.path) {
             try {
                 let customMessages = require(`${this.path}/${lang}.js`);
@@ -99,7 +102,6 @@ const lang: LangInterface = {
                 this.messages[lang] = mergeDeep(this.messages[lang], customMessages);
             } catch (e) {};
         }
-
     }
 };
 
