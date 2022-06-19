@@ -3,7 +3,7 @@ Simple Body Validator is an open source validation library inspired by the [Lara
 
 The validation mechanism can be used with any popular framework like [Angular](https://angular.io/), [React](https://reactjs.org/), and [Vue](https://vuejs.org/).
 
-You can learn more about simple body validator by reading the full documentation in our [docs](https://simple-body-validator.vercel.app)
+You can learn more about simple body validator by reading the full documentation in our [docs](https://simple-body-validator.com)
 
 ## Installing Simple Body Validator
 
@@ -25,7 +25,7 @@ The main purpose of Simple Body Validator is to make the life of Javascript deve
 
 ### Built in Translation Mechanism
 
-Simple Body Validator comes with a built-in translation mechanism that makes it convenient to retrieve error messages in multiple languages, thus allowing you to support multiple languages for your validation without the need of external libraries. You can follow the [documentation](https://simple-body-validator.vercel.app/error-messages/translating-error-messages) to know more on how to implement translation for your error messages.
+Simple Body Validator comes with a built-in translation mechanism that makes it convenient to retrieve error messages in multiple languages, thus allowing you to support multiple languages for your validation without the need of external libraries. You can follow the [documentation](https://simple-body-validator.com/error-messages/translating-error-messages) to know more on how to implement translation for your error messages.
 
 ### No Dependencies 
 
@@ -38,7 +38,7 @@ Simple Body Validator is built in a way that gives the developer max flexibility
 
 ## Validation Quick Start
 
-The easiest way to continue validation quick start, is to follow the [validation quick start](https://simple-body-validator.vercel.app/validation-quickstart) section in our docs.
+The easiest way to continue validation quick start, is to follow the [validation quick start](https://simple-body-validator.com/validation-quickstart) section in our docs.
 
 To learn more about Simple Body Validator's validation feature, let's look at a complete example of validating a data object and displaying the error messages back to the user.
 
@@ -75,7 +75,7 @@ The first argument passed to the <code> make</code> method is the data under val
     const validator = make(data, rules);
 ```
 
-As you can see the validation rules are passed as the second argument to the <code>make</code> method. All available validation rules are documented [here](https://simple-body-validator.vercel.app/available-validation-rules).
+As you can see the validation rules are passed as the second argument to the <code>make</code> method. All available validation rules are documented [here](https://simple-body-validator.com/available-validation-rules).
 
 Alternatively, validation rules may be specified as arrays of rules instead of a single <code>|</code> delimited string.
 
@@ -98,7 +98,7 @@ If you want a more expressive way to set your data and rules, you can chain the 
 
 To run the validation against the defined rules you need to invoke the <code>validate</code> method, which will return <code>false</code> in case of failure and <code>true</code> in case of success.
 
-In case of validation failure, an error object will be returned based on the failed rules. You can find out more about [validation errors](https://simple-body-validator.vercel.app/error-messages/working-with-error-messages)
+In case of validation failure, an error object will be returned based on the failed rules. You can find out more about [validation errors](https://simple-body-validator.com/error-messages/working-with-error-messages)
 
 ```js
     if (! validator.validate()) {
@@ -141,4 +141,4 @@ If the upcoming HTTP request contains "nested" field data, you may specify these
     });
 ```
 
-You can learn more on nested and wildcard validations using this [link](https://simple-body-validator.vercel.app/nested-and-wildcard-rules)
+You can learn more on nested and wildcard validations using this [link](https://simple-body-validator.com/nested-and-wildcard-rules)
