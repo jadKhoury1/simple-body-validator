@@ -1,5 +1,6 @@
 import { ReplaceAttribueInterface } from '../types';
 import { toDate } from '../utils/date';
+import { getDisplayableAttribute } from '../utils/formatMessages';
 import { getSize } from '../utils/general';
 import { deepFind } from '../utils/object';
 
@@ -14,7 +15,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
         const result = deepFind(data, other);
 
         const values = {
-            ':other': other.replace('_', ' '),
+            ':other': getDisplayableAttribute(other),
             ':value': result
         }
 
@@ -41,8 +42,10 @@ const replaceAttributes: ReplaceAttribueInterface = {
      */
     replaceBefore: function (message: string, paramaters: string[]): string {
 
+
+
         if (!toDate(paramaters[0])) {
-            return message.replace(':date', paramaters[0].replace('_', ' '));
+            return message.replace(':date', getDisplayableAttribute(paramaters[0]));
         }
 
         return message.replace(':date', paramaters[0]);
@@ -78,7 +81,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
         const result = deepFind(data, other);
 
         const values = {
-            ':other': other.replace('_', ' '),
+            ':other': getDisplayableAttribute(other),
             ':value': result
         }
 
@@ -139,7 +142,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
      * Replace all place-holders for the required_with rule.
      */
     replaceRequiredWith: function (message: string, parameters: string[]): string {
-        return message.replace(':values', parameters.join(', '));
+        return message.replace(':values', parameters.map(attribute => getDisplayableAttribute(attribute)).join(', '));
     },
 
     /**
@@ -206,7 +209,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
         const result = deepFind(data, other);
 
         const values = {
-            ':other': other.replace('_', ' '),
+            ':other': getDisplayableAttribute(other),
             ':value': result
         }
 
@@ -221,7 +224,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
         const [other] = parameters;
 
         const values = {
-            ':other': other.replace('_', ' '),
+            ':other': getDisplayableAttribute(other),
             ':values': parameters.slice(1).join(', ')
         };
 
@@ -232,7 +235,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
      * Replace all place-holders for the same rule.
      */
     replaceSame: function (message: string, parameters: string[]): string {
-        return message.replace(':other', parameters[0].replace('_', ' '));
+        return message.replace(':other', getDisplayableAttribute(parameters[0]));
     },
 
     /**
