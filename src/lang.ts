@@ -17,6 +17,11 @@ const lang: LangInterface = {
     existingLangs: ['en'],
 
     /**
+     * Store the translations passed by the user
+     */
+     translations: {},
+
+    /**
      * Stores the messages that are already loaded
      */
     messages: {},
@@ -32,13 +37,20 @@ const lang: LangInterface = {
     path: '',
 
 
-
     /**
      * Get messages for lang 
      */
     get(lang: string = this.defaultLang): object {
         this.load(lang);
         return this.messages[lang];
+    },
+
+    /**
+     * Set the translation object passed by the user
+     */
+    setTranslationObject(translations: object): void {
+        this.translations = translations;
+        this.setDefaultLang(this.defaultLang);
     },
 
     /**
@@ -68,6 +80,11 @@ const lang: LangInterface = {
                 customMessages = customMessages.default || customMessages;
                 this.defaultMessages = mergeDeep(this.defaultMessages, customMessages); 
             } catch (e) {};
+        }
+
+        // check if the lang translations exit in the object passed by the user
+        if (this.translations.hasOwnProperty(lang)) {
+            this.defaultMessages = mergeDeep(this.defaultMessages, this.translations[lang]);
         }
     },
 
@@ -101,6 +118,11 @@ const lang: LangInterface = {
                 customMessages = customMessages.default || customMessages;
                 this.messages[lang] = mergeDeep(this.messages[lang], customMessages);
             } catch (e) {};
+        }
+
+         // check if the lang translations exist in the object passed by the user
+         if (this.translations.hasOwnProperty(lang)) {
+            this.messages[lang] = mergeDeep(this.defaultMessages, this.translations[lang]);
         }
     }
 };
