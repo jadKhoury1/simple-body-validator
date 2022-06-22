@@ -1,6 +1,7 @@
 'use strict';
 
 import { InitialRule } from '../types';
+import { getDisplayableAttribute } from '../utils/formatMessages';
 import Validator from '../validator';
 import RuleContract from './ruleContract';
 
@@ -125,7 +126,7 @@ class Password extends RuleContract {
         }
 
         let pattern;
-        const formattedAttribute = attribute.replace(/_/g, ' ');
+        const formattedAttribute = getDisplayableAttribute(attribute);
 
         if (this.minLowerCase) {
              pattern = this.minLowerCase === 1 ? /\p{Ll}/u : new RegExp(`(.*\\p{Ll}){${this.minLowerCase}}.*`, 'u');

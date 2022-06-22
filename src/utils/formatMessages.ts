@@ -78,8 +78,7 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
  */
 export function makeReplacements(message: string, attribute: string, rule: string, parameters: string[], data: object = {}, hasNumericRule: boolean = false): string {
 
-    message = message.replace(':attribute', attribute.replace(/_/g, ' '));
-
+    message = message.replace(':attribute', getDisplayableAttribute(attribute));
     const methodName = `replace${builValidationdMethodName(rule)}`;
 
     if (typeof replaceAttributes[methodName] === 'function') {
@@ -89,3 +88,22 @@ export function makeReplacements(message: string, attribute: string, rule: strin
     return message;
 
 }
+
+/**
+ * Convert a string to snake case.
+ */
+export function toSnakeCase(string: string): string {
+    return string
+            .split(/ |\B(?=[A-Z])/)
+            .map(word => word.toLowerCase())
+            .join('_');
+}
+
+/**
+ * Get the displayable name of the attribute.
+ */
+export function getDisplayableAttribute(attribute: string): string {
+    return toSnakeCase(attribute).replace(/_/g, ' ').trim();
+} 
+
+
