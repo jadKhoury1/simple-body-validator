@@ -73,6 +73,7 @@ class Validator {
         this.initalRules = rules;
         this.lang = Lang.getDefaultLang();
         this.addRules(rules);
+        this.messages = new ErrorBag();
     };
 
     setData(data: object): Validator {
