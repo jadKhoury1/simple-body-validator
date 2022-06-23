@@ -259,10 +259,23 @@ class Validator {
      * Determine if the attribute is validatable.
      */
     private isValidatable(attribute: string, value: any, rule: Rule): boolean {
-        return  (typeof value !== 'undefined' ||  isImplicitRule(rule)) &&
+        return  this.presentOrRuleIsImplicit(attribute, value, rule) &&
                 this.passesOptionalCheck(attribute) &&
                 this.isNotNullIfMarkedAsNullable(attribute, rule);
     };
+
+    
+    /**
+     * Determine if the field is present, or the rule implies required.
+     */
+    private presentOrRuleIsImplicit(attribute: string, value: any, rule: Rule) {
+        if (typeof value === 'string' && value.trim() === '') {
+            return isImplicitRule(rule)
+        }
+
+        return typeof deepFind(this.data, attribute) !== 'undefined' || 
+               isImplicitRule(rule);
+    }
 
     /**
      * Determine if the attribute passes any optional check.
