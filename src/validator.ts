@@ -9,7 +9,7 @@ import { getMessage, makeReplacements } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
 import { getNumericRules, isImplicitRule } from './utils/general';
-import { deepFind, dotify, isObject } from './utils/object';
+import { deepFind, deepSet, dotify, isObject } from './utils/object';
 import ErrorBag from './validators/errorBag';
 import RuleContract  from './rules/ruleContract';
 import Lang from './lang';
@@ -108,32 +108,58 @@ class Validator {
     };
 
 
-    validate(): boolean {
+    validate(key: string = '', value: any = undefined): boolean {
         if (!isObject(this.data)) {
             throw 'The data attribute must be an object';
         }
+        this.validateAttributes = new validateAttributes(this.data, this.rules);
+
+        if (!key) {
+            this.runAllValidations();
+            return this.messages.keys().length === 0;
+        } else {
+            this.runSingleValidation(key, value);
+            return ! this.messages.has(key);
+        } 
+    };
+
+    
+
+    private runAllValidations(): void {
 
         this.messages = new ErrorBag();
         this.validateAttributes = new validateAttributes(this.data, this.rules);
 
         for(const property in this.rules) {
-            if (this.rules.hasOwnProperty(property) && Array.isArray(this.rules[property])) {
-                for (let i = 0; i < this.rules[property].length; i++) {
-                    this.validateAttribute(property, this.rules[property][i]);
+            this.runValidation(property);
+        }
+    }
 
-                    if (this.messages.keys().length > 0 && this.stopOnFirstFailureFlag === true) {
-                        return false;
-                    }
+    private runSingleValidation(key: string, value: any = undefined) {
+        this.messages.forget(key);
 
-                    if (this.shouldStopValidating(property)) {
-                        break;
-                    }
+        if (typeof value !== 'undefined') {
+            deepSet(this.data, key, value);
+        }
+
+        this.runValidation(key);
+    }
+
+    private runValidation(property: string): boolean {
+        if (this.rules.hasOwnProperty(property) && Array.isArray(this.rules[property])) {
+            for (let i = 0; i < this.rules[property].length; i++) {
+                this.validateAttribute(property, this.rules[property][i]);
+
+                if (this.messages.keys().length > 0 && this.stopOnFirstFailureFlag === true) {
+                    return false;
+                }
+
+                if (this.shouldStopValidating(property)) {
+                    break;
                 }
             }
         }
-
-        return this.messages.keys().length === 0;
-    };
+    }
 
     private shouldStopValidating(attribute: string): boolean {
        return this.messages.has(attribute) && validationRuleParser.hasRule(attribute, ['bail'], this.rules);

@@ -38,7 +38,7 @@ class ErrorBag {
      * Add new recodrs to the errors and messages objects
      */
     add(key: string, error: ErrorMessage): void {
-        if (Array.isArray(this.errors[key])) {
+        if (Array.isArray(this.errors[key]) && Array.isArray(this.messages[key])) {
             this.errors[key].push(error);
             this.messages[key].push(error.message);
         } else {
@@ -106,6 +106,30 @@ class ErrorBag {
         }
 
         return messages;
+    };
+
+    /**
+     * Remove error message using the key name
+     */
+    forget(key: string): void {
+        if (this.messages.hasOwnProperty(key)) {
+            delete this.messages[key];
+            delete this.errors[key];
+            this.firstMessage = '';
+            
+            if (this.keys().length > 0) {
+                this.firstMessage = this.messages[Object.keys(this.messages)[0]][0];
+            }
+        }
+    };
+
+    /**
+     * Clear the entir error messages
+     */ 
+    flush(): void {
+        this.errors = {};
+        this.messages = {};
+        this.firstMessage = '';
     };
 }
 
