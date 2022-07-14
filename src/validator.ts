@@ -127,7 +127,7 @@ class Validator {
 
     private runAllValidations(): void {
 
-        this.messages = new ErrorBag();
+        this.messages.flush();
         this.validateAttributes = new validateAttributes(this.data, this.rules);
 
         for(const property in this.rules) {
