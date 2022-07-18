@@ -54,8 +54,8 @@ describe('Nested Objects', function() {
         const errors = validator.errors().all(false);
         assert.equal(errors.name, 'The name must be a string.');
         assert.equal(errors.address, 'The address field is required.');
-        assert.equal(errors['bio.age'], 'The bio.age must be an integer.');
-        assert.equal(errors['bio.education.secondary'], 'The bio.education.secondary must be a string.');
+        assert.equal(errors['bio.age'], 'The age must be an integer.');
+        assert.equal(errors['bio.education.secondary'], 'The secondary must be a string.');
     });
     it('Validation should succeed if nested object rules matches the given data', function() {
         validator.setData(data);
@@ -125,8 +125,8 @@ describe('Nested objects with flattened rules', function() {
         const errors = validator.errors().all(false);
         assert.equal(errors.name, 'The name must be a string.');
         assert.equal(errors.address, 'The address field is required.');
-        assert.equal(errors['bio.age'], 'The bio.age must be an integer.');
-        assert.equal(errors['bio.education.secondary'], 'The bio.education.secondary must be a string.');
+        assert.equal(errors['bio.age'], 'The age must be an integer.');
+        assert.equal(errors['bio.education.secondary'], 'The secondary must be a string.');
     });
     it('Validation should succeed if nested object rules matches the given data', function() {
         validator.setData(data);
@@ -201,9 +201,9 @@ describe('Wildcard rules', function() {
     });
     it('Error messages should be returned for all the failed validations', function() {
         const errors = validator.errors().all(false);
-        assert.equal(errors['users.1.name'], 'The users.1.name must be a string.');
-        assert.equal(errors['users.0.bio.age'], 'The users.0.bio.age must be at least 18.');
-        assert.equal(errors['users.0.bio.education.1.institute'], 'The users.0.bio.education.1.institute field is required when users.0.bio.education.1.level is present.');
+        assert.equal(errors['users.1.name'], 'The name must be a string.');
+        assert.equal(errors['users.0.bio.age'], 'The age must be at least 18.');
+        assert.equal(errors['users.0.bio.education.1.institute'], 'The institute field is required when level is present.');
     });
     it('Validation should suceed if wildcard rules matches data', function() {
         validator.setData({
@@ -239,8 +239,8 @@ describe('Wildcard validation on array elements', function() {
     });
     it ('Error messages should be returned for all the failed validations', function() {
         const errors = validator.errors().all(false);
-        assert.equal(errors['value.1'], 'The value.1 must be a number.');
-        assert.equal(errors['value.3'], 'The value.3 must be a number.');
+        assert.equal(errors['value.1'], 'The value must be a number.');
+        assert.equal(errors['value.3'], 'The value must be a number.');
     });
     it('Validation should succeed when all array elements match the wildcard rule', function() {
         validator.setData({ value: [1,2,3] });
@@ -256,8 +256,8 @@ describe('Wildcard validation on object values', function() {
     });
     it('Error messages should be returned for all the failed validations', function() {
         const errors = validator.errors().all(false);
-        assert.equal(errors['value.address'], 'The value.address must be a string.');
-        assert.equal(errors['value.education'], 'The value.education must be a string.');
+        assert.equal(errors['value.address'], 'The address must be a string.');
+        assert.equal(errors['value.education'], 'The education must be a string.');
     });
     it('Validation should succeed when all the obejct values match the wildcard rule', function() {
         validator.setData({ first: 'Jad', last: 'Khoury', education: 'college' });
