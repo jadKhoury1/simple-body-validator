@@ -103,7 +103,24 @@ export function toSnakeCase(string: string): string {
  * Get the displayable name of the attribute.
  */
 export function getDisplayableAttribute(attribute: string): string {
-    return toSnakeCase(attribute).replace(/_/g, ' ').trim();
+    return toSnakeCase(splitMessage(attribute)).replace(/_/g, ' ').trim();
 } 
+
+function splitMessage(attribute: string): string {
+    const splittedAttribute = attribute.split('.');
+
+    // if the '.' does not exist in the attribute, then return the attribute itself
+    if (splittedAttribute.length <= 1) {
+        return attribute;
+    }
+
+    let newAttribute = splittedAttribute.pop();
+    // if the new attribute is a number, check the next attribute
+    if (isNaN(parseInt(newAttribute)) === false) {
+        return splitMessage(splittedAttribute.join('.'));
+    }
+
+    return newAttribute;
+}
 
 
