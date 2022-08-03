@@ -67,6 +67,7 @@ const lang: LangInterface = {
     setDefaultLang(lang: string): void {
 
         this.defaultLang = lang;
+        this.defaultMessages = require('./locales/en.js').default;
 
         // check if the lang translations exist in the library and load them
         if (locales.hasOwnProperty(lang)) {

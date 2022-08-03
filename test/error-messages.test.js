@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { make, setTranslationPath, setDefaultLang } = require('../lib/index');
+const { make, setTranslationPath, setDefaultLang, Password, Rule, register } = require('../lib/index');
 
 setTranslationPath(__dirname + '/lang');
 
@@ -43,5 +43,259 @@ describe('Translation', function() {
         validator.validate();
 
         assert.equal(validator.errors().first(), 'The name must be a string.');
+    });
+});
+
+describe('Format Attributes', function() {
+    describe('Attributes should be formatted by default', function() {
+        const validator = make({});
+        it('By default if no custom attribute is specified the library itself will format the attribute', function() {
+            setDefaultLang('en');
+    
+            validator.setRules({ first_name: 'required' }).validate();
+            assert.equal(validator.errors().first(), 'The first name field is required.');
+    
+            validator.setRules({ lastName: 'required' }).validate();
+            assert.equal(validator.errors().first(), 'The last name field is required.');
+    
+        });
+        it('Nested rules should be also be formatted by default if no custom attributes were specified', function() {
+            validator.setRules({ 'user.first_name': 'required' }).validate();
+            assert.equal(validator.errors().first(), 'The first name field is required.');
+        });
+        it('Wild card rules should also be formatted by default if no custom attributes were specified', function() {
+            validator.setData({ user: {info: [1, 2]}}).setRules({ 'user.primary_info.*': 'object'}).validate();
+            let errors = validator.errors().all(false);
+            
+            for (key in errors) {
+                assert.equal(errors[key], 'The primary info must be an object.');
+            }
+
+            validator.setData({
+                user: { info: [ {}, {}]}
+            }).setRules({ 'user.info.*.emailAddress': 'required' })
+              .validate();
+
+            errors = validator.errors().all(false);
+
+            for (key in errors) {
+                assert.equal(errors[key], 'The email address field is required.')
+            }
+        });
+        it('Depent rules should also be formatted by default if no custom attribute was specified', function() {
+            validator.setData({
+                user: {
+                    first_name: 'test'
+                }
+             }).setRules({
+                 'user.last_name': 'required_with:user.first_name'
+             }).validate();
+
+             assert.equal(validator.errors().first(), 'The last name field is required when first name is present.');
+        });
+    });
+    describe('Specify attribute format in trsanlation file', function() {
+        it('If the attribute has a translation in the translation file, the message should be returned from the file', function() {
+            let validator = make({}, { translated_email: 'required'});
+            validator.validate();
+            assert.equal(validator.errors().first(), 'The email address field is required.');
+
+            validator = make({}, {'user.translated_email': 'required'});
+            validator.validate();
+            assert.equal(validator.errors().first(), 'The email address field is required.');
+        });
+        it('Nested attributes can also be specified and fetched from the translation file', function() {
+            let validator = make({}, {'user.translated_first_name': 'required'});
+            validator.validate();
+            assert.equal(validator.errors().first(), 'The user first name field is required.');
+
+            validator = make({}, {'user.translated_last_name': 'required'});
+            validator.validate();
+            assert.equal(validator.errors().first(), 'The user last name field is required.');
+        });
+        it('Attributes with wild card nested rules can also be specified and fetched from the translation file', function() {
+            let validator = make({user: { translated_numbers: ['test'] }}, {'user.translated_numbers.*': 'integer'});
+            validator.validate();
+            assert.equal(validator.errors().first(), 'The user course must be an integer.');
+
+            validator.setData({ user: { translated_numbers: [1, 'test'] } }).validate();
+            assert.equal(validator.errors().first(), 'The user second course must be an integer.');
+
+            validator.setData({ user: { primaryInfo: [{}, {}]}})
+                .setRules({ 'user.primaryInfo.*.translated_address': 'required' }).validate();
+            
+            const errors = validator.errors().all(false);
+
+            for (key in errors) {
+                assert.equal(errors[key], 'The user address field is required.');
+            }
+        });
+    });
+    describe('Specify attribute format in the obect', function() {
+        const validator = make({});
+        it('If the attribute was specified as in the object, the attribute format should be returned from the object', function() {
+            validator.setRules({ email: 'required' })
+                .setCustomAttributes({ email: 'email address'}).validate();
+            assert.equal(validator.errors().first(), 'The email address field is required.');
+
+            validator.setRules({ 'user.email': 'required' }).validate();
+            assert.equal(validator.errors().first(), 'The email address field is required.');
+        });
+        it('Nested attribites can also be specified and fetched from the object', function() {
+            validator.setRules({ user: { first_name: 'required' }})
+                .setCustomAttributes({ 'user.first_name': 'user first name' }).validate();
+            assert.equal(validator.errors().first(), 'The user first name field is required.');
+
+            validator.setRules({ 'user.last_name': 'required' })
+                .setCustomAttributes({ user: { last_name: 'user last name' }}).validate();
+            assert.equal(validator.errors().first(), 'The user last name field is required.');
+        });
+        it('Attributes with wild card nested rules can also be specified and fetched from the object', function() {
+            validator.setData({ user: { numbers: ['test'] }})
+                .setRules({'user.numbers.*': 'integer'})
+                .setCustomAttributes({
+                    'user.numbers.*': 'user number'
+                })
+                .validate();
+           
+            assert.equal(validator.errors().first(), 'The user number must be an integer.');
+
+            validator.setData({ user: { numbers: [1, 'test'] } })
+                .setCustomAttributes({
+                    'user.numbers.*': 'user number',
+                    'user.numbers.1': 'user second number'
+                })
+                .validate();
+
+            assert.equal(validator.errors().first(), 'The user second number must be an integer.');
+
+            validator.setData({ user: { primaryInfo: [{}, {}]}})
+                .setRules({ 'user.primaryInfo.*.address': 'required' })
+                .setCustomAttributes({
+                    user: {
+                        'primaryInfo.*': {
+                            address: 'user address'
+                        }
+                    }
+                })
+                .validate();
+            
+            const errors = validator.errors().all(false);
+
+            for (key in errors) {
+                assert.equal(errors[key], 'The user address field is required.');
+            }
+
+        });
+    });
+    describe('Attributes formatting priority', function() {
+        const validator = make({});
+        it('Custom attributes specified in the object should always take priority on the ones that are specified in the translation file', function() {
+            validator.setRules({ translated_email: 'required', 'translated_phone': 'required' })
+                .setCustomAttributes({
+                    translated_email: 'custom email address'
+                })
+                .validate();
+
+            assert.equal(validator.errors().first('translated_email'), 'The custom email address field is required.');
+            assert.equal(validator.errors().first('translated_phone'), 'The phone number field is required.');
+        });
+        it('If the attribute inside the translation file has a more specific path, it will take priority on the one specified in the object', function() {
+            validator
+            .setData({
+                user: {
+                    primaryInfo: [
+                        {}, {}
+                    ]
+                }
+            })
+            .setRules({ 
+                user: { 
+                    translated_first_name: 'required',
+                    translated_last_name: 'required',
+                    'primaryInfo.*.translated_address' : 'required',
+                }
+            })
+            .setCustomAttributes({
+                translated_first_name: 'first name',
+                user: {
+                    translated_last_name: 'last name',
+                    'primaryInfo.1.translated_address': 'address'
+                }
+            }).validate();
+
+            assert.equal(validator.errors().first('user.translated_first_name'), 'The user first name field is required.');
+            assert.equal(validator.errors().first('user.translated_last_name'), 'The last name field is required.');
+            assert.equal(validator.errors().first('user.primaryInfo.0.translated_address'), 'The user address field is required.');
+            assert.equal(validator.errors().first('user.primaryInfo.1.translated_address'), 'The address field is required.');
+        });
+    });
+    describe('Attributes for custom validation can also be formatted', function() {
+        it('Sepcify custom attributes for password validation', function() {
+            const validator = make({ password: 'test', user: { translated_password: 'test' }}, {
+                password: [ 'required', Password.create().numbers()],
+                user: {
+                    translated_password: ['required', Password.create().numbers()]
+                }
+            }, {}, {
+                password: 'user password'
+            }).setLang('te');
+    
+            validator.validate();
+            
+            let errors = validator.errors().get('password');
+            assert.equal(errors[0], 'The user password must be at least 8 characters.');
+            assert.equal(errors[1], 'The user password must contain at least one number.');
+
+            errors = validator.errors().get('user.translated_password');
+            assert.equal(errors[0], 'The user translated password must be at least 8 characters.')
+            assert.equal(errors[1], 'The user translated password must contain at least one number.');
+        });
+        it('Specify cutom attributes for custom class rule', function() {
+            class UpperCase extends Rule {
+                passes(value) {
+                    return value.toUpperCase() === value;
+                }
+
+                getMessage() {
+                    return 'The :attribute must be uppercase.';
+                }
+            }
+
+            const validator = make({ 
+                name: 'jad', user: { translated_first_name: 'john'} 
+            }, { 
+                name: new UpperCase,
+                user: {
+                    translated_first_name: new UpperCase
+                }
+            });
+            validator.setCustomAttributes({ name: 'first name' }).validate();
+
+            assert.equal(validator.errors().first('name'), 'The first name must be uppercase.');
+            assert.equal(validator.errors().first('user.translated_first_name'), 'The user first name must be uppercase.');
+        });
+        it('Specify custom attributes for registered rule', function() {
+            register('telephone', function(value) {
+                return value.match(/^\d{3}-\d{3}-\d{4}$/);
+            });
+
+            const validator = make({ cell: '1223' }).setRules({ cell: 'telephone' });
+            validator.setCustomAttributes({ cell: 'mobile' }).validate();
+
+            assert.equal(validator.errors().first(), 'The mobile phone number is not in the format XXX-XXX-XXXX.');
+        });
+        it('Specify custom attributes for closure validation', function() {
+            const validator = make({ value: 'test' }).setRules({
+                value: (value, fail) => {
+                    if (value === 'test') {
+                        fail(`The :attribute is invalid`);
+                    }
+                }
+            });
+
+            validator.setCustomAttributes({ value: 'test value' }).validate();
+            assert.equal(validator.errors().first(), 'The test value is invalid');
+        });
     });
 });

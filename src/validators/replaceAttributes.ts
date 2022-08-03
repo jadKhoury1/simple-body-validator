@@ -1,6 +1,6 @@
+import replaceAttributePayload from '../payloads/replaceAttributePayload';
 import { ReplaceAttribueInterface } from '../types';
-import { toDate } from '../utils/date';
-import { getDisplayableAttribute } from '../utils/formatMessages';
+import { toDate } from '../utils/date';;
 import { getSize } from '../utils/general';
 import { deepFind } from '../utils/object';
 
@@ -10,7 +10,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all place-holders for the accepted_if rule.
      */
-    replaceAcceptedIf: function (message: string, parameters: string[], data: object): string {
+    replaceAcceptedIf: function ({ data, message, parameters, getDisplayableAttribute }: replaceAttributePayload): string {
         const [ other ] = parameters;
         const result = deepFind(data, other);
 
@@ -26,42 +26,40 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all place-holders for the after rule.
      */
-    replaceAfter: function (message: string, parameters: string[]): string {
-        return this.replaceBefore(message, parameters);
+    replaceAfter: function (payload: replaceAttributePayload): string {
+        return this.replaceBefore(payload);
     },
 
     /**
      * Replace all place-holders for the after_or_equal rule.
      */
-    replaceAfterOrEqual: function (message: string, parameters: string[]): string {
-        return this.replaceBefore(message, parameters);
+    replaceAfterOrEqual: function (payload: replaceAttributePayload): string {
+        return this.replaceBefore(payload);
     },
 
     /**
      *  Replace all place-holders for the before rule.
      */
-    replaceBefore: function (message: string, paramaters: string[]): string {
+    replaceBefore: function ({ message, parameters, getDisplayableAttribute }: replaceAttributePayload): string {
 
-
-
-        if (!toDate(paramaters[0])) {
-            return message.replace(':date', getDisplayableAttribute(paramaters[0]));
+        if (!toDate(parameters[0])) {
+            return message.replace(':date', getDisplayableAttribute(parameters[0]));
         }
 
-        return message.replace(':date', paramaters[0]);
+        return message.replace(':date', parameters[0]);
     },
 
     /**
      * Replace all place-holders for the before_or_equal rule.
      */
-    replaceBeforeOrEqual: function (message: string, parameters: string[]): string {
-        return this.replaceBefore(message, parameters);
+    replaceBeforeOrEqual: function (payload: replaceAttributePayload): string {
+        return this.replaceBefore(payload);
     },
 
     /**
      * Replace all the place-holders for the between rule.
      */
-    replaceBetween: function (message: string, parameters: string[]): string {
+    replaceBetween: function ({ message, parameters }: replaceAttributePayload): string {
         const values = {':min': parameters[0], ':max': parameters[1]};
         return message.replace(/:min|:max/gi, matched => values[matched]);
     },
@@ -69,14 +67,14 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all place-holders for the before_or_equal rule.
      */
-    replaceDateEquals: function (message: string, parameters: string[]): string {
-        return this.replaceBefore(message, parameters);
+    replaceDateEquals: function (payload: replaceAttributePayload): string {
+        return this.replaceBefore(payload);
     },
 
     /**
      *  Replace all place-holders for the declined_if rule.
      */
-    replaceDeclinedIf: function (message: string, parameters: string[], data: object): string {
+    replaceDeclinedIf: function ({ message, parameters, data, getDisplayableAttribute }: replaceAttributePayload): string {
         const [ other ] = parameters;
         const result = deepFind(data, other);
 
@@ -92,84 +90,84 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all place-holders for the different rule.
      */
-    replaceDifferent: function(message: string, parameters: string[]): string {
-        return this.replaceSame(message, parameters);
+    replaceDifferent: function(payload: replaceAttributePayload): string {
+        return this.replaceSame(payload);
     },
 
     /**
      * Replace all place-holders for the digits rule.
      */
-    replaceDigits: function(message: string, parameters: string[]): string {
+    replaceDigits: function({ message, parameters }: replaceAttributePayload): string {
         return message.replace(':digits', parameters[0]);
     },
 
     /**
      * Replace all place-holders for the digits (between) rule.
      */
-    replaceDigitsBetween: function(message: string, parameters: string[]): string {
-        return this.replaceBetween(message, parameters);
+    replaceDigitsBetween: function(payload: replaceAttributePayload): string {
+        return this.replaceBetween(payload);
     },
 
     /**
      * Replace all place-holders for the ends_with rule.
      */
-    replaceEndsWith: function(message: string, parameters: string[]): string {
+    replaceEndsWith: function({ message, parameters }: replaceAttributePayload): string {
         return message.replace(':values', parameters.join(', '));
     },
 
     /**
      * Replace all place-holders for the starts_with rule.
      */
-    replaceStartsWith: function(message: string, parameters: string[]): string {
+    replaceStartsWith: function({ message, parameters }: replaceAttributePayload): string {
         return message.replace(':values', parameters.join(', '));
     },
 
     /**
      * Replace all place-holders for the min rule.
      */
-    replaceMin: function (message: string, parameters: string[]): string {
+    replaceMin: function ({ message, parameters }: replaceAttributePayload): string {
         return message.replace(':min', parameters[0]);
     },
 
     /**
      * Replace all place-holders for the max rule.
      */
-    replaceMax: function (message: string, parameters: string[]): string {
+    replaceMax: function ({ message, parameters }: replaceAttributePayload): string {
         return message.replace(':max', parameters[0]);
     },
 
     /**
      * Replace all place-holders for the required_with rule.
      */
-    replaceRequiredWith: function (message: string, parameters: string[]): string {
+    replaceRequiredWith: function ({ message, parameters, getDisplayableAttribute }: replaceAttributePayload): string {
         return message.replace(':values', parameters.map(attribute => getDisplayableAttribute(attribute)).join(', '));
     },
 
     /**
      * Replace all place-holders for the required_with_all rule.
      */
-    replaceRequiredWithAll: function (message: string, parameters: string[]): string {
-        return this.replaceRequiredWith(message, parameters);
+    replaceRequiredWithAll: function (payload: replaceAttributePayload): string {
+        return this.replaceRequiredWith(payload);
     },
 
     /**
      * Replace all place-holders for the required_without rule.
      */
-    replaceRequiredWithout: function (message: string, parameters: string[]): string {
-        return this.replaceRequiredWith(message, parameters);
+    replaceRequiredWithout: function (payload: replaceAttributePayload): string {
+        return this.replaceRequiredWith(payload);
     },
 
     /**
      * Replace all place-holders for the required_without_all rule.
      */
-    replaceRequiredWithoutAll: function (message: string, parameters: string[]): string {
-        return this.replaceRequiredWith(message, parameters);
+    replaceRequiredWithoutAll: function (payload: replaceAttributePayload): string {
+        return this.replaceRequiredWith(payload);
     },
 
     /**
      * Replace all place-holders for the gt rule.
      */
-    replaceGt: function (message: string, parameters: string[], data: object, hasNumericRule: boolean): string {
+    replaceGt: function ({ message, parameters, data, hasNumericRule }: replaceAttributePayload): string {
         const [ value ] = parameters;
         const result = deepFind(data, value);
 
@@ -183,28 +181,28 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all place-holders for the lt rule.
      */
-    replaceLt: function (message: string, parameters: string[], data: object, hasNumericRule: boolean): string {
-        return this.replaceGt(message, parameters, data, hasNumericRule);
+    replaceLt: function (payload: replaceAttributePayload): string {
+        return this.replaceGt(payload);
     },
 
     /**
     * Replace all place-holders for the gte rule.
     */
-    replaceGte: function (message: string, parameters: string[], data: object, hasNumericRule: boolean): string {
-        return this.replaceGt(message, parameters, data, hasNumericRule);
+    replaceGte: function (payload: replaceAttributePayload): string {
+        return this.replaceGt(payload);
     },
 
     /**
      * Replace all place-holders for the lte rule.
      */
-    replaceLte: function (message: string, parameters: string[], data: object, hasNumericRule: boolean): string {
-        return this.replaceGt(message, parameters, data, hasNumericRule);
+    replaceLte: function (payload: replaceAttributePayload): string {
+        return this.replaceGt(payload);
     },
 
     /**
      * Replace all place-holders for the required_if rule.
      */
-    replaceRequiredIf: function (message: string, parameters: string[], data: object): string {
+    replaceRequiredIf: function ({ message, parameters, data, getDisplayableAttribute }: replaceAttributePayload): string {
         const [ other ] = parameters;
         const result = deepFind(data, other);
 
@@ -220,7 +218,7 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all the place-holders for the required_unless rule.
      */
-    replaceRequiredUnless: function(message: string, parameters: string[]): string {
+    replaceRequiredUnless: function({ message, parameters, getDisplayableAttribute }: replaceAttributePayload): string {
         const [other] = parameters;
 
         const values = {
@@ -234,14 +232,14 @@ const replaceAttributes: ReplaceAttribueInterface = {
     /**
      * Replace all place-holders for the same rule.
      */
-    replaceSame: function (message: string, parameters: string[]): string {
+    replaceSame: function ({ message, parameters, getDisplayableAttribute }: replaceAttributePayload): string {
         return message.replace(':other', getDisplayableAttribute(parameters[0]));
     },
 
     /**
      * Replace all place-holders for the size rule.
      */
-    replaceSize: function (message: string, parameters: string[]): string {
+    replaceSize: function ({ message, parameters }: replaceAttributePayload): string {
         return message.replace(':size', parameters[0]);
     },
 };
