@@ -2,10 +2,10 @@
 
 import {
     Rules, CustomMesages, ErrorMessage,
-    ImplicitAttributes, Rule, InitialRules
+    ImplicitAttributes, Rule, InitialRules, CustomAttributes
 } from './types';
 import { builValidationdMethodName } from './utils/build';
-import { getMessage, makeReplacements } from './utils/formatMessages';
+import { getFormattedAttribute, getKeyCombinations, getMessage } from './utils/formatMessages';
 import validateAttributes from './validators/validateAttributes';
 import validationRuleParser from './validators/validationRuleParser';
 import { getNumericRules, isImplicitRule } from './utils/general';
@@ -15,6 +15,8 @@ import RuleContract  from './rules/ruleContract';
 import Lang from './lang';
 import Password from './rules/password';
 import validationData from './validators/validationData';
+import replaceAttributes from './validators/replaceAttributes';
+import replaceAttributePayload from './payloads/replaceAttributePayload';
 
 class Validator {
 
@@ -66,10 +68,16 @@ class Validator {
      */
     customMessages: CustomMesages;
 
+    /**
+     * Object of custom attribute name;
+     */
+    customAttributes: CustomAttributes;
 
-    constructor(data: object, rules: InitialRules, customMessages: CustomMesages = {}) {
+
+    constructor(data: object, rules: InitialRules, customMessages: CustomMesages = {}, customAttributes: CustomAttributes = {}) {
         this.data = data;
-        this.customMessages = customMessages;
+        this.customMessages = dotify(customMessages);
+        this.customAttributes = dotify(customAttributes);
         this.initalRules = rules;
         this.lang = Lang.getDefaultLang();
         this.addRules(rules);
@@ -94,7 +102,12 @@ class Validator {
     };
 
     setCustomMessages(customMessages: CustomMesages = {}): Validator {
-        this.customMessages = customMessages;
+        this.customMessages = dotify(customMessages);
+        return this;
+    };
+
+    setCustomAttributes(customAttributes: CustomAttributes = {}): Validator {
+        this.customAttributes = dotify(customAttributes);
         return this;
     };
 
@@ -123,6 +136,71 @@ class Validator {
         } 
     };
 
+
+    /**
+     * Get the displayable name of the attribute.
+     */
+    getDisplayableAttribute(attribute: string): string {
+        const primaryAttribute: string = this.getPrimaryAttribute(attribute);
+        const attributeCombinations: string[] = getKeyCombinations(attribute);
+        const translatedAttributes = dotify(Lang.get(this.lang)['attributes'] || {});
+        let expectedAttributes: string[] = attributeCombinations;
+        
+        // Combine both attributes combinations in one array
+        if (attribute !== primaryAttribute) {
+            expectedAttributes = [];
+            const primaryAttributeCombinations: string[] = getKeyCombinations(primaryAttribute);
+            
+            for (let i = 0; i < attributeCombinations.length; i++) {
+                expectedAttributes.push(attributeCombinations[i]);
+                if (attributeCombinations[i] !== primaryAttributeCombinations[i]) {
+                    expectedAttributes.push(primaryAttributeCombinations[i]);
+                }
+            }
+        }
+
+        for (let i = 0; i < expectedAttributes.length; i++) {
+            const name: string = expectedAttributes[i];
+            // The developer may dynamically specify the object of custom attributes on this 
+            // validator instance. If the attribute exists in the object it is used over 
+            // the other ways of pulling the attribute name for this given attribute.   
+            if (this.customAttributes.hasOwnProperty(name)) {
+                return this.customAttributes[name];
+            }
+            
+            const line: string|undefined = translatedAttributes[name];
+            // We allow for a developer to specify language lines for any attribute
+            if (typeof line === 'string') {
+                return line;
+            }
+        }
+
+        return getFormattedAttribute(attribute);
+    }
+
+
+    /**
+     * Replace all error message place-holders with actual values.
+     */
+    private makeReplacements(
+        message: string, attribute: string, rule: string, parameters: string[] = [], hasNumericRule: boolean = false,
+    ): string {
+
+        message = message.replace(':attribute', attribute);
+        const methodName = `replace${builValidationdMethodName(rule)}`;
+
+        if (typeof replaceAttributes[methodName] === 'function') {
+            const payload = new replaceAttributePayload(
+                this.data, message, parameters, hasNumericRule, (function(attribute) {
+                    return this.getDisplayableAttribute(attribute)
+                }).bind(this)
+            )
+            message = replaceAttributes[methodName](payload);
+        }
+
+        return message;
+
+    };
     
 
     private runAllValidations(): void {
@@ -231,11 +309,10 @@ class Validator {
         let result: object|string = rule.getMessage();
         let messages: object = typeof result === 'string' ? [ result ] : result;
 
-
         for(let key in messages) {
             this.messages.add(attribute, {
-                error_type: rule.constructor.name, message: makeReplacements(
-                    messages[key], attribute, rule.constructor.name, []
+                error_type: rule.constructor.name, message: this.makeReplacements(
+                    messages[key], this.getDisplayableAttribute(attribute), rule.constructor.name
                 )
             });
         }
@@ -248,10 +325,9 @@ class Validator {
     private addFailure(attribute: string, rule: string, value: any, parameters: string[]): void {
 
         const hasNumericRule = validationRuleParser.hasRule(attribute, getNumericRules(), this.rules);
-
-        const message: string = makeReplacements(
+        const message: string = this.makeReplacements(
             getMessage(attribute, rule, value, this.customMessages, hasNumericRule, this.lang),
-            attribute, rule, parameters, this.data, hasNumericRule
+            this.getDisplayableAttribute(attribute), rule, parameters, hasNumericRule
         );
 
         const error: ErrorMessage = {

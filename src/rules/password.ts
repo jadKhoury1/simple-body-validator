@@ -1,7 +1,6 @@
 'use strict';
 
 import { InitialRule } from '../types';
-import { getDisplayableAttribute } from '../utils/formatMessages';
 import Validator from '../validator';
 import RuleContract from './ruleContract';
 
@@ -111,7 +110,7 @@ class Password extends RuleContract {
 
         const validator: Validator = new Validator(this.data, {
             [attribute]: ['string', `min:${this.minLength}`, ... this.customRules]
-        }, this.validator.customMessages).setLang(this.lang);
+        }, this.validator.customMessages, this.validator.customAttributes).setLang(this.lang);
 
         if (!validator.validate()) {
             const errors: object = validator.errors().addErrorTypes().get(attribute);
@@ -126,7 +125,7 @@ class Password extends RuleContract {
         }
 
         let pattern;
-        const formattedAttribute = getDisplayableAttribute(attribute);
+        const formattedAttribute = this.validator.getDisplayableAttribute(attribute);
 
         if (this.minLowerCase) {
              pattern = this.minLowerCase === 1 ? /\p{Ll}/u : new RegExp(`(.*\\p{Ll}){${this.minLowerCase}}.*`, 'u');

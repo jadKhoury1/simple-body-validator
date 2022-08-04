@@ -1,10 +1,9 @@
 'use strict';
 
-import { CustomMesages } from "../types";
+import { CustomMesages } from '../types';
 import { isSizeRule } from './general';
-import replaceAttributes from '../validators/replaceAttributes';
-import { builValidationdMethodName } from './build';
 import Lang from '../lang';
+import { deepFind } from './object';
 
 
 
@@ -74,22 +73,6 @@ export function getMessage(attribute: string, rule: string, value: any, customMe
 };
 
 /**
- * Replace all error message place-holders with actual values.
- */
-export function makeReplacements(message: string, attribute: string, rule: string, parameters: string[], data: object = {}, hasNumericRule: boolean = false): string {
-
-    message = message.replace(':attribute', getDisplayableAttribute(attribute));
-    const methodName = `replace${builValidationdMethodName(rule)}`;
-
-    if (typeof replaceAttributes[methodName] === 'function') {
-        message = replaceAttributes[methodName](message, parameters, data, hasNumericRule);
-    }
-
-    return message;
-
-}
-
-/**
  * Convert a string to snake case.
  */
 export function toSnakeCase(string: string): string {
@@ -97,30 +80,58 @@ export function toSnakeCase(string: string): string {
             .split(/ |\B(?=[A-Z])/)
             .map(word => word.toLowerCase())
             .join('_');
+};
+
+/**
+ * Get the formatted name of the attribute
+ */
+export function getFormattedAttribute(attribute: string): string {
+    return toSnakeCase(getPrimaryKeyFromPath(attribute)).replace(/_/g, ' ').trim();
+};
+
+/**
+ * Get the given attribute from the attribute translations.
+ */
+export function getAttributeFromTranslations(key: string, lang: string): string|undefined {
+    return deepFind(Lang.get(lang), `attributes.${key}`);
+};
+
+/**
+ * Get the combinations of keys from a main key. For example if the main key is 'user.info.name',
+ * the combination will be [user.info.name, info.name, name]
+ */
+export function getKeyCombinations(key: string): string[] {
+
+    const combinations: string[] = [key];
+    const splittedKey: string[] = key.split('.');
+
+    while (splittedKey.length > 1) {
+        splittedKey.shift();
+        combinations.push(splittedKey.join('.'));
+    }
+
+    return combinations;
 }
 
 /**
- * Get the displayable name of the attribute.
+ * The purpose of this method if to get the primary key associated with a path
+ * For example the primary key for path 'user.info.email' will be 'email'
  */
-export function getDisplayableAttribute(attribute: string): string {
-    return toSnakeCase(splitMessage(attribute)).replace(/_/g, ' ').trim();
-} 
+function getPrimaryKeyFromPath(path: string): string {
+    const splittedPath = path.split('.');
 
-function splitMessage(attribute: string): string {
-    const splittedAttribute = attribute.split('.');
-
-    // if the '.' does not exist in the attribute, then return the attribute itself
-    if (splittedAttribute.length <= 1) {
-        return attribute;
+    // if the '.' does not exist in the path, then return the path itself
+    if (splittedPath.length <= 1) {
+        return path;
     }
 
-    let newAttribute = splittedAttribute.pop();
-    // if the new attribute is a number, check the next attribute
-    if (isNaN(parseInt(newAttribute)) === false) {
-        return splitMessage(splittedAttribute.join('.'));
+    let key = splittedPath.pop();
+    // if the new key is a number, check the next attribute
+    if (isNaN(parseInt(key)) === false) {
+        return getPrimaryKeyFromPath(splittedPath.join('.'));
     }
 
-    return newAttribute;
-}
+    return key;
+};
 
 

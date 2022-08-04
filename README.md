@@ -90,7 +90,7 @@ Alternatively, validation rules may be specified as arrays of rules instead of a
 If you want a more expressive way to set your data and rules, you can chain the methods as shown below.
 
 ```js
-    const validator = make().setSata(data).setRules(rules);
+    const validator = make().setData(data).setRules(rules);
 ```
 
 

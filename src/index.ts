@@ -1,4 +1,4 @@
-import { CustomMesages, InitialRules } from './types';
+import { CustomAttributes, CustomMesages, InitialRules } from './types';
 import Validator from './validator';
 import Lang from './lang';
 import RuleContract from './rules/ruleContract';
@@ -13,8 +13,8 @@ export class Password extends PasswordRule {};
 export * from './rules/registerRule';
 export * from './rule';
 
-export function make(data: object = {}, rules: InitialRules = {}, customMessages: CustomMesages = {}): Validator {
-    return new Validator(data, rules, customMessages);
+export function make(data: object = {}, rules: InitialRules = {}, customMessages: CustomMesages = {}, customAttributes: CustomAttributes = {}): Validator {
+    return new Validator(data, rules, customMessages, customAttributes);
 };
 
 export function setDefaultLang(lang: string): void {
