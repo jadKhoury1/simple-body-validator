@@ -24,7 +24,7 @@
     "node"
   ],
   "author": "Jad Khoury",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/jadKhoury1/simple-body-validator/issues"
   },
