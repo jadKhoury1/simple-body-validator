@@ -55,6 +55,7 @@ function getCustomMessage(attributes: string[], rule: string, customMessages: Cu
     if (isSizeRule(rule)) {
         allKeys.pop();
         allKeys.push(`${rule}.${messageType}`);
+        allKeys.push(rule);
     }
 
     let key: string = '';
