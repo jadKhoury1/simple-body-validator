@@ -159,8 +159,10 @@ class Validator {
             }
         }
 
+        let name: string = '';
+        let line: string|undefined = '';
         for (let i = 0; i < expectedAttributes.length; i++) {
-            const name: string = expectedAttributes[i];
+            name = expectedAttributes[i];
             // The developer may dynamically specify the object of custom attributes on this 
             // validator instance. If the attribute exists in the object it is used over 
             // the other ways of pulling the attribute name for this given attribute.   
@@ -168,7 +170,7 @@ class Validator {
                 return this.customAttributes[name];
             }
             
-            const line: string|undefined = translatedAttributes[name];
+            line = translatedAttributes[name];
             // We allow for a developer to specify language lines for any attribute
             if (typeof line === 'string') {
                 return line;
@@ -325,8 +327,12 @@ class Validator {
     private addFailure(attribute: string, rule: string, value: any, parameters: string[]): void {
 
         const hasNumericRule = validationRuleParser.hasRule(attribute, getNumericRules(), this.rules);
+        const primaryAttribute: string = this.getPrimaryAttribute(attribute);
+        const attributes: string[] = attribute !== primaryAttribute ? 
+            [attribute, primaryAttribute] : [attribute];
+
         const message: string = this.makeReplacements(
-            getMessage(attribute, rule, value, this.customMessages, hasNumericRule, this.lang),
+            getMessage(attributes, rule, value, this.customMessages, hasNumericRule, this.lang),
             this.getDisplayableAttribute(attribute), rule, parameters, hasNumericRule
         );
 

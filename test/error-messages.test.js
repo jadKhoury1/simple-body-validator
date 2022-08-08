@@ -133,7 +133,7 @@ describe('Format Attributes', function() {
     });
     describe('Specify attribute format in the obect', function() {
         const validator = make({});
-        it('If the attribute was specified as in the object, the attribute format should be returned from the object', function() {
+        it('If the attribute was specified in the object, the attribute format should be returned from the object', function() {
             validator.setRules({ email: 'required' })
                 .setCustomAttributes({ email: 'email address'}).validate();
             assert.equal(validator.errors().first(), 'The email address field is required.');
@@ -141,7 +141,7 @@ describe('Format Attributes', function() {
             validator.setRules({ 'user.email': 'required' }).validate();
             assert.equal(validator.errors().first(), 'The email address field is required.');
         });
-        it('Nested attribites can also be specified and fetched from the object', function() {
+        it('Nested attributes can also be specified and fetched from the object', function() {
             validator.setRules({ user: { first_name: 'required' }})
                 .setCustomAttributes({ 'user.first_name': 'user first name' }).validate();
             assert.equal(validator.errors().first(), 'The user first name field is required.');
@@ -296,6 +296,164 @@ describe('Format Attributes', function() {
 
             validator.setCustomAttributes({ value: 'test value' }).validate();
             assert.equal(validator.errors().first(), 'The test value is invalid');
+        });
+    });
+});
+
+describe('Custom Messages', function() {
+    describe('Specify custom messages in translation file', function() {
+        const validator = make({});
+        it('If the rules has a custom message in the translation file, the message should be returned from the file', function() {
+            validator.setRules({ custom_email: 'required' }).validate();
+            assert.equal(validator.errors().first(), 'The email must be present.');
+
+            validator.setRules({ 'user.custom_email': 'required' }).validate();
+            assert.equal(validator.errors().first(), 'The email must be present.');
+        });
+        it('We can also specify custom messages for nested rules', function() {
+            validator.setRules({ 'user.custom_first_name': 'required'}).validate();
+            assert.equal(validator.errors().first(), 'The user first name must be present.');
+
+            validator.setRules({ 'user.custom_last_name': 'required' }).validate();
+            assert.equal(validator.errors().first(), 'The user last name must be present.');
+        });
+        it('Custom messages for wildcard rules can also be specified and fetched form the translation file', function() {
+            validator.setData({ user: { custom_numbers: ['test'] }})
+                .setRules({ 'user.custom_numbers.*': 'integer' })
+                .validate();
+            assert.equal(validator.errors().first(), 'The user number must be an integer.');
+
+            validator.setData({ user: { custom_numbers: [1, 'test'] }}).validate();
+            assert.equal(validator.errors().first(), 'The user second number must be an integer.');
+
+            validator.setData({ user: { primaryInfo: [{}, {} ]}})
+                .setRules({ 'user.primaryInfo.*.custom_address': 'required' })
+                .validate();
+
+            const errors = validator.errors().all(false);
+
+            for (key in errors) {
+                assert.equal(errors[key], 'The user primary info requires the address to be present.');
+            }
+        });
+    });
+    describe('Specify custom messages in the object', function() {
+        const validator = make({});
+        it('If the custom message was specified in the object, the message should be returned from the object', function() {
+            validator.setRules({ email: 'required' })
+                .setCustomMessages({ 'email.required': 'The :attribute must be present.' })
+                .validate();
+            assert.equal(validator.errors().first(), 'The email must be present.');
+
+            validator.setRules({ 'user.email': 'required' }).validate();
+            assert.equal(validator.errors().first(), 'The email must be present.');
+        });
+        it('Custom messages for nested rules can also be specified in the object', function() {
+            validator.setRules({ user: { first_name: 'required' }})
+                .setCustomMessages({ 'user.first_name.required': 'The user :attribute must be present.' })
+                .validate();
+            assert.equal(validator.errors().first(), 'The user first name must be present.');
+
+            validator.setRules({ 'user.last_name': 'required' })
+                .setCustomMessages({ user: { last_name: { required: 'The user :attribute must be present.' }}})
+                .validate();
+            assert.equal(validator.errors().first(), 'The user last name must be present.');
+        });
+        it('Custom messages for wild card rules can also be specified in the object', function() {
+            validator.setData({ user: { numbers: ['test'] }})
+                .setRules({ 'user.numbers.*': 'integer'})
+                .setCustomMessages({
+                    'user.numbers.*.integer': 'The user number must be valid.'
+                })
+                .validate();
+            assert.equal(validator.errors().first(), 'The user number must be valid.');
+
+            validator.setData({ user: { numbers: [1, 'test'] }})
+                .setCustomMessages({
+                    'user.numbers.*.integer': 'The user number must be valid.',
+                    'user.numbers.1.integer': 'The user second number must be valid.'
+                })
+                .validate();
+            assert.equal(validator.errors().first(), 'The user second number must be valid.');
+            
+            validator.setData({ user: { primaryInfo: [{}, {}]}})
+                .setRules({ 'user.primaryInfo.*.address': 'required' })
+                .setCustomMessages({
+                    user: {
+                        primaryInfo: {
+                            '*': {
+                                address: {
+                                    required: 'The user address is required in the primaty info.'
+                                }
+                            }
+                        }
+                    }
+                })
+                .validate();
+
+            const errors = validator.errors().all(false);
+
+            for (key in errors) {
+                assert.equal(errors[key], 'The user address is required in the primaty info.')
+            }
+
+        });
+    });
+    describe('Custom messages priority', function() {
+        const validator = make({});
+        it('Custom messages specified in the object should always take priority on the ones that are specified in the translation file', function() {
+            validator.setRules({ custom_email: 'required', custom_phone: 'required' })
+                .setCustomMessages({
+                    custom_email: {
+                        required: 'The custom email must be present.'
+                    }
+                })
+                .validate();
+            assert.equal(validator.errors().first('custom_email'), 'The custom email must be present.');
+            assert.equal(validator.errors().first('custom_phone'), 'The phone number must be present.');
+        });
+        it('If the custom message inside the translation file has a more specific rule path than the one in the object', function() {
+            validator.setData({
+                user: {
+                    primaryInfo: [
+                        {}, {}
+                    ]
+                }
+            })
+            .setRules({
+                user: {
+                    custom_first_name: 'required',
+                    custom_last_name: 'required',
+                    'primaryInfo.*.custom_postal_address': 'required'
+                }
+            })
+            .setCustomMessages({
+                'custom_first_name.required': 'The first name must be present.',
+                user: {
+                    'custom_last_name.required': 'The last name must be present.',
+                    'primaryInfo.*.custom_postal_address.required': 'The primary postal address must be present.'
+                }
+            })
+            .validate();
+
+
+            assert.equal(validator.errors().first('user.custom_first_name'), 'The user first name must be present.')
+            assert.equal(validator.errors().first('user.custom_last_name'), 'The last name must be present.');
+            assert.equal(validator.errors().first('user.primaryInfo.0.custom_postal_address'), 'The primary postal address must be present.');
+            assert.equal(validator.errors().first('user.primaryInfo.1.custom_postal_address'), 'The user primary info requires the second postal address to be present.');
+        });
+    });
+    describe('Custom messages can also be specified for custom rules', function() {
+        it('Specify custom messages for registred rule', function() {
+            register('telephone', function(value) {
+                return value.match(/^\d{3}-\d{3}-\d{4}$/);
+            });
+            const validator = make({ cell: '123' }).setRules({ cell: 'telephone' });
+            validator.setCustomMessages({
+                'cell.telephone': 'The phone number must be in a valid format.'
+            }).validate();
+
+            assert.equal(validator.errors().first(), 'The phone number must be in a valid format.');
         });
     });
 });

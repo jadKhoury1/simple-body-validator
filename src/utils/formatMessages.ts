@@ -3,7 +3,7 @@
 import { CustomMesages } from '../types';
 import { isSizeRule } from './general';
 import Lang from '../lang';
-import { deepFind } from './object';
+import { deepFind, dotify } from './object';
 
 
 
@@ -24,25 +24,57 @@ function getMesageType(value: any, hasNumericRule: boolean = false): string {
 };
 
 /**
- * Get the inline message for a rule if exists
+ * Get the custom message for a rule if exists
  */
-function getFromLocalObject(attribute: string, rule: string, customMessages: CustomMesages): string|null {
-    const key: string = `${attribute}.${rule}`;
+function getCustomMessage(attributes: string[], rule: string, customMessages: CustomMesages, messageType: string, lang: string): string|null {
 
-    if (typeof customMessages[key] !== 'undefined') {
-        return customMessages[key];
-    } else if (typeof customMessages[rule] !== 'undefined') {
-        return customMessages[rule];
-    }
+    // The primary attribute is only used for wildcard rules, for example if the attribute is 'user.1.email'
+    // the primary attribute value will be 'user.*.email'
+    let [attribute, primaryAttribute] = attributes;
 
-    for (let messageKey in customMessages) {
-        if (messageKey.indexOf('*') !== -1 ) {
-            let pattern: RegExp  = new RegExp('^' + messageKey.replace(/\*/g, '[^\.]*'));
-            if (key.match(pattern)) {
-                return customMessages[messageKey];
+    // get the translated messages form the custom attribute in the language file
+    const translatedMessages = dotify(Lang.get(lang)['custom'] || {});
+
+    // The key combination will look something like this [user.*.email.required, *.email.required, email.required, required]
+    // This way we will be able to search all the possible combinations
+    const keys: string[] = getKeyCombinations(`${attribute}.${rule}`);
+    let allKeys: string[] = keys;
+
+    // If the primary attribute exists we should merge all the combinations together
+    if (primaryAttribute) {
+        allKeys = [];
+        const primaryAttributeKeys = getKeyCombinations(`${primaryAttribute}.${rule}`);
+        for(let i = 0; i < keys.length; i++) { 
+            allKeys.push(keys[i]);
+            if (keys[i] !== primaryAttributeKeys[i]) {
+                allKeys.push(primaryAttributeKeys[i]);
             }
         }
-    };
+    }
+
+    if (isSizeRule(rule)) {
+        allKeys.pop();
+        allKeys.push(`${rule}.${messageType}`);
+    }
+
+    let key: string = '';
+    let message: string|undefined = '';
+    for (let i = 0; i < allKeys.length; i++) {
+        key = allKeys[i];
+        // The developer may dynamically specify the object of custom messages on the validator instance
+        // If the key exists in the object it is used over the other ways of pulling the 
+        // message for this given key
+        if (customMessages.hasOwnProperty(key)) {
+            return customMessages[key];
+        }
+        
+        // try to get the custom error message from the translation file
+        message = translatedMessages[key];
+
+        if (typeof message === 'string') {
+            return message;
+        }
+    }
 
     return null;
 };
@@ -50,10 +82,10 @@ function getFromLocalObject(attribute: string, rule: string, customMessages: Cus
 /**
  * Get the validation message for an attribute and rule.
  */
-export function getMessage(attribute: string, rule: string, value: any, customMessages: CustomMesages, hasNumericRule: boolean, lang: string): string {
+export function getMessage(attributes: string[], rule: string, value: any, customMessages: CustomMesages, hasNumericRule: boolean, lang: string): string {
 
     // check if error exists inside the custom message object provided by the user
-    const inlineMessage: string|null = getFromLocalObject(attribute, rule, customMessages);
+    const inlineMessage: string|null = getCustomMessage(attributes, rule, customMessages, getMesageType(value, hasNumericRule), lang);
 
     if (inlineMessage) {
         return inlineMessage;

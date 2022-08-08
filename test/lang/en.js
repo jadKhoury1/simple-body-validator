@@ -12,6 +12,35 @@ module.exports = {
             'primaryInfo.*.translated_address': 'user address',
         },
         'user.translated_last_name': 'user last name',
-        
-    }
+    },
+    custom: {
+        custom_email: {
+            required: 'The email must be present.'
+        },
+        custom_phone: {
+            required: 'The phone number must be present.'
+        },
+        user: {
+            custom_first_name: {
+                required: 'The user first name must be present.'
+            },
+            'primaryInfo': {
+                '*': {
+                    custom_address: {
+                        required: 'The user primary info requires the address to be present.'
+                    }
+                },
+                '1': {
+                    custom_postal_address: {
+                        required: 'The user primary info requires the second postal address to be present.'
+                    }
+                }
+            },
+            'custom_numbers': {
+                '*.integer': 'The user number must be an integer.',
+                '1.integer': 'The user second number must be an integer.'
+            },
+            'custom_last_name.required': 'The user last name must be present.'
+        }
+    }   
 };
