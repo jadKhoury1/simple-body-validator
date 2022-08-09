@@ -21,7 +21,7 @@ export function getSize(value: any, hasNumericRule: boolean = false): number {
         return Number(value);
     } else if (typeof value === 'string' ||  Array.isArray(value)) {
         return value.length;
-    } else if (typeof value === 'object') {
+    } else if (typeof value === 'object' && value !== null) {
         return Object.keys(value).length;
     }
 
