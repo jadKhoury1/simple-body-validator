@@ -558,7 +558,7 @@ class validateAttributes {
             return false;
         }
 
-        return isNaN(value) === false;
+        return value !== null && isNaN(value) === false;
     };
 
     /**
@@ -591,6 +591,11 @@ class validateAttributes {
      * Validate that the attribute is a valid JSON string
      */
     validateJson(value: any): boolean {
+
+        if (!value || typeof value !== 'string') {
+            return false;
+        }
+
         try {
             JSON.parse(value);
         } catch (e) {

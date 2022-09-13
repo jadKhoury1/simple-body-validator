@@ -19,7 +19,7 @@ const lang: LangInterface = {
     /**
      * Store the translations passed by the user
      */
-     translations: {},
+    translations: {},
 
     /**
      * Stores the messages that are already loaded

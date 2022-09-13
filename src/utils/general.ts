@@ -44,7 +44,7 @@ export function sameType(value: any, otherValue: any): boolean {
  * Check if Value is an Ineteger
  */
 export function isInteger(value: any): boolean {
-    return isNaN(value) === false && value % 1 === 0;
+    return value !== null && isNaN(value) === false && value % 1 === 0;
 };
 
 /**

@@ -101,6 +101,10 @@ class Validator {
         return this;
     };
 
+    getLang(): string {
+        return this.lang;
+    }
+
     setCustomMessages(customMessages: CustomMesages = {}): Validator {
         this.customMessages = dotify(customMessages);
         return this;
