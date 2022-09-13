@@ -21,11 +21,15 @@ export function setDefaultLang(lang: string): void {
     Lang.setDefaultLang(lang);
 };
 
+export function setFallbackLang(lang: string): void {
+    Lang.setFallbackLang(lang);
+};
+
 export function setTranslationPath(path: string): void {
     Lang.setPath(path);
 };
 
 export function setTranslationObject(translations: object): void {
     Lang.setTranslationObject(translations);
-}
+};
 

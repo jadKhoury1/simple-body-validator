@@ -97,15 +97,18 @@ export interface ReplaceAttribueInterface {
 
 export interface LangInterface {
     defaultLang: string;
+    fallbackLang: string;
     existingLangs: string[];
     translations: object;
     messages: object;
     defaultMessages: object;
+    fallbackMessages: object;
     path: string;
     get: (lang: string) => object;
     setTranslationObject: (translations: object) => void;
     setPath: (path: string) => void;
     setDefaultLang: (lang: string) => void;
+    setFallbackLang: (lang: string) => void;
     getDefaultLang: () => string;
     load: (lang: string) => void;
 };

@@ -12,6 +12,11 @@ const lang: LangInterface = {
     defaultLang: 'en',
 
     /**
+     * Determines the locale to be used when tu current one is not available
+     */
+    fallbackLang: 'en',
+
+    /**
      * The existing langs that are supported by the library
      */
     existingLangs: ['en'],
@@ -29,7 +34,12 @@ const lang: LangInterface = {
     /**
      * Stores the default messages
      */
-    defaultMessages: require('./locales/en.js').default,
+    defaultMessages: {},
+
+    /**
+     * Stores the fallback messages
+     */
+    fallbackMessages: require('./locales/en.js').default,
 
     /**
      * Path of the validation translations in the main project
@@ -65,13 +75,20 @@ const lang: LangInterface = {
      * Set the default lang that should be used. And assign the default messages
      */
     setDefaultLang(lang: string): void {
+       this.defaultLang = lang;
+       this.load(lang);
+    },
 
-        this.defaultLang = lang;
-        this.defaultMessages = require('./locales/en.js').default;
+    /**
+     * Set the fallback lang to be used. And assign the fallback messages
+     */
+    setFallbackLang(lang: string): void {
+        this.fallbackLang = lang;
+        this.fallbackMessages = require('./locales/en.js').default;
 
         // check if the lang translations exist in the library and load them
         if (locales.hasOwnProperty(lang)) {
-            this.defaultMessages = mergeDeep(this.defaultMessages, locales[lang]);
+            this.fallbackMessages = mergeDeep(this.fallbackMessages, locales[lang]);
         }
 
         // Get the translations from the path specified by the user 
@@ -79,13 +96,13 @@ const lang: LangInterface = {
             try {
                 let customMessages = require(`${this.path}/${lang}.js`);
                 customMessages = customMessages.default || customMessages;
-                this.defaultMessages = mergeDeep(this.defaultMessages, customMessages); 
+                this.fallbackMessages = mergeDeep(this.fallbackMessages, customMessages); 
             } catch (e) {};
         }
 
         // check if the lang translations exit in the object passed by the user
         if (this.translations.hasOwnProperty(lang)) {
-            this.defaultMessages = mergeDeep(this.defaultMessages, this.translations[lang]);
+            this.fallbackMessages = mergeDeep(this.fallbackMessages, this.translations[lang]);
         }
     },
 
@@ -107,9 +124,9 @@ const lang: LangInterface = {
 
         // check if the lang translations exist in the library and load them
         if (locales.hasOwnProperty(lang)) {
-            this.messages[lang] = mergeDeep(this.defaultMessages, locales[lang]);
+            this.messages[lang] = mergeDeep(this.fallbackMessages, locales[lang]);
         } else {
-            this.messages[lang] = mergeDeep({}, this.defaultMessages);
+            this.messages[lang] = mergeDeep({}, this.fallbackMessages);
         }
 
           // check if the lang file exists in the project directory and merge the messages
@@ -123,7 +140,7 @@ const lang: LangInterface = {
 
          // check if the lang translations exist in the object passed by the user
          if (this.translations.hasOwnProperty(lang)) {
-            this.messages[lang] = mergeDeep(this.defaultMessages, this.translations[lang]);
+            this.messages[lang] = mergeDeep(this.messages[lang], this.translations[lang]);
         }
     }
 };
