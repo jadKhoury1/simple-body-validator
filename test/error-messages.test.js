@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { make, setTranslationPath, setDefaultLang, Password, Rule, register } = require('../lib/index');
+const { make, setTranslationPath, setDefaultLang, setFallbackLang, Password, Rule, register } = require('../lib/index');
 
 setTranslationPath(__dirname + '/lang');
 
@@ -32,13 +32,14 @@ describe('Translation', function() {
         assert.equal(validator.errors().first(), 'The name field is required.');        
 
     });
-    it('If the used language was not found the default lang will be used', function() {
+    it('If the used language was not found the fallback lang will be used', function() {
+        setFallbackLang('fr');
         const validator = make({}, { name: 'required' }).setLang('be');
         validator.validate();
 
         assert.equal(validator.errors().first(), 'Le champ name est requis test.');
     });
-    it('If rule does not exist in the specified default lang en will be used as final fallback', function() {
+    it('If rule does not exist in the specified fallback lang en will be used as final fallback', function() {
         const validator = make({ name: 12 }, { name: 'string' });
         validator.validate();
 
