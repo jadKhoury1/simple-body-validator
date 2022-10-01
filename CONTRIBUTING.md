@@ -19,12 +19,12 @@ Anyone can be a contributor. Either you found a typo, or you have an awesome fea
 - Pull Requests need approval of a core contributor.
 
 ### Prepublish
-- We use typescript for the development, so please prepublish the code by running <code>npm run tsc</code> before comitting.
+We use typescript for the development, so please prepublish the code by running <code>npm run tsc</code> before comitting.
 
 ### Tests
 - After the prepublishing make sure that all the tests are successfull by running <code>npm run test</code>.
 - We encourage you to test your changes, and if you have the opportunity, please make those tests part of the Pull Request
 
 ### Documentation
-- If you add a new functionality, please provide the corresponding documentation to the **Readme.md** if needed, and optionally you can create another pull request on the [documentation](https://github.com/jadKhoury1/simple-body-validator-documentation) repository
+If you add a new functionality, please provide the corresponding documentation to the **Readme.md** if needed, and optionally you can create another pull request on the [documentation](https://github.com/jadKhoury1/simple-body-validator-documentation) repository
 
