@@ -125,6 +125,9 @@ class Validator {
     };
 
 
+    /**
+     * Run the validator's rules against its data.
+     */
     validate(key: string = '', value: any = undefined): boolean {
         if (!isObject(this.data)) {
             throw 'The data attribute must be an object';
@@ -208,9 +211,10 @@ class Validator {
 
     };
     
-
+    /**
+     * Loop through all rules and run validation against each one of them
+     */
     private runAllValidations(): void {
-
         this.messages.flush();
         this.validateAttributes = new validateAttributes(this.data, this.rules);
 
@@ -219,6 +223,9 @@ class Validator {
         }
     }
 
+    /**
+     * Run validation for one specific attribute
+     */
     private runSingleValidation(key: string, value: any = undefined) {
         this.messages.forget(key);
 
@@ -229,6 +236,9 @@ class Validator {
         this.runValidation(key);
     }
 
+    /**
+     * Run validation rules for the specified property and stop validation if needed
+     */
     private runValidation(property: string): boolean {
         if (this.rules.hasOwnProperty(property) && Array.isArray(this.rules[property])) {
             for (let i = 0; i < this.rules[property].length; i++) {
@@ -245,6 +255,9 @@ class Validator {
         }
     }
 
+    /**
+     * Check if we should stop further validations on a given attribute.
+     */
     private shouldStopValidating(attribute: string): boolean {
        return this.messages.has(attribute) && validationRuleParser.hasRule(attribute, ['bail'], this.rules);
     };
@@ -270,7 +283,7 @@ class Validator {
     private validateAttribute(attribute: string, rule: Rule): void {
 
         let parameters: string[] = [];
-
+        
         [rule ,parameters] = validationRuleParser.parse(rule);
 
         const keys: string[] = this.getExplicitKeys(attribute);
@@ -300,8 +313,11 @@ class Validator {
 
     };
 
+    /**
+     * Validate an attribute using a custom rule object
+     */
     private validateUsingCustomRule(attribute: string, value: any, rule: RuleContract): void {
-
+        
         rule.setData(this.data).setLang(this.lang);
 
         if (rule instanceof Password) {

@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Convert value to date instance
  */

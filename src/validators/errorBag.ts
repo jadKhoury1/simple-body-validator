@@ -124,7 +124,20 @@ class ErrorBag {
     };
 
     /**
-     * Clear the entir error messages
+     * Remove all error messages that start with the given path
+     */
+    forgetAll(path: string): void {
+        const keys: string[] = Object.keys(this.messages).filter(key => key.startsWith(path));
+
+        if (keys.length > 0 ) {
+            keys.forEach((key: string) => {
+                this.forget(key);
+            });
+        }
+    };
+
+    /**
+     * Clear the entire error messages
      */ 
     flush(): void {
         this.errors = {};
