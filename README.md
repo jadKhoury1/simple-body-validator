@@ -113,7 +113,7 @@ The <code>stopOnFirstFailure</code> method will inform the validator that it sho
 
 ```js
     if (! validator.stopOnFirstFailure().validate()) {
-        console.log('Error: ', validor.errors().first());
+        console.log('Error: ', validator.errors().first());
     }
 ```
 
