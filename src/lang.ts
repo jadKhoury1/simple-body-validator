@@ -2,7 +2,7 @@
 
 import { LangInterface } from './types';
 import { mergeDeep } from './utils/object';
-import locales from './locales';
+import locales from './locales/index';
 
 const lang: LangInterface = {
 
