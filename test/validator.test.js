@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { make } = require('../lib/index');
+const { make } = require('../lib/cjs/index');
 
 const validator = make();
 

@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { make, register, setTranslationPath, registerImplicit, Rule, ImplicitRule } = require('../lib/index');
+const { make, register, setTranslationPath, registerImplicit, Rule, ImplicitRule } = require('../lib/cjs/index');
 
 setTranslationPath(__dirname + '/lang');
 

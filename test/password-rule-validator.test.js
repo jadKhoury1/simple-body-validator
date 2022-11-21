@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { make, Password, Rule, setTranslationPath } = require('../lib/index');
+const { make, Password, Rule, setTranslationPath } = require('../lib/cjs/index');
 
 setTranslationPath(__dirname + '/lang');
 
