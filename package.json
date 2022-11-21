@@ -1,9 +1,9 @@
 {
   "name": "simple-body-validator",
-  "version": "1.2.8",
+  "version": "1.2.9",
   "description": "This package is inspired by Laravel validation, and aims to make body validation easier for Javascript developers",
   "main": "./lib/cjs/index.js",
-  "module": "./lib/esm/index.js",
+  "module": "./lib/ecm/index.js",
   "files": [
     "lib/"
   ],
