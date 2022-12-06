@@ -26,6 +26,14 @@ class ErrorBag {
     withErrorTypes: boolean = false;
 
 
+    constructor(errors: Errors = {}, messages: Messages = {}, firstMessage: string = '', withErrorTypes: boolean = false) {
+        this.errors = errors;
+        this.messages = messages;
+        this.firstMessage = firstMessage;
+        this.withErrorTypes = withErrorTypes;
+    }
+
+
     /**
      * Set withErrorTypes attribute to true
      */
@@ -137,13 +145,11 @@ class ErrorBag {
     };
 
     /**
-     * Clear the entire error messages
-     */ 
-    flush(): void {
-        this.errors = {};
-        this.messages = {};
-        this.firstMessage = '';
-    };
+     * Clone ErrorBag Instance
+     */
+    clone(): ErrorBag {
+        return new ErrorBag({...this.errors}, {...this.messages}, this.firstMessage, this.withErrorTypes);
+    }
 }
 
 export default ErrorBag;

@@ -215,7 +215,7 @@ class Validator {
      * Loop through all rules and run validation against each one of them
      */
     private runAllValidations(): void {
-        this.messages.flush();
+        this.messages = new ErrorBag();
         this.validateAttributes = new validateAttributes(this.data, this.rules);
 
         for(const property in this.rules) {
@@ -227,6 +227,7 @@ class Validator {
      * Run validation for one specific attribute
      */
     private runSingleValidation(key: string, value: any = undefined) {
+        this.messages = this.messages.clone();
         this.messages.forget(key);
 
         if (typeof value !== 'undefined') {
