@@ -94,8 +94,7 @@ const lang: LangInterface = {
         // Get the translations from the path specified by the user 
         if (this.path) {
             try {
-                const path = `${this.path}/${lang}.js`;
-                let customMessages = require(path);
+                let customMessages = require(this.path + '/' + lang + '.js');
                 customMessages = customMessages.default || customMessages;
                 this.fallbackMessages = mergeDeep(this.fallbackMessages, customMessages); 
             } catch (e) {};
@@ -133,8 +132,7 @@ const lang: LangInterface = {
           // check if the lang file exists in the project directory and merge the messages
        if (this.path) {
             try {
-                const path = `${this.path}/${lang}.js`;
-                let customMessages = require(path);
+                let customMessages = require(this.path + '/' + lang + '.js');
                 customMessages = customMessages.default || customMessages;
                 this.messages[lang] = mergeDeep(this.messages[lang], customMessages);
             } catch (e) {};
