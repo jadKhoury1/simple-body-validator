@@ -281,6 +281,9 @@ describe('Email', function() {
 
       validator.setData({ value: 'tEst@gtEst.cOm' });
       assert.ok(validator.validate());
+      
+      validator.setData({ value: 'test@test.online' });
+      assert.ok(validator.validate());
     });
   })
 });
