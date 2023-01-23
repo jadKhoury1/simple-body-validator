@@ -313,7 +313,11 @@ class validateAttributes {
             return false;
         }
 
-        return value.toLowerCase().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/) !== null;
+        /**
+         * Max allowed length for a top-level-domain is 24 characters.
+         * reference to list of top-level-domains: https://data.iana.org/TLD/tlds-alpha-by-domain.txt
+         */
+        return value.toLowerCase().match(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,24})+$/) !== null;
     };
 
     /**
