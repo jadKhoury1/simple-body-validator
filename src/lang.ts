@@ -39,7 +39,7 @@ const lang: LangInterface = {
     /**
      * Stores the fallback messages
      */
-    fallbackMessages: require('./locales/en.js').default,
+    fallbackMessages: locales.en,
 
     /**
      * Path of the validation translations in the main project
@@ -84,7 +84,7 @@ const lang: LangInterface = {
      */
     setFallbackLang(lang: string): void {
         this.fallbackLang = lang;
-        this.fallbackMessages = require('./locales/en.js').default;
+        this.fallbackMessages = locales.en;
 
         // check if the lang translations exist in the library and load them
         if (locales.hasOwnProperty(lang)) {

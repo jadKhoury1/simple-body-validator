@@ -1,6 +1,6 @@
 {
   "name": "simple-body-validator",
-  "version": "1.2.12",
+  "version": "1.2.13",
   "description": "This package is inspired by Laravel validation, and aims to make body validation easier for Javascript developers",
   "main": "./lib/cjs/index.js",
   "module": "./lib/ecm/index.js",
@@ -30,8 +30,8 @@
   },
   "homepage": "https://github.com/jadKhoury1/simple-body-validator#readme",
   "devDependencies": {
-    "@types/node": "^17.0.23",
+    "@types/node": "^18.11.18",
     "mocha": "^9.2.2",
-    "typescript": "^4.4.3"
+    "typescript": "^4.9.4"
   }
 }
