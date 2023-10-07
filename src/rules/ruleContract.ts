@@ -24,7 +24,7 @@ export default class RuleContract {
     /**
      *  Determine if the validation rule passes.
      */
-    passes(value: any, attribute: string): boolean {
+    passes(value: any, attribute: string): boolean|Promise<boolean> {
         return true;
     };
 
