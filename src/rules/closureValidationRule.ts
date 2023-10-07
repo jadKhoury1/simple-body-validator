@@ -23,14 +23,18 @@ class ClosureValidationRule extends RuleContract {
     /**
      * Determine if the validation rule passes.
      */
-    passes(value: any, attribute: string): boolean {
-
-        this.callback(value, function(message) {
+    passes(value: any, attribute: string): boolean|Promise<boolean> {
+        this.failed = false;
+        const result = this.callback(value, function(message) {
             this.failed = true;
             this.message = message;
         }.bind(this), attribute);
 
-        return ! this.failed;
+        if (result instanceof Promise) {
+            return result.then(() => !this.failed);
+        }
+
+        return !this.failed;
     };
 
 }

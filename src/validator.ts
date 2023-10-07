@@ -124,7 +124,6 @@ class Validator {
         return this.messages;
     };
 
-
     /**
      * Run the validator's rules against its data.
      */
@@ -139,9 +138,27 @@ class Validator {
             return this.messages.keys().length === 0;
         } else {
             this.runSingleValidation(key, value);
-            return ! this.messages.has(key);
+            return !this.messages.has(key);
         } 
     };
+
+    /**
+     * Run the validator's rules against its data asynchronously.
+     */
+    async validateAsync(key: string, value: any = undefined): Promise<boolean> {
+        if (!isObject(this.data)) {
+            throw 'The data attribute must be an object';
+        }
+
+        this.validateAttributes = new validateAttributes(this.data, this.rules);
+        if (!key) {
+            await this.runAllValidationsAsync();
+            return this.messages.keys().length === 0;
+        } else {
+            await this.runSingleValidationAsync(key, value);
+            return !this.messages.has(key);
+        }
+    }
 
 
     /**
@@ -219,14 +236,30 @@ class Validator {
         this.validateAttributes = new validateAttributes(this.data, this.rules);
 
         for(const property in this.rules) {
-            this.runValidation(property);
+            if (this.runValidation(property) === false) {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Loop through all rules and run validation against each one of them asynchronously.
+     */
+    private async runAllValidationsAsync(): Promise<void> {
+        this.messages = new ErrorBag();
+        this.validateAttributes = new validateAttributes(this.data, this.rules);
+
+        for(const property in this.rules) {
+            if (await this.runValidationAsync(property) === false) {
+                break;
+            }
         }
     }
 
     /**
      * Run validation for one specific attribute
      */
-    private runSingleValidation(key: string, value: any = undefined) {
+    private runSingleValidation(key: string, value: any = undefined): void {
         this.messages = this.messages.clone();
         this.messages.forget(key);
 
@@ -238,12 +271,45 @@ class Validator {
     }
 
     /**
+     * Run validation for one specific attribute asynchronously.
+     */
+    private async runSingleValidationAsync(key: string, value: any = undefined): Promise<void> {
+        this.messages = this.messages.clone();
+        this.messages.forget(key);
+
+        if (typeof value !== 'undefined') {
+            deepSet(this.data, key, value);
+        }
+
+        await this.runValidationAsync(key);
+    }
+
+    /**
      * Run validation rules for the specified property and stop validation if needed
      */
-    private runValidation(property: string): boolean {
+    private runValidation(property: string): boolean|void {
         if (this.rules.hasOwnProperty(property) && Array.isArray(this.rules[property])) {
             for (let i = 0; i < this.rules[property].length; i++) {
                 this.validateAttribute(property, this.rules[property][i]);
+
+                if (this.messages.keys().length > 0 && this.stopOnFirstFailureFlag === true) {
+                    return false;
+                }
+
+                if (this.shouldStopValidating(property)) {
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Run validation rules for the specified property asynchronously and stop validation if needed
+     */
+    private async runValidationAsync(property: string): Promise<boolean|void> {
+        if (this.rules.hasOwnProperty(property) && Array.isArray(this.rules[property])) {
+            for (let i = 0; i < this.rules[property].length; i++) {
+                await this.validateAttribute(property, this.rules[property][i]);
 
                 if (this.messages.keys().length > 0 && this.stopOnFirstFailureFlag === true) {
                     return false;
@@ -281,7 +347,7 @@ class Validator {
     /**
      * validate a given attribute against a rule.
      */
-    private validateAttribute(attribute: string, rule: Rule): void {
+    private validateAttribute(attribute: string, rule: Rule): void|Promise<void> {
 
         let parameters: string[] = [];
         
@@ -306,9 +372,19 @@ class Validator {
             throw `Rule ${rule} is not valid`;
         }
 
-        if (validatable &&
-                !this.validateAttributes[method](value, parameters, attribute)
-        ) {
+        if (!validatable) {
+            return;
+        }
+
+        const validation = this.validateAttributes[method](value, parameters, attribute)  as boolean|Promise<boolean>;
+
+        if (validation instanceof Promise) {
+            return validation.then(result => {
+                if (!result) {
+                    this.addFailure(attribute, rule as string, value, parameters);
+                }
+            })
+        } else if (!validation) {
             this.addFailure(attribute, rule, value, parameters);
         }
 
@@ -317,7 +393,7 @@ class Validator {
     /**
      * Validate an attribute using a custom rule object
      */
-    private validateUsingCustomRule(attribute: string, value: any, rule: RuleContract): void {
+    private validateUsingCustomRule(attribute: string, value: any, rule: RuleContract): void|Promise<void> {
         
         rule.setData(this.data).setLang(this.lang);
 
@@ -325,10 +401,26 @@ class Validator {
             rule.setValidator(this);
         }
 
-        if (rule.passes(value, attribute)) {
-            return;
+        const result = rule.passes(value, attribute);
+
+        if (result instanceof Promise) {
+            return result.then(validationResult => {
+                if (!validationResult) {
+                    this.setCustomRuleErrorMessages(attribute, rule);
+                }
+            })
+        } 
+        
+        if (!result) {
+            return this.setCustomRuleErrorMessages(attribute, rule);
         }
 
+    };
+
+    /**
+     * Set the error message linked to a custom validation rule 
+     */
+    private setCustomRuleErrorMessages(attribute: string, rule: RuleContract): void {
         let result: object|string = rule.getMessage();
         let messages: object = typeof result === 'string' ? [ result ] : result;
 
@@ -339,8 +431,7 @@ class Validator {
                 )
             });
         }
-
-    };
+    }
 
     /**
      * Add a new error message to the messages object
