@@ -2,7 +2,7 @@
 
 import { Rules } from '../types';
 import { toDate } from '../utils/date';
-import { deepFind, isObject } from '../utils/object';
+import { deepFind, isObject, deepEqual } from '../utils/object';
 import { getSize, sameType, getNumericRules, isInteger, compare } from '../utils/general';
 import validationRuleParser from './validationRuleParser';
 
@@ -243,6 +243,14 @@ class validateAttributes {
         this.requireParameterCount(1, parameters, 'different');
 
         const other = deepFind(this.data, parameters[0]);
+
+        if (!sameType(value, other)) {
+            return true;
+        }
+
+        if (typeof value === 'object') {
+            return !deepEqual(value, other);
+        }
 
         return value !== other;
     };

@@ -1,5 +1,6 @@
 const assert = require('assert');
 const { make } = require('../lib/cjs/index');
+const utitls = require('../lib/cjs/utils/object');
 
 const validator = make();
 
@@ -172,6 +173,50 @@ describe('Declined If', function() {
             validator.setData({ value: 'test', terms: ['off', 'no', '0', 0, false, 'false']})
                 .setRules({ 'terms.*': 'declined_if:value,test,foo' });
 
+            assert.ok(validator.validate());
+        });
+    });
+});
+
+describe('Different', function() {
+    describe('The field under validation must be different from the other field', function() {
+        it('Validation should fail if both fields have the same value', function() {
+            validator.setData({ value: 'test', other: 'test' }).setRules({ value: 'different:other'});
+            assert.equal(validator.validate(), false);
+
+        });
+        it('Validation should fail if feilds are deeply equal', function() {
+            validator.setData({ value: ['1', '2'], other: ['1', '2']});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ value: {first: 'jad', any: [1, 2]}, other: {first: 'jad', any: [1, 2]}});
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned to the user in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The value and other must be different.');
+        });
+        it('Validation should succeed if the other field does not exist', function() {
+            validator.setData({ value: 'test' });
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if fields have different typpes', function() {
+            validator.setData({ value: 1, other: '1'});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: {'0': 1}, other: [1]});
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if both feilds are different', function() {
+            validator.setData({ value: {first: 'jad', any: [1, 2]}, other: {first: 'john', any: [1, 3]}});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: [1, {}], other: [1, []]});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: [1, {'0': 1}], other: [1, [1]]});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: 'jad', other: 'john'});
             assert.ok(validator.validate());
         });
     });
