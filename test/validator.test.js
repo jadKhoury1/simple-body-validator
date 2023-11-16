@@ -391,5 +391,96 @@ describe('Starts With', function() {
         assert.ok(validator.validate());
     });
   });
+});
 
+describe('Size', function() {
+  describe('Validation should validate the size of the string', function() {
+    it('Validation should fail if the provided size does not match the length of the string', function() {
+      validator.setData({ value: 'jad' }).setRules({ value: 'size:4' });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: '4' });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must be 4 characters.');
+    });
+    it('Validation should succeed if the provided size does match the length of the string', function() {
+      validator.setData({ value: 'john' });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '1234' });
+      assert.ok(validator.validate());
+    });
+  });
+  describe('Validation should validate that the provided size matches the number', function() {
+    it('Validation should fail if the provided size does not match the number value', function() {
+      validator.setData({ value: 12 }).setRules({ value: 'size:20' });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if the provided size does not match the number in a string with numeric rule', function() {
+      validator.setData({ value: '12'}).setRules({ value: 'size:2|numeric'});
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: '12'}).setRules({ value: 'size:2|integer'});
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must be 2.');
+    });
+    it('Validation should succeed if the provided size matches the number value', function() {
+      validator.setData({ value: 20 }).setRules({ value: 'size:20' });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if the provided size matches a number in a string that has numeric rule', function() {
+      validator.setData({ value: '20' }).setRules({ value: 'size:20|numeric' });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '20' }).setRules({ value: 'size:20|integer' });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if the provided size matches a decimal', function() {
+      validator.setData({ value: 1.2 }).setRules({ value: 'size:1.2' });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '1.2' }).setRules({ value: 'size:1.2|numeric'});
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if the provided size matches a negative number', function() {
+      validator.setData({ value: -2 }).setRules({ value: 'size:-2'});
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '-2.4' }).setRules({ value: 'size:-2.4|numeric'});
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '-2' }).setRules({ value: 'size:-2|integer'});
+      assert.ok(validator.validate());
+    });
+  });
+  describe('Validation should validate that the provided size matches the length of the array', function() {
+    it('Validation should fail if the provided size does not match the length of the array', function() {
+      validator.setData({ value: [1,2] }).setRules({ value: 'size:4'});
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must contain 4 items.');
+    });
+    it('Validation should succeed if the provided size does match the length of the array', function() {
+      validator.setData({ value: [1,2,3,4] });
+      assert.ok(validator.validate());
+    });
+  });
+  describe('Validation should validate that the provided size matches the length of the object', function() {
+    it('Validation should fail if the provided size does not match the length of the object', function() {
+      validator.setData({ value: {first: 'jad'} }).setRules({ value: 'size:2'});
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must contain 2 items.');
+    });
+    it('Validation should succeed if the provided size does match the length of the object', function() {
+      validator.setData({ value: { first: 'john', last: 'doe' }});
+      assert.ok(validator.validate());
+    });
+  });
 });
