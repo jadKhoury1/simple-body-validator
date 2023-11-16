@@ -278,6 +278,9 @@ describe('Email', function() {
       validator.setData({ value: 'test' }).setRules({ value: 'email' });
       assert.equal(validator.validate(), false);
 
+      validator.setData({ value: 1 });
+      assert.equal(validator.validate(), false);
+
       validator.setData({ value: 'test@test.o' });
       assert.equal(validator.validate(), false);
 
