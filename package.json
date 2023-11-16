@@ -10,7 +10,8 @@
   "scripts": {
     "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "prepublish": "npm run tsc",
-    "test": "nyc mocha"
+    "test": "mocha",
+    "test-coverage": "nyc mocha"
   },
   "repository": {
     "type": "git",

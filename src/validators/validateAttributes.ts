@@ -91,7 +91,7 @@ class validateAttributes {
             return false;
         }
 
-        const regex = /^[a-zA-Z0-9-_]+$/;
+        const regex = /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9-_]+$/;
         return regex.test(value.toString());
     };
 

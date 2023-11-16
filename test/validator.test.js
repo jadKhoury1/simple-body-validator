@@ -68,8 +68,15 @@ describe('Alpha', function() {
 
 describe('AlphaDash', function() {
   describe('The field under validation may have alpha-numeric characters, as well as dashes and underscores', function() {
+    it('Validation should fail in case the value is neither of type string or number', function() {
+        validator.setData({ value: []}).setRules({value: 'alpha_dash'});
+        assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail in case value does not contain at least one alpha numeric character', function() {
+        validator.setData({ value: '_'});
+        assert.equal(validator.validate(), false);
+    });
     it('Validation should fail in case value does not only contain alpha-numeric characters, dashes and underscores', function () {
-
       validator.setData({ value: 'test_$2'}).setRules({ value: 'alpha_dash' });
       assert.equal(validator.validate(), false);
 
@@ -78,7 +85,7 @@ describe('AlphaDash', function() {
 
     });
     it('An Error Message should be returned in case of failure', function() {
-        assert.equal(validator.errors().first(), 'The value must only contain letters, numbers, dashes and underscores.');
+        assert.equal(validator.errors().first(), 'The value must only contain at least one letter or one number, and optionally dashes and underscores.');
     });
     it('Validation should succeed in case value contain only alphabetic characters', function() {
         validator.setData({ value: 'test_test-test12' });
