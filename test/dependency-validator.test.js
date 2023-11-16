@@ -161,6 +161,13 @@ describe('Declined If', function() {
             validator.setData({ value: 'any', terms: 1 });
             assert.ok(validator.validate());
         });
+        it('Validation should succeed if the other field is missing', function() {
+            validator.setData({ terms: 0});
+            assert.ok(validator.validate());
+
+            validator.setData({ terms: 1 });
+            assert.ok(validator.validate());
+        });
         it('Validation should succeed if the field is declined and the othe field is equal to any of the specified values', function() {
             validator.setData({ value: 'test', terms: ['off', 'no', '0', 0, false, 'false']})
                 .setRules({ 'terms.*': 'declined_if:value,test,foo' });
