@@ -97,16 +97,21 @@ describe('AlphaDash', function() {
 describe('AlphaNum', function() {
   describe('The field under validation must be entirely alpha-numeric characters.', function() {
     it('Validation should fail in case value does not only contain alpha-numeric characters', function () {
-
       validator.setData({ value: 'test_$2'}).setRules({ value: 'alpha_num' });
       assert.equal(validator.validate(), false);
-
+    });
+    it('Validation should fail in case value is neither a string or a number', function() {
+      validator.setData({ value: [] });
+      assert.equal(validator.validate(), false);
     });
     it('An Error Message should be returned in case of failure', function() {
         assert.equal(validator.errors().first(), 'The value must only contain letters and numbers.');
     });
     it('Validation should succeed in case value contain only alphabetic characters', function() {
         validator.setData({ value: 'test123' });
+        assert.ok(validator.validate());
+
+        validator.setData({ value: 123 });
         assert.ok(validator.validate());
     });
   });
