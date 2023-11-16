@@ -103,10 +103,8 @@ export interface LangInterface {
     messages: object;
     defaultMessages: object;
     fallbackMessages: object;
-    path: string;
     get: (lang: string) => object;
     setTranslationObject: (translations: object) => void;
-    setPath: (path: string) => void;
     setDefaultLang: (lang: string) => void;
     setFallbackLang: (lang: string) => void;
     getDefaultLang: () => string;

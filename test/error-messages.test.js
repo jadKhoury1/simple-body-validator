@@ -1,7 +1,8 @@
 const assert = require('assert');
-const { make, setTranslationPath, setDefaultLang, setFallbackLang, Password, Rule, register } = require('../lib/cjs/index');
+const { make, setTranslationObject, setDefaultLang, setFallbackLang, Password, Rule, register } = require('../lib/cjs/index');
+const translations = require('./lang');
 
-setTranslationPath(__dirname + '/lang');
+setTranslationObject(translations);
 
 describe('Translation', function() {
     it ('By default if no default lang was specified the en language should be used', function() {

@@ -1,7 +1,8 @@
 const assert = require('assert');
-const { make, Password, Rule, setTranslationPath } = require('../lib/cjs/index');
+const { make, Password, Rule, setTranslationObject } = require('../lib/cjs/index');
+const translations = require('./lang');
 
-setTranslationPath(__dirname + '/lang');
+setTranslationObject(translations);
 
 const validator = make();
 
