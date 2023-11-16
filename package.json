@@ -10,7 +10,7 @@
   "scripts": {
     "tsc": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "prepublish": "npm run tsc",
-    "test": "mocha"
+    "test": "nyc mocha"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,10 @@
   "devDependencies": {
     "@types/node": "^18.11.18",
     "mocha": "^9.2.2",
+    "nyc": "^15.1.0",
     "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "sequelize": "^6.35.0"
   }
 }

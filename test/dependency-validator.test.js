@@ -10,18 +10,25 @@ describe('Accepted If', function() {
             validator.setData({ value: 'foo' }).setRules({ terms: 'accepted_if:value,foo,test' });
             assert.equal(validator.validate(), false);
         });
-        it ('Validation should fail if the field is not accepted and the other fieled is equal to any of the specified values', function() {
+        it ('Validation should fail if the field is not accepted and the other field is equal to any of the specified values', function() {
             validator.setData({ value: 'test', terms: 0 });
             assert.equal(validator.validate(), false);
         });
         it('An error should be returned in case of failure', function() {
             assert.equal(validator.errors().first(), 'The terms must be accepted when value is test.');
         });
-        it('Validation should succeed if the field is missing or not accepted and the other field is not equal to any of the specified values', function() {
+        it('Validation should succeed if the field is missing or not accepted and the other field is not equal to any of the specified values', function() {     
             validator.setData({ value: 'any' });
             assert.ok(validator.validate());
 
             validator.setData({ value: 'any', terms: 0 });
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if the other field is missing', function() {
+            validator.setData({ terms: 0});
+            assert.ok(validator.validate());
+
+            validator.setData({ terms: 1 });
             assert.ok(validator.validate());
         });
         it('Validation should succeed if the field is accepted and the othe field is esqual to any of the specified values', function() {
