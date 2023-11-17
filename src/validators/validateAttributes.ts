@@ -3,7 +3,7 @@
 import { Rules } from '../types';
 import { toDate } from '../utils/date';
 import { deepFind, isObject, deepEqual } from '../utils/object';
-import { getSize, sameType, getNumericRules, isInteger, compare } from '../utils/general';
+import { getSize, sameType, getNumericRules, isInteger, compare, convertValuesToBoolean, convertValuesToNumber, convertValuesToNull } from '../utils/general';
 import validationRuleParser from './validationRuleParser';
 
 class validateAttributes {
@@ -425,15 +425,14 @@ class validateAttributes {
      */
     validateRequiredIf(value: any, parameters: string[]): boolean {
         this.requireParameterCount(2, parameters, 'required_if');
-
         const other = deepFind(this.data, parameters[0]);
 
-        if (!other) {
+        if (typeof other === 'undefined') {
             return true;
         }
 
-        const values = parameters.slice(1);
-
+        const values = this.parseDependentRuleParameters(other, parameters);
+    
         if (values.indexOf(other) !== -1) {
             return this.validateRequired(value);
         }
@@ -810,6 +809,26 @@ class validateAttributes {
         }
     };
 
+    /**
+     * Prepare the values for validation
+     */
+    parseDependentRuleParameters(other: any, parameters: string[]): any[] {
+        let values: any[] = parameters.slice(1);
+
+        if (other === null) {
+            values = convertValuesToNull(values);
+        }
+
+        if (typeof other === 'number') {
+            values = convertValuesToNumber(values);
+        }
+
+        if (typeof other === 'boolean') {
+            values = convertValuesToBoolean(values);
+        }
+
+        return values;
+    }   
 
 };
 

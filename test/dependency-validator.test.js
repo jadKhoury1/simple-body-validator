@@ -263,15 +263,55 @@ describe('Same', function() {
 
 describe('Required If', function() {
     describe('The field unde validation must be present and not empty only when the other field matches any of the specified values', function() {
-        it('Validation should fail when the field is not present while the other field matches any of the specified values', function() {
+        it('Validation should fail when the field is not present while the other field matches any of the specified values', function() {            
             validator.setData({ first: 'john' }).setRules({ last: 'required_if:first,jad,john'});
             assert.equal(validator.validate(), false);
 
             validator.setData({ first: 'john', last: '' });
             assert.equal(validator.validate(), false);
+
+            validator.setData({ first: 'true' }).setRules({ last: 'required_if:first,true'});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ first: 'false' }).setRules({ last: 'required_if:first,false'});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ first: 'null' }).setRules({ last: 'required_if:first,null'});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ first: '0' }).setRules({ last: 'required_if:first,0,2'});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ first: '1' }).setRules({ last: 'required_if:first,1,2'});
+            assert.equal(validator.validate(), false);
+        });
+        it('Validation should fail when the field is not present while the other field matches any of the specified numeric values', function() {
+            validator.setData({ first: 0 }).setRules({ last: 'required_if:first,0,2'});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ first: 1 }).setRules({ last: 'required_if:first,1,2'});
+            assert.equal(validator.validate(), false);
+        });
+        it('Validation should fail when the field is not present while the other field matches any of the specified boolean values', function() {
+            validator.setData({ first: true }).setRules({ last: 'required_if:first,true'});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ first: false }).setRules({ last: 'required_if:first,false'});
+            assert.equal(validator.validate(), false);
+
+        });
+        it('Validation should fail when the field is not present while the other field matches any of the specified null values', function() {
+            validator.setData({ first: null }).setRules({ last: 'required_if:first,null'});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ first: null }).setRules({ last: 'required_if:first,Null'});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ first: null }).setRules({ last: 'required_if:first,NULL'});
+            assert.equal(validator.validate(), false);
         });
         it('An error should be returned to the user in case of failure', function() {
-            assert.equal(validator.errors().first(), 'The last field is required when first is john.');
+            assert.equal(validator.errors().first(), 'The last field is required when first is null.');
         });
         it('Validation should succeed when the field is not present and the other field does match any of the specified values', function() {
             validator.setData({ first: 'test' });
@@ -316,5 +356,10 @@ describe('Required If Method', function() {
             validator.setData({ name: 'jad' }).setRules({ name: requiredIf(true)});
             assert.ok(validator.validate());
         });
+    });
+});
+
+describe('Required Unless', function() {
+    describe('The field unde validation must be present and not empty unless the other field matches any of the specified values', function() {
     });
 });

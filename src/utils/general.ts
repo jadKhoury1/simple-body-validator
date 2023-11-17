@@ -147,3 +147,43 @@ export function compare(first: any, second: any, operator: string, strict: boole
             throw 'Invalid operator parameter';
     }
 }
+
+/**
+ * Convert the given values to boolean if they are string "true" / "false".
+ */
+export function convertValuesToBoolean(values: string[]): (string|boolean)[] {
+    return values.map(value => {
+        if (value === 'true') {
+            return true;
+        } else if (value === 'false') {
+            return false;
+        }
+
+        return value;
+    });
+}
+
+/**
+ * Convert the given values to numbers if they are numbers in a string "1", "2"
+ */
+export function convertValuesToNumber(values: string[]): (string|number)[] {
+    return values.map(value => {
+        if (!isNaN(Number(value))) {
+            return Number(value);
+        }
+
+        return value;
+    });
+}
+
+/**
+ * Convert the given values to null if they have null values in a string "null", "NULL"
+ */
+export function convertValuesToNull(values: string[]): (string|null)[] {
+    return values.map(value => {
+        if (value.toLowerCase() === 'null') {
+            return null;
+        }
+        return value;
+    });
+}
