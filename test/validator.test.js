@@ -209,7 +209,7 @@ describe('Digits', function() {
     it('An Error message should be returned in case of failure', function() {
       assert.equal(validator.errors().first(), 'The value must be 4 digits.');
     });
-    it('Validation should succeed in case the number matches the specified the number of digits', function() {
+    it('Validation should succeed in case the number matches the specified number of digits', function() {
       validator.setData({ value: 1234 });
       assert.ok(validator.validate());
 
@@ -482,5 +482,21 @@ describe('Size', function() {
       validator.setData({ value: { first: 'john', last: 'doe' }});
       assert.ok(validator.validate());
     });
+  });
+});
+
+describe('Sometimes', function() {
+  it('Validation should succeed if the field is not present', function() {
+    validator.setData({ first: 'jad' }).setRules({ first: 'required', last: 'sometimes|required|string'});
+    assert.ok(validator.validate());
+
+  });
+  it('Validation should succeed if the field is present and matches the rules', function() {
+      validator.setData({ first: 'john',  last: 'doe'});
+      assert.ok(validator.validate());
+  });
+  it('Validation should fail if the field is present but does not match the specified rules', function() {
+      validator.setData({ first: 'john', last: '' });
+      assert.equal(validator.validate(), false);
   });
 });
