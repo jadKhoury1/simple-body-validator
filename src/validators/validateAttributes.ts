@@ -357,6 +357,14 @@ class validateAttributes {
 
         const other = deepFind(this.data, paramaters[0]);
 
+        if (!sameType(value, other)) {
+            return false;
+        }
+
+        if (typeof value === 'object') {
+            return deepEqual(value, other);
+        }
+
         return value === other;
     };
 

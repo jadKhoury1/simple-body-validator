@@ -41,6 +41,106 @@ describe('Accepted If', function() {
     });
 });
 
+describe('Confirmed', function() {
+    describe('The field under validation must have a matching field if {field}_confirmation.', function() {
+        it('Validation shoulf fail if the {field}_confirmation is not available.', function() {
+            validator.setData({ password: 'test' }).setRules({ password: 'confirmed'});
+            assert.equal(validator.validate(), false);
+        });
+        it ('Validation should fail if the {field}_confirmation value does not match the field value.', function() {
+            validator.setData({ password: 'test', password_confirmation: '1234'});
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned to the user in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The password confirmation does not match.');
+        });
+        it('Validation should succeed if the {field}_confirmation value matches the field value.', function() {
+            validator.setData({ password: 'test', password_confirmation: 'test'});
+            assert.ok(validator.validate());
+        });
+    });
+});
+
+describe('Declined If', function() {
+    describe ('The field under validation must be no, off, 0 or false if another field under validation is equal to a specified value', function() {
+        it ('Validation should fail if the field is missing and the other field is equal to any of the specified values', function() {
+            validator.setData({ value: 'foo' }).setRules({ terms: 'declined_if:value,foo,test' });
+            assert.equal(validator.validate(), false);
+        });
+        it ('Validation should fail if the field is not declined and the other fieled is equal to any of the specified values', function() {
+            validator.setData({ value: 'test', terms: 1 });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The terms must be declined when value is test.');
+        });
+        it('Validation should succeed if the field is missing or not declined and the other field is not equal to any of the specified values', function() {
+            validator.setData({ value: 'any' });
+            assert.ok(validator.validate());
+
+            validator.setData({ value: 'any', terms: 1 });
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if the other field is missing', function() {
+            validator.setData({ terms: 0});
+            assert.ok(validator.validate());
+
+            validator.setData({ terms: 1 });
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if the field is declined and the othe field is equal to any of the specified values', function() {
+            validator.setData({ value: 'test', terms: ['off', 'no', '0', 0, false, 'false']})
+                .setRules({ 'terms.*': 'declined_if:value,test,foo' });
+
+            assert.ok(validator.validate());
+        });
+    });
+});
+
+describe('Different', function() {
+    describe('The field under validation must be different from the other field', function() {
+        it('Validation should fail if both fields have the same value', function() {
+            validator.setData({ value: 'test', other: 'test' }).setRules({ value: 'different:other'});
+            assert.equal(validator.validate(), false);
+
+        });
+        it('Validation should fail if fields are deeply equal', function() {
+            validator.setData({ value: ['1', '2'], other: ['1', '2']});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ value: {first: 'jad', any: [1, 2]}, other: {first: 'jad', any: [1, 2]}});
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned to the user in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The value and other must be different.');
+        });
+        it('Validation should succeed if the other field does not exist', function() {
+            validator.setData({ value: 'test' });
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if fields have different types', function() {
+            validator.setData({ value: 1, other: '1'});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: {'0': 1}, other: [1]});
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if both fields are different', function() {
+            validator.setData({ value: {first: 'jad', any: [1, 2]}, other: {first: 'john', any: [1, 3]}});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: [1, {}], other: [1, []]});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: [1, {'0': 1}], other: [1, [1]]});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: 'jad', other: 'john'});
+            assert.ok(validator.validate());
+        });
+    });
+});
+
 describe('Required With', function() {
     describe ('The field under validation must be present and not empty only if any of the other specified fields are present and not empty.', function() {
         it ('Validation should fail if the field is not present when of the other fields are present', function() {
@@ -122,101 +222,41 @@ describe('Required Without All', function() {
     });
 });
 
-describe('Confirmed', function() {
-    describe('The field under validation must have a matching field if {field}_confirmation.', function() {
-        it('Validation shoulf fail if the {field}_confirmation is not available.', function() {
-            validator.setData({ password: 'test' }).setRules({ password: 'confirmed'});
+describe('Same', function() {
+    describe('The field under validation must be same as the other field', function() {
+        it('Validation should fail if both fields have different values', function() {
+            validator.setData({ value: 'test', other: 'test1' }).setRules({ value: 'same:other'});
             assert.equal(validator.validate(), false);
         });
-        it ('Validation should fail if the {field}_confirmation value does not match the field value.', function() {
-            validator.setData({ password: 'test', password_confirmation: '1234'});
-            assert.equal(validator.validate(), false);
-        });
-        it('An error should be returned to the user in case of failure', function() {
-            assert.equal(validator.errors().first(), 'The password confirmation does not match.');
-        });
-        it('Validation should succeed if the {field}_confirmation value matches the field value.', function() {
-            validator.setData({ password: 'test', password_confirmation: 'test'});
-            assert.ok(validator.validate());
-        });
-    });
-});
-
-describe('Declined If', function() {
-    describe ('The field under validation must be no, off, 0 or false if another field under validation is equal to a specified value', function() {
-        it ('Validation should fail if the field is missing and the other field is equal to any of the specified values', function() {
-            validator.setData({ value: 'foo' }).setRules({ terms: 'declined_if:value,foo,test' });
-            assert.equal(validator.validate(), false);
-        });
-        it ('Validation should fail if the field is not declined and the other fieled is equal to any of the specified values', function() {
-            validator.setData({ value: 'test', terms: 1 });
-            assert.equal(validator.validate(), false);
-        });
-        it('An error should be returned in case of failure', function() {
-            assert.equal(validator.errors().first(), 'The terms must be declined when value is test.');
-        });
-        it('Validation should succeed if the field is missing or not declined and the other field is not equal to any of the specified values', function() {
-            validator.setData({ value: 'any' });
-            assert.ok(validator.validate());
-
-            validator.setData({ value: 'any', terms: 1 });
-            assert.ok(validator.validate());
-        });
-        it('Validation should succeed if the other field is missing', function() {
-            validator.setData({ terms: 0});
-            assert.ok(validator.validate());
-
-            validator.setData({ terms: 1 });
-            assert.ok(validator.validate());
-        });
-        it('Validation should succeed if the field is declined and the othe field is equal to any of the specified values', function() {
-            validator.setData({ value: 'test', terms: ['off', 'no', '0', 0, false, 'false']})
-                .setRules({ 'terms.*': 'declined_if:value,test,foo' });
-
-            assert.ok(validator.validate());
-        });
-    });
-});
-
-describe('Different', function() {
-    describe('The field under validation must be different from the other field', function() {
-        it('Validation should fail if both fields have the same value', function() {
-            validator.setData({ value: 'test', other: 'test' }).setRules({ value: 'different:other'});
+        it('Validation should fail if feilds are not deeply equal', function() {
+            validator.setData({ value: ['1', '2'], other: ['1', '3']});
             assert.equal(validator.validate(), false);
 
-        });
-        it('Validation should fail if feilds are deeply equal', function() {
-            validator.setData({ value: ['1', '2'], other: ['1', '2']});
-            assert.equal(validator.validate(), false);
-
-            validator.setData({ value: {first: 'jad', any: [1, 2]}, other: {first: 'jad', any: [1, 2]}});
+            validator.setData({ value: {first: 'jad', any: [1, 2]}, other: {first: 'jad', any: [1, 3]}});
             assert.equal(validator.validate(), false);
         });
-        it('An error should be returned to the user in case of failure', function() {
-            assert.equal(validator.errors().first(), 'The value and other must be different.');
-        });
-        it('Validation should succeed if the other field does not exist', function() {
-            validator.setData({ value: 'test' });
-            assert.ok(validator.validate());
-        });
-        it('Validation should succeed if fields have different typpes', function() {
+        it('Validation should fail if fields have different types', function() {
             validator.setData({ value: 1, other: '1'});
-            assert.ok(validator.validate());
+            assert.equal(validator.validate(), false);
 
             validator.setData({ value: {'0': 1}, other: [1]});
-            assert.ok(validator.validate());
+            assert.equal(validator.validate(), false);
         });
-        it('Validation should succeed if both feilds are different', function() {
-            validator.setData({ value: {first: 'jad', any: [1, 2]}, other: {first: 'john', any: [1, 3]}});
+        it('Validation should fail if the other field does not exist', function() {
+            validator.setData({ value: 'test' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned to the user in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The value and other must match.');
+        });
+        it('Validation should succeed if both feilds are the same', function() {
+            validator.setData({ value: {first: 'jad', any: [1, 2]}, other: {first: 'jad', any: [1, 2]}});
             assert.ok(validator.validate());
 
-            validator.setData({ value: [1, {}], other: [1, []]});
+            validator.setData({ value: 'jad', other: 'jad'});
             assert.ok(validator.validate());
 
-            validator.setData({ value: [1, {'0': 1}], other: [1, [1]]});
-            assert.ok(validator.validate());
-
-            validator.setData({ value: 'jad', other: 'john'});
+            validator.setData({ value: 2, other: 2});
             assert.ok(validator.validate());
         });
     });
