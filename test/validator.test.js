@@ -500,3 +500,47 @@ describe('Sometimes', function() {
       assert.equal(validator.validate(), false);
   });
 });
+
+describe('Required', function() {
+  describe('The field under validation must be present and not empty', function() {
+    it('Validation should fail if value is not present', function() {
+      validator.setData({}).setRules({ name: 'required' });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value is null', function() {
+      validator.setData({ name: null });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value is undefined', function() {
+      validator.setData({ name: undefined });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value is en empty string', function() {
+      validator.setData({ name: '' });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value is an empty array', function() {
+      validator.setData({ name: [] });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value is an empty object', function() {
+      validator.setData({ name: {} });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The name field is required.');
+    });
+    it('Validation should succeed if value is present and not empty', function() {
+      validator.setData({ name: 'jad' });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if value is false boolean', function() {
+      validator.setData({ name: false});
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if value is equal to 0', function() {
+      validator.setData({ name: 0 });
+      assert.ok(validator.validate());
+    });
+  });
+});
