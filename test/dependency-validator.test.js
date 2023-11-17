@@ -1,6 +1,5 @@
 const assert = require('assert');
-const { make } = require('../lib/cjs/index');
-const utitls = require('../lib/cjs/utils/object');
+const { make, requiredIf } = require('../lib/cjs/index');
 
 const validator = make();
 
@@ -257,6 +256,64 @@ describe('Same', function() {
             assert.ok(validator.validate());
 
             validator.setData({ value: 2, other: 2});
+            assert.ok(validator.validate());
+        });
+    });
+});
+
+describe('Required If', function() {
+    describe('The field unde validation must be present and not empty only when the other field matches any of the specified values', function() {
+        it('Validation should fail when the field is not present while the other field matches any of the specified values', function() {
+            validator.setData({ first: 'john' }).setRules({ last: 'required_if:first,jad,john'});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ first: 'john', last: '' });
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned to the user in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The last field is required when first is john.');
+        });
+        it('Validation should succeed when the field is not present and the other field does match any of the specified values', function() {
+            validator.setData({ first: 'test' });
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed when the field is present and not empty', function() {
+            validator.setData({ first: 'john', last: 'doe'});
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed when the field is not present and ther other field is also not present', function() {
+            validator.setData({});
+            assert.ok(validator.validate());
+        });
+    });
+});
+
+describe('Required If Method', function() {
+    describe('The field under validation must be present and not empty only when a condition is met', function() {
+        it('Validation should fail when the field is not present while the requiredIf condition is met', function() {
+            validator.setData({}).setRules({ name: requiredIf(true)});
+            assert.equal(validator.validate(), false);
+
+            validator.setData({ name: '' });
+            assert.equal(validator.validate(), false);
+        });
+        it('Validation should fail when the field is not present while the function passed to the requiredIf returns true', function() {
+            validator.setRules({ name: requiredIf(() => true)});
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned to the user in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The name field is required.');
+        });
+        it('Validation should succeed when the field is not present and the requiredId condition is not met', function() {
+            validator.setRules({ name: requiredIf(false) });
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed when the field is not present and the function passed to the requiredIf returns false', function() {
+            validator.setRules({ name: requiredIf(() => false) });
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed when the field is present', function() {
+            validator.setData({ name: 'jad' }).setRules({ name: requiredIf(true)});
             assert.ok(validator.validate());
         });
     });
