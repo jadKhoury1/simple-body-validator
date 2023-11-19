@@ -123,6 +123,9 @@ describe('Different', function() {
 
             validator.setData({ value: {'0': 1}, other: [1]});
             assert.ok(validator.validate());
+
+            validator.setData({ value: null, other: {}});
+            assert.ok(validator.validate());
         });
         it('Validation should succeed if both fields are different', function() {
             validator.setData({ value: {first: 'jad', any: [1, 2]}, other: {first: 'john', any: [1, 3]}});
@@ -256,6 +259,9 @@ describe('Same', function() {
             assert.ok(validator.validate());
 
             validator.setData({ value: 2, other: 2});
+            assert.ok(validator.validate());
+
+            validator.setData({ value: null, other: null});
             assert.ok(validator.validate());
         });
     });

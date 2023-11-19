@@ -248,7 +248,7 @@ class validateAttributes {
             return true;
         }
 
-        if (typeof value === 'object') {
+        if (value !== null && typeof value === 'object') {
             return !deepEqual(value, other);
         }
 
@@ -361,7 +361,7 @@ class validateAttributes {
             return false;
         }
 
-        if (typeof value === 'object') {
+        if (value !== null && typeof value === 'object') {
             return deepEqual(value, other);
         }
 
