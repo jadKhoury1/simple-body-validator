@@ -40,7 +40,7 @@ export default {
     },
     in: 'The selected :attribute is invalid.',
     integer: 'The :attribute must be an integer.',
-    json: 'The :attribute must be a valid JSON string',
+    json: 'The :attribute must be a valid JSON string.',
     lt: {
         number: 'The :attribute must be less than :value.',
         string: 'The :attribute must be less than :value characters.',

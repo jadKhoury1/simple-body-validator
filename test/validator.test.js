@@ -330,6 +330,48 @@ describe('Ends With', function() {
   });
 });
 
+describe('Integer', function() {
+  describe('The field under validation must be an integer', function() {
+    it('Validation should fail in case value is not an ineteger', function() {
+      validator.setData({ value: 'test' }).setRules({ value: 'integer' });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail in case value is null', function() {
+      validator.setData({ value: null });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail in case value is a decimal', function() {
+      validator.setData({ value: 1.3 });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail in case value is not of type number when strict rule is added', function() {
+      validator.setData({ value: '1' }).setRules({ value: 'integer|strict' });
+      assert.equal(validator.validate(), false);
+    });
+    it('An error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must be an integer.');
+    });
+    it('Validation should succeed when value is an integer', function() {
+      validator.setData({ value: '1' }).setRules({ value: 'integer'});
+      assert.ok(validator.validate());
+
+      validator.setData({ value: 0 });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed when value is negative', function() {
+      validator.setData({ value: -23 });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '-23' });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed when value is of type number and strict rule is added', function() {
+      validator.setData({ valu: 2 }).setRules({ value: 'integer|strict'});
+      assert.ok(validator.validate());
+    });
+  });
+});
+
 describe('Json', function() {
   describe('The field under validation must be a valid JSON string', function() {
     it('Validation should fail in case value is not a valid JSON string', function() {
@@ -337,7 +379,7 @@ describe('Json', function() {
       assert.equal(validator.validate(), false);
     });
     it('An error message should be returned in case of failure', function() {
-      assert.equal(validator.errors().first(), 'The value must be a valid JSON string');
+      assert.equal(validator.errors().first(), 'The value must be a valid JSON string.');
     });
     it('Validation should succeed in case value is a valid JSON string', function() {
       validator.setData({ value: '{"first": "jad", "last": "khoury"}'});
@@ -348,15 +390,15 @@ describe('Json', function() {
 
 describe('Numeric', function() {
   describe('The field under validation must be numeric', function() {
-    it('Should fail in case value is not numeric', function() {
-      validator.setData({ value: 'jad' }).setRules({ value: 'numeric' });
+    it('Validation should fail in case value is not numeric', function() {
+      validator.setData({ value: 'test' }).setRules({ value: 'numeric' });
       assert.equal(validator.validate(), false);
     });
-    it('Should fail in case value is null', function() {
+    it('Validation should fail in case value is null', function() {
       validator.setData({ value: null });
       assert.equal(validator.validate(), false);
     });
-    it('Should fail in case value is not of type number when strict rule is added', function() {
+    it('Validation should fail in case value is not of type number when strict rule is added', function() {
       validator.setData({ value: '1' }).setRules({ value: 'numeric|strict' });
       assert.equal(validator.validate(), false);
     });
@@ -369,11 +411,19 @@ describe('Numeric', function() {
 
       validator.setData({ value: 0 });
       assert.ok(validator.validate());
-
-      validator.setData({ value: '-23' });
+    });
+    it('Validation should succeed when value is a decimal', function() {
+      validator.setData({ value: 2.3 });
       assert.ok(validator.validate());
 
-      validator.setData({ value: 2.3 });
+      validator.setData({ value: '2.3' });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed when value is negative', function() {
+      validator.setData({ value: -23 });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '-23' });
       assert.ok(validator.validate());
     });
     it('Validation should succeed when value is of type number and strict rule is added', function() {
