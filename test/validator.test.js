@@ -581,3 +581,30 @@ describe('Required', function() {
     });
   });
 });
+
+describe('Present', function() {
+  describe('Field under validation must be present', function() {
+    it('Should fail if value is not present', function() {
+        validator.setData({}).setRules({ value: 'present'});
+        assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value field must be present.');
+    });
+    it('Validation should succeed if value is present', function() {
+        validator.setData({ value: 'test' });
+        assert.ok(validator.validate());
+
+        validator.setData({ value: 0 });
+        assert.ok(validator.validate());
+    });
+    it('Validation should succeed if value is present but empty', function() {
+      validator.setData({ value: '' });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if value is present but equal to null', function() {
+      validator.setData({ value: null });
+      assert.ok(validator.validate());
+    });
+  });
+});
