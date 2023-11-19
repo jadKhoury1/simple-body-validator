@@ -344,7 +344,44 @@ describe('Json', function() {
       assert.ok(validator.validate());
     });
   });
-})
+});
+
+describe('Numeric', function() {
+  describe('The field under validation must be numeric', function() {
+    it('Should fail in case value is not numeric', function() {
+      validator.setData({ value: 'jad' }).setRules({ value: 'numeric' });
+      assert.equal(validator.validate(), false);
+    });
+    it('Should fail in case value is null', function() {
+      validator.setData({ value: null });
+      assert.equal(validator.validate(), false);
+    });
+    it('Should fail in case value is not of type number when strict rule is added', function() {
+      validator.setData({ value: '1' }).setRules({ value: 'numeric|strict' });
+      assert.equal(validator.validate(), false);
+    });
+    it('An error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must be a number.');
+    });
+    it('Validation should succeed when value is numeric', function() {
+      validator.setData({ value: '1' }).setRules({ value: 'numeric'});
+      assert.ok(validator.validate());
+
+      validator.setData({ value: 0 });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '-23' });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: 2.3 });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed when value is of type number and strict rule is added', function() {
+      validator.setData({ valu: -2.3 }).setRules({ value: 'numeric|strict'});
+      assert.ok(validator.validate());
+    });
+  });
+});
 
 describe('Object', function() {
   describe('The field under validation must be an object', function() {
