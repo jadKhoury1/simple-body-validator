@@ -175,7 +175,7 @@ describe('Required With All', function() {
         });
         it ('Validation should succeed when field is not present and any of the other fields are not present', function() {
             validator.setData({ name: 'Jad'});
-            assert.ok(validator.validate);
+            assert.ok(validator.validate());
         })
     });
 });
