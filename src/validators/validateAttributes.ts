@@ -446,13 +446,10 @@ class validateAttributes {
     validateRequiredUnless(value: any, parameters: string[]): boolean {
         this.requireParameterCount(2, parameters, 'required_unless');
 
-        const other = deepFind(this.data, parameters[0]);
-
-        if (!other) {
-            return true;
-        }
-
-        const values = parameters.slice(1);
+        let other = deepFind(this.data, parameters[0]);
+        other = typeof other === 'undefined' ? null : other;
+        
+        const values = this.parseDependentRuleParameters(other, parameters);
 
         if (values.indexOf(other) === -1) {
             return this.validateRequired(value);

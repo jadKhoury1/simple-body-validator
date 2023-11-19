@@ -262,7 +262,7 @@ describe('Same', function() {
 });
 
 describe('Required If', function() {
-    describe('The field unde validation must be present and not empty only when the other field matches any of the specified values', function() {
+    describe('The field under validation must be present and not empty only when the other field matches any of the specified values', function() {
         it('Validation should fail when the field is not present while the other field matches any of the specified values', function() {            
             validator.setData({ first: 'john' }).setRules({ last: 'required_if:first,jad,john'});
             assert.equal(validator.validate(), false);
@@ -314,7 +314,7 @@ describe('Required If', function() {
             assert.equal(validator.errors().first(), 'The last field is required when first is null.');
         });
         it('Validation should succeed when the field is not present and the other field does match any of the specified values', function() {
-            validator.setData({ first: 'test' });
+            validator.setData({ first: 'test' }).setRules({ last: 'required_if:first,john'});
             assert.ok(validator.validate());
         });
         it('Validation should succeed when the field is present and not empty', function() {
@@ -360,6 +360,57 @@ describe('Required If Method', function() {
 });
 
 describe('Required Unless', function() {
-    describe('The field unde validation must be present and not empty unless the other field matches any of the specified values', function() {
+    describe('The field under validation must be present and not empty unless the other field matches any of the specified values', function() {
+        it('Validation should fail if the field under validation is not present while the other field does not match any of the specified values', function() {        
+            validator.setData({ first: 'john' }).setRules({last: 'required_unless:first,test,jad'});
+            assert.equal(validator.validate(), false);
+        });
+        it('Validation should fail if the field under validation is present but empty while the other field does not match any of specified values', function() {
+            validator.setData({ first: 'john', last: ''});
+            assert.equal(validator.validate(), false);
+        });
+        it('Validation should fail if both fields are not present and null is not one of the specied values', function() {
+            validator.setData({});
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned to the user in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The last field is required unless first is in test, jad.');
+        });
+        it('Validation should succeed if the field under validation is present and not empty while the other field does not match any of the specified values', function() {
+            validator.setData({ first: 'john', last: 'doe' }).setRules({last: 'required_unless:first,test,jad'});
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if the field under validation is not present while the other field matches any of the specified values', function() {
+            validator.setData({ first: 'jad' }).setRules({last: 'required_unless:first,test,jad'});
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if the field under validation is not present while the other field matches any of the specified numeric values', function() {
+            validator.setData({ first: 0 }).setRules({last: 'required_unless:first,0,2'});
+            assert.ok(validator.validate());
+
+            validator.setData({ first: 1 }).setRules({last: 'required_unless:first,1,2'});
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if the field under validation is not present while the other field matches any of the specified boolean values', function() {
+            validator.setData({ first: true }).setRules({last: 'required_unless:first,true'});
+            assert.ok(validator.validate());
+
+            validator.setData({ first: false }).setRules({last: 'required_unless:first,false'});
+            assert.ok(validator.validate());
+        });
+        it('Validation should succeed if the field under validation is not present while the other field matches any of the specified null values', function() {
+            validator.setData({ first: null }).setRules({last: 'required_unless:first,null'});
+            assert.ok(validator.validate());
+
+            validator.setData({ first: null }).setRules({last: 'required_unless:first,Null'});
+            assert.ok(validator.validate());
+
+            validator.setData({ first: null }).setRules({last: 'required_unless:first,NULL'});
+            assert.ok(validator.validate());
+        });
+        it('Validation should fail if both fields are not present and null is one of the specied values', function() {
+            validator.setData({}).setRules({last: 'required_unless:first,NULL'});
+            assert.ok(validator.validate());
+        });
     });
 });
