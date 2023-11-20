@@ -1,5 +1,5 @@
 const assert = require('assert');
-const { make } = require('../lib/cjs/index');
+const { make, ruleIn } = require('../lib/cjs/index');
 
 const validator = make();
 
@@ -645,7 +645,7 @@ describe('Required', function() {
 
 describe('Present', function() {
   describe('Field under validation must be present', function() {
-    it('Should fail if value is not present', function() {
+    it('Validation should fail if value is not present', function() {
         validator.setData({}).setRules({ value: 'present'});
         assert.equal(validator.validate(), false);
     });
@@ -665,6 +665,99 @@ describe('Present', function() {
     });
     it('Validation should succeed if value is present but equal to null', function() {
       validator.setData({ value: null });
+      assert.ok(validator.validate());
+    });
+  });
+});
+
+describe('In', function() {
+  describe('Field under validation must be included in the given list of values', function() {
+    it('Validation should fail if the field under validation is not included in the list of values', function() {
+      validator.setData({ value: 'test' }).setRules({ value: 'in:john,any,true,4'});
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value is null', function() {
+      validator.setData({ value: null });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if the field under validation is neither a string or a number', function() {
+      validator.setData({ value: {name: 'jad'} });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: true });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The selected value is invalid.');
+    });
+    it('Validation should succeed if the field under validation is included in the list of values', function() {
+        validator.setData({ value: 'john' });
+        assert.ok(validator.validate());
+
+        validator.setData({ value: '4' });
+        assert.ok(validator.validate());
+    });
+    it('Validation should succeed if the field under validation is equal to a number that is included in the list of values', function() {
+        validator.setData({ value: 4 });
+        assert.ok(validator.validate());
+    });
+  });
+  describe('All fields under validation must be included in the list of values', function() {
+    it('Validation should fail if any of the fields under validation is not included in the list of values', function() {
+      validator.setData({ value: ['jad', 'john'] });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if any of the fields is null', function() {
+      validator.setData({ value: ['john', null ]});
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if any of field under validation is neither a string or number', function() {
+      validator.setData({ value: ['john', true] });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: ['john', []] });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: ['john', {}] });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The selected value is invalid.');
+    });
+    it('Validation should succeed if all the fields under validation are in included in the list of values', function() {
+      validator.setData({ value: ['john', 4, 'true' ] });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: ['john', 4, 'true' ] }).setRules({ 'value.*': 'in:john,any,true,4' });
+      assert.ok(validator.validate());
+    });
+  });
+});
+
+describe('ruleIn Function', function() {
+  describe('Field under validation must be included in the given list of values', function() {
+    it('Validation should fail if the field under validation is not included in the list of values', function() {
+      validator.setData({ value: 'jad' }).setRules({ value: ruleIn(['john', 'any', 'true' ,'4']) });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The selected value is invalid.');
+    });
+    it('All the values in the value list will be transformed to a string', function() {
+      validator.setData({ value: true }).setRules({ value: ruleIn([ true ])});
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 'true' });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if the field under validation is included in the list of values', function() {
+      validator.setData({ value: 'john' }).setRules({ value: ruleIn(['john', 'any', 'true' ,'4']) });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: '4' });
+      assert.ok(validator.validate());
+
+      validator.setData({ value: 4 });
       assert.ok(validator.validate());
     });
   });

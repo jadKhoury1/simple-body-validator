@@ -718,21 +718,23 @@ class validateAttributes {
     /**
      * Validate an attribute is contained within a list of values.
      */
-    validateIn(value: any, paramters: string[]): boolean {
+    validateIn(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(1, parameters, 'in');
+
         if (Array.isArray(value)) {
             for (let index = 0; index < value.length; index++) {
                 if (typeof value[index] !== 'number' && typeof value[index] !== 'string') {
                     return false;
                 }
             }
-            return value.filter(element => paramters.indexOf(element.toString()) === -1).length === 0;
+            return value.filter(element => parameters.indexOf(element.toString()) === -1).length === 0;
         };
 
         if (typeof value !== 'number' && typeof value !== 'string') {
             return false;
         }
 
-        return paramters.indexOf(value.toString()) !== -1;
+        return parameters.indexOf(value.toString()) !== -1;
 
     };
 
