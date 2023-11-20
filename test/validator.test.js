@@ -881,3 +881,90 @@ describe('ruleNotIn Function', function() {
     });
   });
 });
+
+describe('URL', function() {
+  describe('Field under validation must be a valid url', function() {
+    it('Validation should fail if value does not have a valid url format', function() {
+      validator.setData({ value: 'test' }).setRules({ value: 'url' });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 'eee.t'});
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value has an ivalid protocol', function() {
+      validator.setData({ value: 'hbtp://test.com'});
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value has an invalid ip format', function() {
+      validator.setData({ value:  '2752.275.275.275' });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value has an invalid port format', function() {
+      validator.setData({ value: '255.255.255.255:jad'});
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 'test.com:jad'});
+      assert.equal(validator.validate(), false);
+    })
+    it('Validation should fail if value has invalid path paramters format', function() {
+      validator.setData({ value: 'test.com/$%'});
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation shoulf fail if value has invalid query paramters format', function() {
+      validator.setData({ value: 'test.com?$%'});
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value has an invalid fragment locator format', function() {
+      validator.setData({ value: 'test.com#$&' });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value is not of type string', function() {
+      validator.setData({ value: 12 });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must have a valid URL format.');
+    });
+    it('Validation should succeed if value has a valid url format', function() {
+      validator.setData({ url: 'test.com'});
+      assert.ok(validator.validate());
+
+      validator.setData({ url: 'www.test.com'});
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if value has a valid protocol', function() {
+      validator.setData({ url: 'http://test.com'});
+      assert.ok(validator.validate());
+
+      validator.setData({ url: 'https://www.test.com'});
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if value has a valid IP format', function() {
+      validator.setData({ url: '255.255.255.255'});
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if value has a valid port format', function() {
+      validator.setData({ value: '255.255.255.255:8080'});
+      assert.ok(validator.validate());
+
+      validator.setData({ value: 'test.com:8080'});
+      assert.ok(validator.validate());
+    })
+    it('Validation should succeed if value has a valid path paramters format', function() {
+      validator.setData({ value: 'test.com/users'});
+      assert.ok(validator.validate());
+    });
+    it('Validation shoulf succeed if value has a valid query paramters format', function() {
+      validator.setData({ value: 'test.com?id=1'});
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if value has a valid fragment locator format', function() {
+      validator.setData({ value: 'test.com#home' });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if the value has combination with valid format', function() {
+      validator.setData({ value: 'https://test.com:443/user?id=1#home' });
+      assert.ok(validator.validate());
+    });
+  });
+});
