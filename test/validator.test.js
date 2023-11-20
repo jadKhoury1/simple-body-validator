@@ -762,3 +762,20 @@ describe('ruleIn Function', function() {
     });
   });
 });
+
+describe('Nullable', function() {
+  describe('The field under validation may be null', function() {
+    it('Validation should fail if the field under validation is null and the nullable rule is not present', function() {
+      validator.setData({ value: null }).setRules({ value: 'string' });
+      assert.equal(validator.validate());
+    });
+    it('Validation should succeed if the field under validation is null and the nullable field is present', function() {
+      validator.setData({ value: null }).setRules({ value: 'string|nullable' });
+      assert.ok(validator.validate());
+    });
+    it('Validation should succeed if the field under validation is not empty and the nullable field is present', function() {
+      validator.setData({ value: 'jad' }).setRules({ value: 'string|nullable' });
+      assert.ok(validator.validate());
+    });
+  });
+});
