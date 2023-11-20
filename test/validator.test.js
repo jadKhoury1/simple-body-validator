@@ -378,6 +378,17 @@ describe('Json', function() {
       validator.setData({ value: 'Jad Khoury' }).setRules({ value: 'json' });
       assert.equal(validator.validate(), false);
     });
+    it('Validation should fail in case value is null', function() {
+      validator.setData({ value: null });
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail in case value is not of type string', function() {
+      validator.setData({ value: {name: 'test' }});
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 12 });
+      assert.equal(validator.validate(), false);
+    });
     it('An error message should be returned in case of failure', function() {
       assert.equal(validator.errors().first(), 'The value must be a valid JSON string.');
     });
