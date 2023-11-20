@@ -751,7 +751,28 @@ class validateAttributes {
      * Validate an attribute is not contained within a list of values.
      */
     validateNotIn(value: any, parameters: string[]): boolean {
-        return !this.validateIn(value, parameters);
+        this.requireParameterCount(1, parameters, 'not_in');
+        const valuesToCheck = [];
+
+        if (Array.isArray(value)) {
+            for (let index = 0; index < value.length; index++) {
+                if (typeof value[index] === 'number' || typeof value[index] === 'string') {
+                    valuesToCheck.push(value[index]);
+                }
+            }
+
+            if (valuesToCheck.length === 0) {
+                return true;
+            }
+
+            return valuesToCheck.filter(element => parameters.indexOf(element.toString()) !== -1).length === 0;
+        };
+
+        if (typeof value !== 'number' && typeof value !== 'string') {
+            return true;
+        }
+
+        return parameters.indexOf(value.toString()) === -1;
     };
 
     /**
