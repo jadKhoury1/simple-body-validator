@@ -123,13 +123,6 @@ export function getFormattedAttribute(attribute: string): string {
 };
 
 /**
- * Get the given attribute from the attribute translations.
- */
-export function getAttributeFromTranslations(key: string, lang: string): string|undefined {
-    return deepFind(Lang.get(lang), `attributes.${key}`);
-};
-
-/**
  * Get the combinations of keys from a main key. For example if the main key is 'user.info.name',
  * the combination will be [user.info.name, info.name, name]
  */

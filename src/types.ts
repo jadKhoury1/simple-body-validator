@@ -51,7 +51,6 @@ export interface ValidationRuleParserInterface {
     mergeRulesForAttribute: (results: object, attribute: string, rules: string|string[]) => object;
     parse: (rule: Rule) => [Rule, string[]];
     parseStringRule: (rule: string) => [string, string[]];
-    parseParameters: (rule: string, parameter: string) => string[];
     getRule: (attribute: string, searchRules: string|string[], availableRules: Rules) => Partial<[string, string[]]>;
     hasRule: (attrtibute: string, searchRules: string|string[], availableRules: Rules) => boolean; 
 };

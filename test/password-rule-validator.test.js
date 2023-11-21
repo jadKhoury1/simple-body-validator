@@ -193,7 +193,10 @@ describe('Password Validation', function() {
                 assert.ok(validator.validate());
             });
         });
-        describe('The dfault rule can be specified as a function', function() {
+        describe('The default rule can be specified as a function', function() {
+            it('An exception should be thrown if the argument that is passed to the set default method is not a function', function() {
+                assert.throws(() => Password.setDefault());
+            });
             it('Validation should fail if password does not match the default specified rules', function() {
                 Password.setDefault(() => {
                     return Password.create()
@@ -239,7 +242,6 @@ describe('Password Validation', function() {
             }).validate();
 
             assert.equal(validator.errors().first(), 'The password should not contain more than 10 characters');
-        
         });
     });
     
