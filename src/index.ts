@@ -23,10 +23,6 @@ function setFallbackLang(lang: string): void {
     Lang.setFallbackLang(lang);
 };
 
-function setTranslationPath(path: string): void {
-    Lang.setPath(path);
-};
-
 function setTranslationObject(translations: object): void {
     Lang.setTranslationObject(translations);
 };
@@ -41,7 +37,6 @@ export {
     make,
     setDefaultLang,
     setFallbackLang,
-    setTranslationPath,
     setTranslationObject,
 };
 

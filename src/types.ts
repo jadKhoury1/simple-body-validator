@@ -51,7 +51,6 @@ export interface ValidationRuleParserInterface {
     mergeRulesForAttribute: (results: object, attribute: string, rules: string|string[]) => object;
     parse: (rule: Rule) => [Rule, string[]];
     parseStringRule: (rule: string) => [string, string[]];
-    parseParameters: (rule: string, parameter: string) => string[];
     getRule: (attribute: string, searchRules: string|string[], availableRules: Rules) => Partial<[string, string[]]>;
     hasRule: (attrtibute: string, searchRules: string|string[], availableRules: Rules) => boolean; 
 };
@@ -103,10 +102,8 @@ export interface LangInterface {
     messages: object;
     defaultMessages: object;
     fallbackMessages: object;
-    path: string;
     get: (lang: string) => object;
     setTranslationObject: (translations: object) => void;
-    setPath: (path: string) => void;
     setDefaultLang: (lang: string) => void;
     setFallbackLang: (lang: string) => void;
     getDefaultLang: () => string;

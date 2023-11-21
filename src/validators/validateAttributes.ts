@@ -2,8 +2,8 @@
 
 import { Rules } from '../types';
 import { toDate } from '../utils/date';
-import { deepFind, isObject } from '../utils/object';
-import { getSize, sameType, getNumericRules, isInteger, compare } from '../utils/general';
+import { deepFind, isObject, deepEqual } from '../utils/object';
+import { getSize, sameType, getNumericRules, isInteger, compare, convertValuesToBoolean, convertValuesToNumber, convertValuesToNull } from '../utils/general';
 import validationRuleParser from './validationRuleParser';
 
 class validateAttributes {
@@ -91,7 +91,7 @@ class validateAttributes {
             return false;
         }
 
-        const regex = /^[a-zA-Z0-9-_]+$/;
+        const regex = /^(?=.*[a-zA-Z0-9])[a-zA-Z0-9-_]+$/;
         return regex.test(value.toString());
     };
 
@@ -244,6 +244,14 @@ class validateAttributes {
 
         const other = deepFind(this.data, parameters[0]);
 
+        if (!sameType(value, other)) {
+            return true;
+        }
+
+        if (value !== null && typeof value === 'object') {
+            return !deepEqual(value, other);
+        }
+
         return value !== other;
     };
 
@@ -349,6 +357,14 @@ class validateAttributes {
 
         const other = deepFind(this.data, paramaters[0]);
 
+        if (!sameType(value, other)) {
+            return false;
+        }
+
+        if (value !== null && typeof value === 'object') {
+            return deepEqual(value, other);
+        }
+
         return value === other;
     };
 
@@ -409,15 +425,14 @@ class validateAttributes {
      */
     validateRequiredIf(value: any, parameters: string[]): boolean {
         this.requireParameterCount(2, parameters, 'required_if');
-
         const other = deepFind(this.data, parameters[0]);
 
-        if (!other) {
+        if (typeof other === 'undefined') {
             return true;
         }
 
-        const values = parameters.slice(1);
-
+        const values = this.parseDependentRuleParameters(other, parameters);
+    
         if (values.indexOf(other) !== -1) {
             return this.validateRequired(value);
         }
@@ -431,13 +446,10 @@ class validateAttributes {
     validateRequiredUnless(value: any, parameters: string[]): boolean {
         this.requireParameterCount(2, parameters, 'required_unless');
 
-        const other = deepFind(this.data, parameters[0]);
-
-        if (!other) {
-            return true;
-        }
-
-        const values = parameters.slice(1);
+        let other = deepFind(this.data, parameters[0]);
+        other = typeof other === 'undefined' ? null : other;
+        
+        const values = this.parseDependentRuleParameters(other, parameters);
 
         if (values.indexOf(other) === -1) {
             return this.validateRequired(value);
@@ -706,21 +718,23 @@ class validateAttributes {
     /**
      * Validate an attribute is contained within a list of values.
      */
-    validateIn(value: any, paramters: string[]): boolean {
+    validateIn(value: any, parameters: string[]): boolean {
+        this.requireParameterCount(1, parameters, 'in');
+
         if (Array.isArray(value)) {
             for (let index = 0; index < value.length; index++) {
                 if (typeof value[index] !== 'number' && typeof value[index] !== 'string') {
                     return false;
                 }
             }
-            return value.filter(element => paramters.indexOf(element.toString()) === -1).length === 0;
+            return value.filter(element => parameters.indexOf(element.toString()) === -1).length === 0;
         };
 
         if (typeof value !== 'number' && typeof value !== 'string') {
             return false;
         }
 
-        return paramters.indexOf(value.toString()) !== -1;
+        return parameters.indexOf(value.toString()) !== -1;
 
     };
 
@@ -737,7 +751,28 @@ class validateAttributes {
      * Validate an attribute is not contained within a list of values.
      */
     validateNotIn(value: any, parameters: string[]): boolean {
-        return !this.validateIn(value, parameters);
+        this.requireParameterCount(1, parameters, 'not_in');
+        const valuesToCheck = [];
+
+        if (Array.isArray(value)) {
+            for (let index = 0; index < value.length; index++) {
+                if (typeof value[index] === 'number' || typeof value[index] === 'string') {
+                    valuesToCheck.push(value[index]);
+                }
+            }
+
+            if (valuesToCheck.length === 0) {
+                return true;
+            }
+
+            return valuesToCheck.filter(element => parameters.indexOf(element.toString()) !== -1).length === 0;
+        };
+
+        if (typeof value !== 'number' && typeof value !== 'string') {
+            return true;
+        }
+
+        return parameters.indexOf(value.toString()) === -1;
     };
 
     /**
@@ -794,6 +829,26 @@ class validateAttributes {
         }
     };
 
+    /**
+     * Prepare the values for validation
+     */
+    parseDependentRuleParameters(other: any, parameters: string[]): any[] {
+        let values: any[] = parameters.slice(1);
+
+        if (other === null) {
+            values = convertValuesToNull(values);
+        }
+
+        if (typeof other === 'number') {
+            values = convertValuesToNumber(values);
+        }
+
+        if (typeof other === 'boolean') {
+            values = convertValuesToBoolean(values);
+        }
+
+        return values;
+    }   
 
 };
 

@@ -1,7 +1,8 @@
 const assert = require('assert');
-const { make, register, setTranslationPath, registerImplicit, Rule, ImplicitRule } = require('../lib/cjs/index');
+const { make, register, setTranslationObject, registerImplicit, Rule, ImplicitRule } = require('../lib/cjs/index');
+const translations = require('./lang');
 
-setTranslationPath(__dirname + '/lang');
+setTranslationObject(translations);
 
 describe('Register Rule', function() {
     describe('Register simple telephone rule', function() {

@@ -54,7 +54,7 @@ export function deepSet(target: any, path: string|string[], value: any): void {
 /**
  * Flatten a multi-dimensional associative array with dots.
  */
-export function dotify(obj: object, ignoreRulesArray: boolean = false): GenericObject {
+export function dotify(obj: object, ignoreRulesArray: boolean = false, withBaseObjectType = false): GenericObject {
     let res: object = {};
 
     (function recurse(obj: object|any[], current: string = '') {
@@ -63,9 +63,14 @@ export function dotify(obj: object, ignoreRulesArray: boolean = false): GenericO
             let newKey: string = (current ? `${current}.${key}` : key);
 
             if (value && typeof value === 'object' && !isRule(value) && !(value instanceof Date)) {
+                // In the case we are dotifying the object of rules, we don't want the array of rules to be flattened
                 if (ignoreRulesArray === true && Array.isArray(value) && isArrayOfRules(value)) {
                     res[newKey] = value;
                 } else {
+                    // Since the dotify is being used for both array and objects in some cases we would like to distinguish between both
+                    if (withBaseObjectType) {
+                        res[newKey] = Array.isArray(value) ? 'array' : 'object';
+                    }
                     recurse(value, newKey);
                 }
             } else {
@@ -108,5 +113,18 @@ export function mergeDeep(target, source) {
     }
 
     return output;
+}
 
+/**
+ * Check if objects are deep equal
+ */
+export function deepEqual(firstParam: object, secondParam: object) {
+    const first = dotify(firstParam, false, true);
+    const second = dotify(secondParam, false, true);
+
+    if (Object.keys(first).length !== Object.keys(second).length) {
+        return false;
+    }
+
+    return Object.entries(first).every(([key, value]) => second[key] === value);
 }

@@ -42,12 +42,6 @@ const lang: LangInterface = {
     fallbackMessages: locales.en,
 
     /**
-     * Path of the validation translations in the main project
-     */
-    path: '',
-
-
-    /**
      * Get messages for lang 
      */
     get(lang: string = this.defaultLang): object {
@@ -60,14 +54,6 @@ const lang: LangInterface = {
      */
     setTranslationObject(translations: object): void {
         this.translations = translations;
-        this.setDefaultLang(this.defaultLang);
-    },
-
-    /**
-     * Set the path for the validation translations in the main project
-     */
-    setPath(path: string): void {
-        this.path = path;
         this.setDefaultLang(this.defaultLang);
     },
 
@@ -89,15 +75,6 @@ const lang: LangInterface = {
         // check if the lang translations exist in the library and load them
         if (locales.hasOwnProperty(lang)) {
             this.fallbackMessages = mergeDeep(this.fallbackMessages, locales[lang]);
-        }
-
-        // Get the translations from the path specified by the user 
-        if (this.path) {
-            try {
-                let customMessages = require(this.path + '/' + lang + '.js');
-                customMessages = customMessages.default || customMessages;
-                this.fallbackMessages = mergeDeep(this.fallbackMessages, customMessages); 
-            } catch (e) {};
         }
 
         // check if the lang translations exit in the object passed by the user
@@ -127,15 +104,6 @@ const lang: LangInterface = {
             this.messages[lang] = mergeDeep(this.fallbackMessages, locales[lang]);
         } else {
             this.messages[lang] = mergeDeep({}, this.fallbackMessages);
-        }
-
-          // check if the lang file exists in the project directory and merge the messages
-       if (this.path) {
-            try {
-                let customMessages = require(this.path + '/' + lang + '.js');
-                customMessages = customMessages.default || customMessages;
-                this.messages[lang] = mergeDeep(this.messages[lang], customMessages);
-            } catch (e) {};
         }
 
          // check if the lang translations exist in the object passed by the user
