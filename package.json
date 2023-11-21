@@ -35,8 +35,5 @@
     "mocha": "^9.2.2",
     "nyc": "^15.1.0",
     "typescript": "^4.9.4"
-  },
-  "dependencies": {
-    "sequelize": "^6.35.0"
   }
 }
