@@ -2,7 +2,7 @@
 
 import {
     Rules, CustomMesages, ErrorMessage,
-    ImplicitAttributes, Rule, InitialRules, CustomAttributes
+    ImplicitAttributes, Rule, InitialRules, CustomAttributes, CustomErrors
 } from './types';
 import { builValidationdMethodName } from './utils/build';
 import { getFormattedAttribute, getKeyCombinations, getMessage } from './utils/formatMessages';
@@ -123,6 +123,23 @@ class Validator {
     errors(): ErrorBag {
         return this.messages;
     };
+
+    clearErrors(...keys: string[]): ErrorBag {
+        this.messages = this.messages.clearErrors(keys).clone();
+        return this.messages;
+    }
+
+    setErrors(errors: CustomErrors): ErrorBag {
+        let newErrors: string[];
+        for (const key in errors) {
+            newErrors = typeof errors[key] === 'string' ? [errors[key]] as string[] : errors[key] as string[];
+            this.messages.clearErrors([key]);
+            newErrors.forEach(error => {
+                this.messages.add(key, { message: error, error_type: 'custom' });
+            });
+        }
+        return this.messages.clone();
+    }
 
     /**
      * Run the validator's rules against its data.
@@ -260,8 +277,7 @@ class Validator {
      * Run validation for one specific attribute
      */
     private runSingleValidation(key: string, value: any = undefined): void {
-        this.messages = this.messages.clone();
-        this.messages.forget(key);
+        this.clearErrors(key);
 
         if (typeof value !== 'undefined') {
             deepSet(this.data, key, value);
@@ -274,8 +290,7 @@ class Validator {
      * Run validation for one specific attribute asynchronously.
      */
     private async runSingleValidationAsync(key: string, value: any = undefined): Promise<void> {
-        this.messages = this.messages.clone();
-        this.messages.forget(key);
+        this.clearErrors(key);
 
         if (typeof value !== 'undefined') {
             deepSet(this.data, key, value);

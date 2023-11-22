@@ -38,10 +38,13 @@ export interface Errors {
     [key: string]: ErrorMessage[]
 };
 
-
 export interface Messages {
     [key: string]: string[]
-}
+};
+
+export interface CustomErrors {
+    [key: string]: string|string[]
+};
 
 export interface ValidationRuleParserInterface {
     explodeRules: (rules: Rules, data: object) => { rules: Rules, implicitAttributes: ImplicitAttributes};
