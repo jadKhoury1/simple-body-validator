@@ -115,6 +115,17 @@ class validateAttributes {
     };
 
     /**
+     * Validate that an attribute is an array and that his values are unique
+     */
+    validateArrayUnique(value: any): boolean {
+        if (!Array.isArray(value)) {
+            return false;
+        }
+
+        return new Set(value).size === value.length;
+    };
+
+    /**
      * Always returns true - this method will be used in conbination with other rules and will be used to stop validation of first failure
      */
     validateBail(): boolean {
@@ -132,7 +143,7 @@ class validateAttributes {
     /**
      * Validate the date is before or equal a given date.
      */
-    validateBeforeOrEqual(value: any, parameters:string[]): boolean {
+    validateBeforeOrEqual(value: any, parameters: string[]): boolean {
         this.requireParameterCount(1, parameters, 'before_or_equal');
         return this.compareDates(value, parameters[0], '<=', 'before_or_equal');
     }

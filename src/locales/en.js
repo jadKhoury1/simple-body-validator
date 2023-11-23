@@ -7,6 +7,7 @@ export default {
     alpha_dash: 'The :attribute must only contain at least one letter or one number, and optionally dashes and underscores.',
     alpha_num: 'The :attribute must only contain letters and numbers.',
     array: 'The :attribute must be an array.',
+    array_unique: 'The :attribute must be an array with unique values.',
     before: 'The :attribute must be a date before :date.',
     before_or_equal: 'The :attribute must be a date before or equal to :date.',
     between: {
