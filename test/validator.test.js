@@ -45,6 +45,32 @@ describe('Array', function() {
     });
 });
 
+describe('Array Unique', function() {
+  describe('The field under validation must be an array and must have unique values', function() {
+    it('Validation should fail if value is not an array', function() {
+      validator.setData({ value: 'test' }).setRules({ value: 'array_unique' });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: 2 });
+      assert.equal(validator.validate(), false);
+
+      validator.setData({ value: { name: 'test' }});
+      assert.equal(validator.validate(), false);
+    });
+    it('Validation should fail if value is an array without unique values', function() {
+      validator.setData({ value: ['test', 'test'] });
+      assert.equal(validator.validate(), false);
+    });
+    it('An Error Message should be returned in case of failure', function() {
+      assert.equal(validator.errors().first(), 'The value must be an array with unique values.');
+    });
+    it('Validation should succeed if value is an array with unique arrays', function() {
+      validator.setData({ value: [1, 2, 3] });
+      assert.ok(validator.validate());
+    });
+  });
+});
+
 describe('Alpha', function() {
   describe('The field under validation must be entirely alphabetic characters', function() {
     it('Validation should fail in case value does not only contain alphabetic characters', function () {
