@@ -117,31 +117,30 @@ class ErrorBag {
     };
 
     /**
-     * Remove error message using the key name
+     * Remove error messages
      */
-    forget(key: string): void {
-        if (this.messages.hasOwnProperty(key)) {
-            delete this.messages[key];
-            delete this.errors[key];
+    clearErrors(keys: string[]): ErrorBag {
+        // if keys array is emppty - remove all error messages
+        if (keys.length === 0) {
+            this.errors = {};
+            this.messages = {};
             this.firstMessage = '';
-            
-            if (this.keys().length > 0) {
-                this.firstMessage = this.messages[Object.keys(this.messages)[0]][0];
+            return this;
+        }
+
+        // Remove error messages for each key
+        keys.forEach(key => {
+            if (this.messages.hasOwnProperty(key)) {
+                delete this.messages[key];
+                delete this.errors[key];
             }
-        }
-    };
+        });
 
-    /**
-     * Remove all error messages that start with the given path
-     */
-    forgetAll(path: string): void {
-        const keys: string[] = Object.keys(this.messages).filter(key => key.startsWith(path));
-
-        if (keys.length > 0 ) {
-            keys.forEach((key: string) => {
-                this.forget(key);
-            });
+        this.firstMessage = '';
+        if (this.keys().length > 0) {
+            this.firstMessage = this.messages[Object.keys(this.messages)[0]][0];
         }
+        return this;
     };
 
     /**
