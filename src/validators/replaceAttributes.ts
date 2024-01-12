@@ -114,6 +114,13 @@ const replaceAttributes: ReplaceAttribueInterface = {
     replaceEndsWith: function({ message, parameters }: replaceAttributePayload): string {
         return message.replace(':values', parameters.join(', '));
     },
+    
+    /**
+     * Replace all place-holders for the in rule.
+     */
+    replaceIn: function({ message, parameters }: replaceAttributePayload): string {
+        return message.replace(':values', parameters.join(', '));
+    },
 
     /**
      * Replace all place-holders for the starts_with rule.

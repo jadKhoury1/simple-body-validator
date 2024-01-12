@@ -79,6 +79,7 @@ export interface ReplaceAttribueInterface {
     replaceDigitsBetween: (payload: replaceAttributePayload) => string;
     replaceDifferent: (payload: replaceAttributePayload) => string;
     replaceEndsWith: (payload: replaceAttributePayload) => string;
+    replaceIn: (payload: replaceAttributePayload) => string;
     replaceMin: (payload: replaceAttributePayload) => string;
     replaceMax: (payload: replaceAttributePayload) => string;
     replaceRequiredWith: (payload: replaceAttributePayload) => string;
