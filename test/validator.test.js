@@ -714,7 +714,7 @@ describe('In', function() {
       assert.equal(validator.validate(), false);
     });
     it('An Error message should be returned in case of failure', function() {
-      assert.equal(validator.errors().first(), 'The selected value is invalid.');
+      assert.equal(validator.errors().first(), 'The value must be one of the following john, any, true, 4.');
     });
     it('Validation should succeed if the field under validation is included in the list of values', function() {
         validator.setData({ value: 'john' });
@@ -748,7 +748,7 @@ describe('In', function() {
       assert.equal(validator.validate(), false);
     });
     it('An Error message should be returned in case of failure', function() {
-      assert.equal(validator.errors().first(), 'The selected value is invalid.');
+      assert.equal(validator.errors().first(), 'The value must be one of the following john, any, true, 4.');
     });
     it('Validation should succeed if all the fields under validation are in included in the list of values', function() {
       validator.setData({ value: ['john', 4, 'true' ] });
@@ -767,7 +767,7 @@ describe('ruleIn Function', function() {
       assert.equal(validator.validate(), false);
     });
     it('An Error message should be returned in case of failure', function() {
-      assert.equal(validator.errors().first(), 'The selected value is invalid.');
+      assert.equal(validator.errors().first(), 'The value must be one of the following john, any, true, 4.');
     });
     it('All the values in the value list will be transformed to a string', function() {
       validator.setData({ value: true }).setRules({ value: ruleIn([ true ])});

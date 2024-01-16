@@ -39,7 +39,7 @@ export default {
         array: 'The :attribute must have :value items or more.',
         object: 'The :attribute must have :value items or more.',
     },
-    in: 'The :attribute must be one of the following types: :values.',
+    in: 'The :attribute must be one of the following :values.',
     integer: 'The :attribute must be an integer.',
     json: 'The :attribute must be a valid JSON string.',
     lt: {
