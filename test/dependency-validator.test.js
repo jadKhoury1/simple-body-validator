@@ -58,6 +58,23 @@ describe('Confirmed', function() {
             assert.ok(validator.validate());
         });
     });
+    describe('The field under validation must have a matching field if {field}Confirmation.', function() {
+        it('Validation shoulf fail if the {field}Confirmation is not available.', function() {
+            validator.setData({ password: 'test' }).setRules({ password: 'confirmed'});
+            assert.equal(validator.validate(), false);
+        });
+        it ('Validation should fail if the {field}Cconfirmation value does not match the field value.', function() {
+            validator.setData({ password: 'test', passwordConfirmation: '1234'});
+            assert.equal(validator.validate(), false);
+        });
+        it('An error should be returned to the user in case of failure', function() {
+            assert.equal(validator.errors().first(), 'The password confirmation does not match.');
+        });
+        it('Validation should succeed if the {field}Confirmation value matches the field value.', function() {
+            validator.setData({ password: 'test', passwordConfirmation: 'test'});
+            assert.ok(validator.validate());
+        });
+    });
 });
 
 describe('Declined If', function() {

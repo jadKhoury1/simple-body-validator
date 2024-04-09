@@ -196,7 +196,7 @@ class validateAttributes {
      * Validate that an attribute has matching confirmation.
      */
     validateConfirmed(value: any, parameters: any, attribute: string): boolean {
-        return this.validateSame(value, [`${attribute}_confirmation`]);
+        return this.validateSame(value, [`${attribute}_confirmation`]) || this.validateSame(value, [`${attribute}Confirmation`]);
     };
 
     /**
