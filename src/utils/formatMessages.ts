@@ -3,7 +3,7 @@
 import { CustomMesages } from '../types';
 import { isSizeRule } from './general';
 import Lang from '../lang';
-import { deepFind, dotify } from './object';
+import { dotify } from './object';
 
 
 

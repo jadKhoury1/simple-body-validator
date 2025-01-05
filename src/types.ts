@@ -14,7 +14,7 @@ export type InitialRule = string|ValidationCallback|RuleContract|BaseRule;
 export type Rule = string|RuleContract;
 
 export interface InitialRules extends GenericObject {
-    [key: string]: string|object|InitialRule[]
+    [key: string]: InitialRule|InitialRule[]
 };
 
 export interface Rules extends GenericObject {

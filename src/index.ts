@@ -1,4 +1,4 @@
-import { CustomAttributes, CustomMesages, InitialRules } from './types';
+import { CustomAttributes, CustomMesages, InitialRules, InitialRule } from './types';
 import Validator from './validator';
 import Lang from './lang';
 import ErrorBag from './validators/errorBag';
@@ -31,6 +31,7 @@ export {
     Rule,
     ImplicitRule,
     InitialRules,
+    InitialRule,
     Password,
     Validator,
     ErrorBag,

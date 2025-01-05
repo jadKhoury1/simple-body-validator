@@ -129,15 +129,20 @@ class Validator {
         return this.messages;
     }
 
+    /**
+     * Create a new ErrorBag instance and set the custom errors, thus removing previous error messages
+     */
     setErrors(errors: CustomErrors): ErrorBag {
-        let newErrors: string[];
-        for (const key in errors) {
-            newErrors = typeof errors[key] === 'string' ? [errors[key]] as string[] : errors[key] as string[];
-            this.messages.clearErrors([key]);
-            newErrors.forEach(error => {
-                this.messages.add(key, { message: error, error_type: 'custom' });
-            });
-        }
+        this.messages = new ErrorBag();
+        this.addCustomErrors(errors);
+        return this.messages;
+    }
+
+    /**
+     * Append the error messages to the existing ErrorBag instance, thus preserving the old error messages if any
+     */
+    appendErrors(errors: CustomErrors): ErrorBag {
+        this.addCustomErrors(errors, true);
         return this.messages.clone();
     }
 
@@ -221,6 +226,20 @@ class Validator {
         return getFormattedAttribute(attribute);
     }
 
+    private addCustomErrors(errors: CustomErrors, shouldClearErrors = false) {
+        let newErrors: string[];
+        // If the flag is set to true, we will remove the existing messages if any before setting the new ones
+        if (shouldClearErrors) {
+            this.messages.clearErrors(Object.keys(errors));
+        }
+
+        for (const key in errors) {
+            newErrors = typeof errors[key] === 'string' ? [errors[key]] as string[] : errors[key] as string[];
+            newErrors.forEach(error => {
+                this.messages.add(key, { message: error, error_type: 'custom' });
+            });
+        }
+    }
 
     /**
      * Replace all error message place-holders with actual values.

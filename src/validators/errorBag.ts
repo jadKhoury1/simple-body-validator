@@ -1,6 +1,6 @@
 'use strict';
 
-import { ErrorMessage, Errors, Messages } from '../types';
+import { ErrorMessage, Errors, Messages, GenericObject } from '../types';
 
 
 class ErrorBag {
@@ -106,7 +106,7 @@ class ErrorBag {
     /**
      * Get all error messages
      */
-    all(allMessages: boolean = true, withErrorTypes = this.withErrorTypes): object {
+    all(allMessages: boolean = true, withErrorTypes = this.withErrorTypes): GenericObject {
         let messages: object = withErrorTypes ? { ... this.errors } : { ... this.messages };
         
         if (! allMessages) {
