@@ -488,25 +488,20 @@ describe('Set Errors', function() {
             // The fist error returned should be the one that comes first
             assert.equal(validator.errors().first(), 'email is not valid');
         });
-        it('Errors that are not overriden should remain', function() {
+        it('Errors that are not overriden should be cleared', function() {
             validator.validate();
             assert.equal(validator.errors().get('email').length, 3);
-            assert.equal(validator.errors().get('name').length, 2);
 
             validator.setErrors({ 
                 email: 'email is not valid',
             });
 
-            // After setting the custom email message one message should be returned for the email and 2 for the name attribute
+            // After setting the custom email message one message should be returned for the email
+            assert.equal(validator.errors().keys().length, 1)
             assert.equal(validator.errors().get('email').length, 1);
-            assert.equal(validator.errors().get('name').length, 2);
 
-            // The new error message should be returned for the email while the old message should remain for the name
+            // The new error message should be returned for the email
             assert.equal(validator.errors().first('email'), 'email is not valid');
-            assert.equal(validator.errors().first('name'), 'The name must be a string.');
-
-            // The intial order should be preserved
-            assert.equal(validator.errors().first(), 'The name must be a string.');
         });
         it('Multiple erros can be set for the same attribute', function() {
             validator.validate();
@@ -549,6 +544,104 @@ describe('Set Errors', function() {
         it('Errors that are being set explicitly should have a custom error type', function() {
             validator.validate();
             validator.setErrors({
+                email: 'email is not valid',
+            });
+
+            const { email } = validator.errors().addErrorTypes().all(false);
+            assert.equal(email.error_type, 'custom');
+        });
+    });
+});
+
+describe('Append Errors', function() {
+    describe('User can append his own errors by passing an object', function() {
+        const validator = make()
+        .setData({ name: 2, email: 20 })
+        .setRules({
+            name: ['required', 'string', 'min:3'],
+            email: ['required', 'string', 'email', 'max:10' ],
+        });
+        it('User should be able to append a message for different attributes', function() {
+            validator.validate();
+            // 3 error messages are returned for the email attribute and 2 are returned for the name attributes
+            assert.equal(validator.errors().get('email').length, 3);
+            assert.equal(validator.errors().get('name').length, 2);
+
+            validator.appendErrors({ 
+                email: 'email is not valid',
+                name: 'name is  not valid'
+            });
+            // After setting the custom messages one message should be returned for both fields
+            assert.equal(validator.errors().get('email').length, 1);
+            assert.equal(validator.errors().get('name').length, 1);
+
+            // The new error message should be returned for each field
+            assert.equal(validator.errors().first('email'), 'email is not valid');
+            assert.equal(validator.errors().first('name'), 'name is  not valid');
+            // The fist error returned should be the one that comes first
+            assert.equal(validator.errors().first(), 'email is not valid');
+        });
+        it('Errors that are not overriden should be preserved', function() {
+            validator.validate();
+            assert.equal(validator.errors().get('email').length, 3);
+            assert.equal(validator.errors().get('name').length, 2);
+
+            validator.appendErrors({ 
+                email: 'email is not valid',
+            });
+
+            // After appending the custom email message one message should be returned for the email and 2 for the name attribute
+            assert.equal(validator.errors().get('email').length, 1);
+            assert.equal(validator.errors().get('name').length, 2);
+
+            // The new error message should be returned for the email while the old message should remain for the name
+            assert.equal(validator.errors().first('email'), 'email is not valid');
+            assert.equal(validator.errors().first('name'), 'The name must be a string.');
+
+            // The intial order should be preserved
+            assert.equal(validator.errors().first(), 'The name must be a string.');
+        });
+        it('Multiple erros can be appended for the same attribute', function() {
+            validator.validate();
+
+            validator.appendErrors({ 
+                email: [
+                    'email is not valid',
+                    'email can have max 10 characters'
+                ],
+                name: 'name is  not valid'
+            });
+
+            assert.equal(validator.errors().get('email').length, 2);
+            assert.equal(validator.errors().get('name').length, 1);
+
+            const [firstEmailError, secondEmailError] = validator.errors().get('email');
+            assert.equal(firstEmailError, 'email is not valid');
+            assert.equal(secondEmailError, 'email can have max 10 characters');
+            assert.equal(validator.errors().first('name'), 'name is  not valid');
+            assert.equal(validator.errors().first(), 'email is not valid');
+        });
+        it('After running the validation default erros if any, will override the custom errors', function() {
+            validator.validate();
+            validator.appendErrors({
+                email: 'email is not valid',
+                name: 'name is  not valid',
+                any: 'This is a test message'
+            });
+
+            assert.equal(validator.errors().first('email'), 'email is not valid');
+            assert.equal(validator.errors().first('name'), 'name is  not valid');
+            assert.equal(validator.errors().first('any'), 'This is a test message');
+
+            // After running the validation again the errors will be overriden
+            validator.validate();
+            assert.equal(validator.errors().first('email'), 'The email must be a string.');
+            assert.equal(validator.errors().first('name'), 'The name must be a string.');
+            assert.equal(validator.errors().first('any'), '');
+        });
+        it('Errors that are being appended explicitly should have a custom error type', function() {
+            validator.validate();
+            validator.appendErrors({
                 email: 'email is not valid',
             });
 

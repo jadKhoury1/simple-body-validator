@@ -7,7 +7,7 @@ import replaceAttributePayload from '../payloads/replaceAttributePayload';
 
 export function register(
     rule: string,
-    validate: (value: any, parameters?: string[], attribute?: string) => boolean,
+    validate: (value: any, parameters?: string[], attribute?: string) => boolean|Promise<boolean>,
     replaceMessage?: (message: string, paramters: string[], data?: object, getDisplayableAttribute?: Function) => string,
 ): boolean {
     const method: string = builValidationdMethodName(rule);
@@ -29,7 +29,7 @@ export function register(
 
 export function registerImplicit(
     rule: string,
-    validate: (value: any, parameters?: string[]|number[], attribute?: string) => boolean,
+    validate: (value: any, parameters?: string[]|number[], attribute?: string) => boolean|Promise<boolean>,
     replaceMessage?: (message: string, paramters: string[], data?: object, getDisplayableAttribute?: Function) => string,
 ): void {
     if (register(rule, validate, replaceMessage) === true) {
