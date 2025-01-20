@@ -119,7 +119,7 @@ class ErrorBag {
     /**
      * Remove error messages
      */
-    clearErrors(keys: string[]): ErrorBag {
+    clear(keys: string[]): ErrorBag {
         // if keys array is emppty - remove all error messages
         if (keys.length === 0) {
             this.errors = {};

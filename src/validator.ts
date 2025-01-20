@@ -124,8 +124,8 @@ class Validator {
         return this.messages;
     };
 
-    clearErrors(...keys: string[]): ErrorBag {
-        this.messages = this.messages.clearErrors(keys).clone();
+    clearErrors(keys: string[] = []): ErrorBag {
+        this.messages = this.messages.clear(keys).clone();
         return this.messages;
     }
 
@@ -167,7 +167,7 @@ class Validator {
     /**
      * Run the validator's rules against its data asynchronously.
      */
-    async validateAsync(key: string, value: any = undefined): Promise<boolean> {
+    async validateAsync(key: string = '', value: any = undefined): Promise<boolean> {
         if (!isObject(this.data)) {
             throw 'The data attribute must be an object';
         }
@@ -230,7 +230,7 @@ class Validator {
         let newErrors: string[];
         // If the flag is set to true, we will remove the existing messages if any before setting the new ones
         if (shouldClearErrors) {
-            this.messages.clearErrors(Object.keys(errors));
+            this.messages.clear(Object.keys(errors));
         }
 
         for (const key in errors) {
@@ -296,7 +296,7 @@ class Validator {
      * Run validation for one specific attribute
      */
     private runSingleValidation(key: string, value: any = undefined): void {
-        this.clearErrors(key);
+        this.clearErrors([key]);
 
         if (typeof value !== 'undefined') {
             deepSet(this.data, key, value);
@@ -309,7 +309,7 @@ class Validator {
      * Run validation for one specific attribute asynchronously.
      */
     private async runSingleValidationAsync(key: string, value: any = undefined): Promise<void> {
-        this.clearErrors(key);
+        this.clearErrors([key]);
 
         if (typeof value !== 'undefined') {
             deepSet(this.data, key, value);

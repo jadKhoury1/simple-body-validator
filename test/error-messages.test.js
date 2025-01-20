@@ -673,7 +673,7 @@ describe('Clear Errors', function() {
             validator.validate();
             assert.equal(validator.errors().keys().length, 3);
 
-            validator.clearErrors('first', 'last');
+            validator.clearErrors(['first', 'last']);
             assert.equal(validator.errors().keys().length, 1);
         });
     });
